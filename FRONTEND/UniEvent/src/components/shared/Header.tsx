@@ -1,5 +1,5 @@
-import shortLogo from "../assets/uvt-short.png";
-import accountIcon from "../assets/account-icon.svg";
+import shortLogo from "../../assets/uvt-short.png";
+import accountIcon from "../../assets/account-icon.svg";
 
 const Header = () => {
   return (
@@ -12,8 +12,22 @@ const Header = () => {
 
         <nav className="absolute left-1/2 -translate-x-1/2">
           <ul className="flex items-center justify-between gap-10 text-xl font-semibold">
-            <li className="cursor-pointer transition-colors hover:text-[#AED9F8]">
+            <li className="relative group cursor-pointer transition-colors hover:text-[#AED9F8]">
               Facultăți
+              <ul className="absolute left-0 top-full w-screen hidden bg-white text-gray-800 shadow-lg group-hover:block">
+                <li>Arte</li>
+                <li>CBG</li>
+                <li>DREPT</li>
+                <li>FEEA</li>
+                <li>FEFS</li>
+                <li>FFM</li>
+                <li>INFO</li>
+                <li>FLIFT</li>
+                <li>FMT</li>
+                <li>FPSE</li>
+                <li>FSAS</li>
+                <li>FSGC</li>
+              </ul>
             </li>
             <li className="cursor-pointer transition-colors hover:text-[#AED9F8]">
               Evenimente
