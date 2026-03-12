@@ -1,5 +1,6 @@
 import type React from "react";
-import { useFieldContext } from "./index";
+import { useFieldContext } from "../context";
+import FieldErrors from "./FieldErrors";
 
 type Props = {
   label: string;
@@ -18,7 +19,7 @@ const DateInput = ({ label, ...props }: Props) => {
         onChange={(e) => field.handleChange(e.target.value)}
         {...props}
       />
-      {field.state.meta.errors.length > 0 && <p>errors</p>}
+      <FieldErrors field={field} />
     </>
   );
 };

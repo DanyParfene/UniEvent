@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useAppForm } from "../components/form";
 import {
-  componentsMap,
   defaultFormValues,
   formSchema,
   formSteps,
@@ -15,14 +14,13 @@ export const Route = createFileRoute("/create-event")({
 function RouteComponent() {
   const [currentStep, setCurrentStep] = useState<number>(0);
 
-  /* const currentFormStep = formSteps.find((_, index) => index == step); */
-
   const form = useAppForm({
     defaultValues: defaultFormValues,
     validators: {
       onChange: formSchema,
     },
     onSubmit: ({ value }) => {
+      console.log("object")
       console.log(value);
     },
   });
@@ -36,33 +34,44 @@ function RouteComponent() {
         }}
       >
         {formSteps.map((formStep, index) => (
-          <Activity mode={currentStep == index ? "visible" : "hidden"}>
+          <Activity
+            mode={index == currentStep ? "visible" : "hidden"}
+            key={index}
+          >
             <h3>{formStep.name}</h3>
-            {formStep.elements.map((element, ind) => {
+            {formStep.elements.map((element) => {
               return (
                 <form.AppField
                   name={element.name}
-                  key={ind}
+                  key={element.name}
                   children={(field) => {
-                    const { name, ...props } = element;
-                    const Component = componentsMap[element.type];
-                    return <field.Component {...props} />;
+                    const { name, type, ...props } = element;
+
+                    if (element.type === "textInput") {
+                      return <field.TextInput {...props} />;
+                    } else {
+                      return <field.DateInput {...props} />;
+                    }
                   }}
                 />
               );
             })}
           </Activity>
         ))}
-        {/* {currentFormStep?.elements.map((element) => {
-          if (element.type == "textInput") {
-            return (
-              <form.AppField
-                name={element.name}
-                children={(field) => <field.TextInput {...element} />}
-              />
-            );
-          }
-        })} */}
+        <button
+          disabled={currentStep < 1 ? true : false}
+          onClick={() => setCurrentStep((prev) => prev - 1)}
+        >
+          Previous
+        </button>
+        <button
+          disabled={currentStep == formSteps.length - 1 ? true : false}
+          onClick={() => setCurrentStep((prev) => prev + 1)}
+        >
+          Continue
+        </button>
+
+        <button type="submit">Save</button>
       </form>
     </div>
   );

@@ -1,9 +1,7 @@
-import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
-import TextInput from "./TextInput";
-import DateInput from "./DateInput";
-
-export const { fieldContext, formContext, useFieldContext, useFormContext } =
-  createFormHookContexts();
+import { createFormHook } from "@tanstack/react-form";
+import TextInput from "./components/TextInput";
+import DateInput from "./components/DateInput";
+import { fieldContext, formContext } from "./context";
 
 export const { useAppForm } = createFormHook({
   fieldComponents: {

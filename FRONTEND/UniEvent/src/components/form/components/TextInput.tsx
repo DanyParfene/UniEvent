@@ -1,5 +1,6 @@
 import type React from "react";
-import { useFieldContext } from "./index";
+import { useFieldContext } from "../context";
+import FieldErrors from "./FieldErrors";
 
 type Props = {
   label: string;
@@ -18,6 +19,7 @@ const TextInput = ({ label, ...props }: Props) => {
         onChange={(e) => field.handleChange(e.target.value)}
         {...props}
       />
+      <FieldErrors field={field} />
     </>
   );
 };
