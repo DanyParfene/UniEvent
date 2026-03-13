@@ -1,14 +1,21 @@
-export type Field = { label: string; value: any };
+type Field = { label: string; value: any };
 
-export type Section = {
+type Section = {
   sectionTitle: string;
   fields: Field[];
+};
+
+type SocialMediaLink = {
+  link: string,
+  reach: number,
+  engagement: number
 };
 
 export const eventData: Section[] = [
   {
     sectionTitle: "Date generale",
     fields: [
+      { label: "Afiș eveniment", value: "https://uvt.ro/afis.pdf" },
       { label: "Denumire eveniment", value: "Conferința Tech 2026" },
       { label: "Dată eveniment", value: "15.05.2026" },
       { label: "Ediție", value: "Ediția a 10-a" },
@@ -56,7 +63,6 @@ export const eventData: Section[] = [
         label: "Informații suplimentare",
         value: "Accesul se face pe bază de înregistrare prealabilă.",
       },
-      { label: "Afiș eveniment", value: "https://uvt.ro/afis.pdf" },
     ],
   },
   {
