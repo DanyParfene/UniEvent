@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import imageIcon from "../../assets/image_icon.svg";
 
 type Props = {
@@ -11,6 +11,11 @@ const PartnerPopUp = ({ name, logo, setIsPartnerFormActive }: Props) => {
   const [inputName, setInputName] = useState<string>(name);
   const [inputLogo, setInputLogo] = useState<string>(logo);
   const [previewUrl, setPreviewUrl] = useState<string>(logo);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Luăm primul fișier selectat
@@ -24,8 +29,12 @@ const PartnerPopUp = ({ name, logo, setIsPartnerFormActive }: Props) => {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+      <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-out ${
+          isMounted ? "opacity-100" : "opacity-0"
+        }`}>
+        <div className={`bg-white rounded-2xl shadow-xl w-full max-w-md p-6 transform transition-all duration-300 ease-out ${
+            isMounted ? "scale-100 opacity-100 translate-y-0" : "scale-0 opacity-0 translate-y-10"
+          }`}>
           <form className="flex flex-col gap-4" onSubmit={(e) => {e.preventDefault(); console.log("Testing")}}>
             {/* Field Nume */}
             <div>
@@ -36,7 +45,7 @@ const PartnerPopUp = ({ name, logo, setIsPartnerFormActive }: Props) => {
                 type="text"
                 value={inputName}
                 onChange={(e) => setInputName(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#033A89] outline-none transition-all"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary outline-none transition-all"
               />
             </div>
 
@@ -46,7 +55,7 @@ const PartnerPopUp = ({ name, logo, setIsPartnerFormActive }: Props) => {
                 Logo
               </label>
               <div
-                className={`relative mt-1 flex justify-center border-2 border-gray-300 border-dashed rounded-lg hover:border-[#033A89] transition-colors group cursor-pointer overflow-hidden ${previewUrl ? "p-2" : "px-6 pt-5 pb-6"}`}
+                className={`relative mt-1 flex justify-center border-2 border-gray-300 border-dashed rounded-lg hover:border-primary transition-colors group cursor-pointer overflow-hidden ${previewUrl ? "p-2" : "px-6 pt-5 pb-6"}`}
               >
                 {/* Input-ul rceal este ascuns, dar ocupă toată cutia */}
                 <input
@@ -73,7 +82,7 @@ const PartnerPopUp = ({ name, logo, setIsPartnerFormActive }: Props) => {
                   )}
 
                   <div className="flex text-sm text-gray-600 justify-center">
-                    <span className="relative rounded-md font-medium text-[#033A89] group-hover:text-[#022860]">
+                    <span className="relative rounded-md font-medium text-primary group-hover:text-primary">
                       {previewUrl
                         ? "Schimbă imaginea"
                         : "Alege un fișier din calculator"}
@@ -97,7 +106,7 @@ const PartnerPopUp = ({ name, logo, setIsPartnerFormActive }: Props) => {
                 Cancel
               </button>
               <button
-                className="px-4 py-2 bg-[#033A89] text-white rounded-lg hover:bg-[#022860] transition-colors font-medium shadow-sm cursor-pointer"
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary transition-colors font-medium shadow-sm cursor-pointer"
                 type="submit"
               >
                 Save
