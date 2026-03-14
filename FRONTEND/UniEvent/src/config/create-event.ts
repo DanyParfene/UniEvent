@@ -20,7 +20,9 @@ export const formSchema = z.object({
     .number()
     .min(1, "Minimum number of participants is 1")
     .max(10000, "Maximum number of participants is 10000"),
-  email: z.email().refine((val) => val.endsWith("@e-uvt.ro")),
+  email: z.email().refine((val) => {
+    val.endsWith("@e-uvt.ro");
+  }),
   telephone: z
     .string()
     .min(12, "The phone number is not valid")

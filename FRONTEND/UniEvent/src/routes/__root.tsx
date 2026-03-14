@@ -5,7 +5,6 @@ import EventCardMain from "../components/events/EventCardMain";
 const RootLayout = () => {
   return (
     <>
-    <EventCardMain/>
       <Outlet />;
     </>
   );
