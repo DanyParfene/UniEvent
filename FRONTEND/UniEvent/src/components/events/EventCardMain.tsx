@@ -1,6 +1,6 @@
-import { eventData } from "./eventHeroType.ts";
+import { eventData } from "./eventMainType.ts";
 
-const EventHero = () => {
+const EventCardMain = () => {
   return (
     <div>
       {eventData.map((e) => (
@@ -14,10 +14,11 @@ const EventHero = () => {
               </div>
             ))}
           </div>
+          <hr />
         </div>
       ))}
     </div>
   );
 };
 
-export default EventHero;
+export default EventCardMain;
