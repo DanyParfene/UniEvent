@@ -18,6 +18,7 @@ export const eventData: Section[] = [
       { label: "Afiș eveniment", value: "https://uvt.ro/afis.pdf" },
       { label: "Denumire eveniment", value: "Conferința Tech 2026" },
       { label: "Dată eveniment", value: "15.05.2026" },
+      { label: "Oră eveniment", value: "13:00" },
       { label: "Ediție", value: "Ediția a 10-a" },
       { label: "Organizator", value: "Universitatea de Vest din Timișoara" },
     ],

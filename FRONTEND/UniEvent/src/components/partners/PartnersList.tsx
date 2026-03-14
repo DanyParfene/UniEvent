@@ -16,14 +16,15 @@ const partners: Partner[] = [
 
 export const PartnersList = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [isPartnerFormActive, setIsPartnerFormActive] = useState<boolean>(false);
+  const [isPartnerFormActive, setIsPartnerFormActive] =
+    useState<boolean>(false);
   const [defaultName, setDefaultName] = useState<string>("");
   const [defaultLogo, setDefaultLogo] = useState<string>("");
 
   return (
     <section className="max-w-7xl mx-auto py-16 px-4">
       <div className="mb-12">
-        <h2 className="text-3xl font-bold text-[#121212] mb-4 border-l-4 border-[#033A89] pl-4">
+        <h2 className="text-3xl font-bold text-[#121212] mb-4 border-l-4 border-[primary] pl-4">
           Parteneriate
         </h2>
         <p className="text-gray-600 leading-relaxed max-w-5xl">
@@ -57,7 +58,7 @@ export const PartnersList = () => {
       <div>
         <button
           onClick={() => setIsEditMode(!isEditMode)}
-          className="px-6 py-2 mx-2 bg-[#033A89] text-white rounded-lg font-medium hover:bg-[#2588E7] transition-colors shadow-sm cursor-pointer"
+          className="px-6 py-2 mx-2 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-colors shadow-sm cursor-pointer"
         >
           {isEditMode ? "Ieși din Editare" : "Administrează"}
         </button>
@@ -69,7 +70,7 @@ export const PartnersList = () => {
               setDefaultName("");
               setDefaultLogo("");
             }}
-            className="px-6 py-2 mx-2 bg-[#033A89] text-white rounded-lg font-medium hover:bg-[#2588E7] transition-colors shadow-sm cursor-pointer"
+            className="px-6 py-2 mx-2 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-colors shadow-sm cursor-pointer"
           >
             + Adaugă Partener Nou
           </button>

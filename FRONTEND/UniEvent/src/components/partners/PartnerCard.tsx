@@ -22,7 +22,7 @@ export const PartnerCard = ({
   setDefaultLogo,
 }: PartnerCardProps) => {
   return (
-    <div className="group relative flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/5 hover:border-[#2588E7] hover:-translate-y-1">
+    <div className="group relative flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/5 hover:border-secondary hover:-translate-y-1">
       {/* edit/delete buttons when Edit Mode is active */}
       {isEditMode && (
         <div className="absolute top-3 right-3 flex gap-2 z-10">
@@ -33,7 +33,7 @@ export const PartnerCard = ({
               setDefaultName(partner.name);
               setDefaultLogo(partner.logo);
             }}
-            className="group/btn p-1.5 bg-white border border-gray-200 rounded-md shadow-sm hover:bg-[#2588E7] hover:border-white transition-all cursor-pointer"
+            className="group/btn p-1.5 bg-white border border-gray-200 rounded-md shadow-sm hover:bg-secondary hover:border-white transition-all cursor-pointer"
             title="Edit"
           >
             <img
@@ -66,7 +66,7 @@ export const PartnerCard = ({
         />
       </div>
 
-      <p className="text-sm font-semibold text-gray-500 transition-colors duration-300 group-hover:text-[#033A89]">
+      <p className="text-sm font-semibold text-gray-500 transition-colors duration-300 group-hover:text-[primary]">
         {partner.name}
       </p>
     </div>
