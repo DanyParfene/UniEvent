@@ -4,7 +4,7 @@ const FieldErrors = ({ field }: { field: AnyFieldApi }) => {
   return (
     <>
       {field.state.meta.errors.length > 0 && (
-        <span className="min-h-[20px]">
+        <span className="min-h-5">
           {field.state.meta.errors.map((error) => error.message).join("; ")}
         </span>
       )}
