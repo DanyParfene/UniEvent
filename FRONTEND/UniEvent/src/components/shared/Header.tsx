@@ -22,7 +22,7 @@ const faculties = [
 
 const eventActions = [
   "Adăugare Eveniment",
-  "Filtrare Eveniment",
+  "Filtrare Evenimente",
   "Completare Post Eveniment",
   "Arhivă",
 ];

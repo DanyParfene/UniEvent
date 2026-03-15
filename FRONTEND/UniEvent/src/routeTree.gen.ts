@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as FormRouteImport } from './routes/form'
+import { Route as FiltrareEvenimenteRouteImport } from './routes/filtrare-evenimente'
 import { Route as CreateEventRouteImport } from './routes/create-event'
 
 const FormRoute = FormRouteImport.update({
   id: '/form',
   path: '/form',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FiltrareEvenimenteRoute = FiltrareEvenimenteRouteImport.update({
+  id: '/filtrare-evenimente',
+  path: '/filtrare-evenimente',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CreateEventRoute = CreateEventRouteImport.update({
@@ -25,27 +31,31 @@ const CreateEventRoute = CreateEventRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/create-event': typeof CreateEventRoute
+  '/filtrare-evenimente': typeof FiltrareEvenimenteRoute
   '/form': typeof FormRoute
 }
 export interface FileRoutesByTo {
   '/create-event': typeof CreateEventRoute
+  '/filtrare-evenimente': typeof FiltrareEvenimenteRoute
   '/form': typeof FormRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/create-event': typeof CreateEventRoute
+  '/filtrare-evenimente': typeof FiltrareEvenimenteRoute
   '/form': typeof FormRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/create-event' | '/form'
+  fullPaths: '/create-event' | '/filtrare-evenimente' | '/form'
   fileRoutesByTo: FileRoutesByTo
-  to: '/create-event' | '/form'
-  id: '__root__' | '/create-event' | '/form'
+  to: '/create-event' | '/filtrare-evenimente' | '/form'
+  id: '__root__' | '/create-event' | '/filtrare-evenimente' | '/form'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   CreateEventRoute: typeof CreateEventRoute
+  FiltrareEvenimenteRoute: typeof FiltrareEvenimenteRoute
   FormRoute: typeof FormRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/form'
       fullPath: '/form'
       preLoaderRoute: typeof FormRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/filtrare-evenimente': {
+      id: '/filtrare-evenimente'
+      path: '/filtrare-evenimente'
+      fullPath: '/filtrare-evenimente'
+      preLoaderRoute: typeof FiltrareEvenimenteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/create-event': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   CreateEventRoute: CreateEventRoute,
+  FiltrareEvenimenteRoute: FiltrareEvenimenteRoute,
   FormRoute: FormRoute,
 }
 export const routeTree = rootRouteImport

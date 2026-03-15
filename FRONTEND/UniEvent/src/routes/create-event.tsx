@@ -26,7 +26,7 @@ function RouteComponent() {
   });
 
   return (
-    <div>
+    <div className="min-w-[40vw] max-w-3xl flex flex-col items-center border border-gray-200 px-16 py-10 shadow-xl rounded-2xl">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -38,7 +38,9 @@ function RouteComponent() {
             mode={index == currentStep ? "visible" : "hidden"}
             key={index}
           >
-            <h3>{formStep.name}</h3>
+            <h3 className="font-[Sans-Source-Now] text-2xl font-semibold mb-3">
+              {formStep.name}
+            </h3>
             {formStep.elements.map((element) => {
               return (
                 <form.AppField
@@ -74,54 +76,59 @@ function RouteComponent() {
           </Activity>
         ))}
 
-        <button
-          type="button"
-          disabled={currentStep < 1}
-          onClick={() => setCurrentStep((prev) => prev - 1)}
-        >
-          Previous
-        </button>
-        <button
-          type="button"
-          disabled={currentStep == formSteps.length - 1}
-          onClick={() => {
-            console.log(form.state);
-            if (!form.state.isTouched) {
-              return;
-            }
-
-            const errors = form.state.errors;
-            console.log(errors);
-
-            if (errors.length > 0) {
-              for (const [key] of Object.entries(errors[0] ?? {})) {
-                if (
-                  formSteps[currentStep].elements.some(
-                    (element) => element.name === key,
-                  )
-                ) {
-                  return;
-                }
+        <div className="flex flex-wrap justify-center gap-5 mt-7 itmes-center">
+          <button
+            type="button"
+            disabled={currentStep < 1}
+            onClick={() => setCurrentStep((prev) => prev - 1)}
+            className="px-6 py-2 w-fit rounded-md bg-secondary text-text-primary text-lg hover:shadow-lg hover:bg-primary hover:cursor-pointer transition-all duration-300"
+          >
+            Previous
+          </button>
+          <button
+            type="button"
+            disabled={currentStep == formSteps.length - 1}
+            onClick={() => {
+              console.log(form.state);
+              if (!form.state.isTouched) {
+                return;
               }
 
-              for (const [key] of Object.entries(errors[0] ?? {})) {
-                if (key.startsWith(`step${currentStep + 1} |`)) {
-                  return;
+              const errors = form.state.errors;
+              console.log(errors);
+
+              if (errors.length > 0) {
+                for (const [key] of Object.entries(errors[0] ?? {})) {
+                  if (
+                    formSteps[currentStep].elements.some(
+                      (element) => element.name === key,
+                    )
+                  ) {
+                    return;
+                  }
+                }
+
+                for (const [key] of Object.entries(errors[0] ?? {})) {
+                  if (key.startsWith(`step${currentStep + 1} |`)) {
+                    return;
+                  }
                 }
               }
-            }
-            setCurrentStep((prev) => prev + 1);
-          }}
-        >
-          Continue
-        </button>
+              setCurrentStep((prev) => prev + 1);
+            }}
+            className="px-6 py-2 w-fit rounded-md bg-secondary text-text-primary text-lg hover:shadow-lg hover:bg-primary hover:cursor-pointer transition-all duration-300"
+          >
+            Continue
+          </button>
 
-        <button
-          type="submit"
-          disabled={currentStep == formSteps.length - 1 ? false : true}
-        >
-          Save
-        </button>
+          <button
+            type="submit"
+            disabled={currentStep == formSteps.length - 1 ? false : true}
+            className="px-6 py-2 w-fit rounded-md bg-secondary text-text-primary text-lg hover:shadow-lg hover:bg-primary hover:cursor-pointer transition-all duration-300"
+          >
+            Save
+          </button>
+        </div>
       </form>
     </div>
   );
