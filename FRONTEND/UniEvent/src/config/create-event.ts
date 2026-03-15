@@ -1,43 +1,55 @@
 import z from "zod";
 import type { Element } from "../components/form/config";
 
-export const formSchema = z.object({
-  eventName: z
-    .string()
-    .max(200, "The name of the event must be maximum 200 characters"),
-  startEventDate: z.iso.date("The event date meeds to be a valid one"),
-  finishEventDate: z.iso.date("The event date needs to be a valid one"),
-  edition: z.number().min(1, "Minimum edition must be 1"),
-  organizer: z.string(),
-  description: z.string().max(1000, "The maximum number of characters is 1000"),
-  targetGroup: z.string(),
-  coordinator: z.string(),
-  location: z.string(),
-  organizationMode: z.enum(["physical", "hybrid", "online"]),
-  livestream: z.enum(["YES", "NO"]),
-  invitations: z.array(z.string()),
-  numberOfParticipants: z
-    .number()
-    .min(1, "Minimum number of participants is 1")
-    .max(10000, "Maximum number of participants is 10000"),
-  email: z
-    .email()
-    .refine(
-      (val) => /^[a-z]+\.[a-z]+(?:\d{2})@e-uvt\.ro$/.test(val),
-      "This is not a valid e-uvt email",
-    ),
-  telephone: z
-    .string()
-    .min(12, "The phone number is not valid")
-    .refine(
-      (val) => !isNaN(Number(val.substring(3))),
-      "The phone number is not valid",
-    ),
-  otherInformation: z
-    .string()
-    .max(500, "The maximum number of characters is 500"),
-  banner: z.string(),
-});
+export const formSchema = z
+  .object({
+    eventName: z
+      .string()
+      .max(200, "The name of the event must be maximum 200 characters"),
+    startEventDate: z.iso.date("The event date meeds to be a valid one"),
+    finishEventDate: z.iso.date("The event date needs to be a valid one"),
+    edition: z.number().min(1, "Minimum edition must be 1"),
+    organizer: z.string(),
+    description: z
+      .string()
+      .max(1000, "The maximum number of characters is 1000"),
+    targetGroup: z.string(),
+    coordinator: z.string(),
+    location: z.string(),
+    organizationMode: z.enum(["physical", "hybrid", "online"]),
+    livestream: z.enum(["YES", "NO"]),
+    invitations: z.array(z.string()),
+    numberOfParticipants: z
+      .number()
+      .min(1, "Minimum number of participants is 1")
+      .max(10000, "Maximum number of participants is 10000"),
+    email: z
+      .email()
+      .refine(
+        (val) => /^[a-z]+\.[a-z]+(?:\d{2})@e-uvt\.ro$/.test(val),
+        "This is not a valid e-uvt email",
+      ),
+    telephone: z
+      .string()
+      .min(12, "The phone number is not valid")
+      .refine(
+        (val) => !isNaN(Number(val.substring(3))),
+        "The phone number is not valid",
+      ),
+    otherInformation: z
+      .string()
+      .max(500, "The maximum number of characters is 500"),
+    banner: z.string(),
+  })
+  .superRefine((data, ctx) => {
+    if (new Date(data.startEventDate) > new Date(data.finishEventDate)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Start date must be before end date",
+        path: ["date"],
+      });
+    }
+  });
 
 type Form = z.infer<typeof formSchema>;
 
