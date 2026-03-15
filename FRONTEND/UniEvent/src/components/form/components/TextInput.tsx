@@ -6,7 +6,7 @@ type Props = {
   label: string;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-const TextInput = ({ label, defaultValue, ...props }: Props) => {
+const TextInput = ({ label, ...props }: Props) => {
   const field = useFieldContext<string>();
 
   return (

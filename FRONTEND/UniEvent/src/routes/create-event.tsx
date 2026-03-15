@@ -25,6 +25,8 @@ function RouteComponent() {
     },
   });
 
+  console.log(form);
+
   return (
     <div>
       <form
@@ -73,16 +75,17 @@ function RouteComponent() {
             })}
           </Activity>
         ))}
+
         <button
           type="button"
-          disabled={currentStep < 1 ? true : false}
+          disabled={currentStep < 1}
           onClick={() => setCurrentStep((prev) => prev - 1)}
         >
           Previous
         </button>
         <button
           type="button"
-          disabled={currentStep == formSteps.length - 1 ? true : false}
+          disabled={currentStep == formSteps.length - 1}
           onClick={() => setCurrentStep((prev) => prev + 1)}
         >
           Continue

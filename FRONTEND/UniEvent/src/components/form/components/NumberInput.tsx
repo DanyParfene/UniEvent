@@ -14,9 +14,12 @@ const NumberInput = ({ label, ...props }: Props) => {
       <label htmlFor={field.name}>{label}</label>
       <input
         id={field.name}
-        type="number"
+        type="text"
         value={field.state.value}
-        onChange={(e) => field.handleChange(Number(e.target.value))}
+        onChange={(e) => {
+          const value = Number(e.target.value);
+          field.handleChange(!isNaN(value) ? value : 0);
+        }}
         {...props}
       />
       <FieldErrors field={field} />
