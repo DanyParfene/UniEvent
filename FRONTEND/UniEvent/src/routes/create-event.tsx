@@ -13,6 +13,7 @@ export const Route = createFileRoute("/create-event")({
 
 function RouteComponent() {
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const [formErrors, setFormErrors] = useState<string[] | null>(null);
 
   const form = useAppForm({
     defaultValues: defaultFormValues,
@@ -76,6 +77,8 @@ function RouteComponent() {
           </Activity>
         ))}
 
+        {formErrors && <div>{formErrors.join("; ")}</div>}
+
         <div className="flex flex-wrap justify-center gap-5 mt-7 itmes-center">
           <button
             type="button"
@@ -108,13 +111,25 @@ function RouteComponent() {
                   }
                 }
 
-                for (const [key] of Object.entries(errors[0] ?? {})) {
+                let ok = false;
+                for (const [key, value] of Object.entries(errors[0] ?? {})) {
                   if (key.startsWith(`step${currentStep + 1} |`)) {
-                    return;
+                    if (formErrors == null) {
+                      setFormErrors([value[0].message]);
+                    } else {
+                      setFormErrors((prev) => [
+                        ...(prev || []),
+                        value[0].message,
+                      ]);
+                    }
+
+                    ok = true;
                   }
                 }
+                if (ok == true) return;
               }
               setCurrentStep((prev) => prev + 1);
+              setFormErrors(null);
             }}
             className="px-6 py-2 w-fit rounded-md bg-secondary text-text-primary text-lg hover:shadow-lg hover:bg-primary hover:cursor-pointer transition-all duration-300"
           >
