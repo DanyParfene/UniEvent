@@ -16,7 +16,7 @@ const Accordion = ({ title, children, styles = "", initialOpenValue }: SimpleAcc
     <div className={styles + " w-full border border-gray-200 rounded-xl shadow-sm bg-white overflow-hidden "}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-5 py-4 bg-white hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        className="w-full flex items-center justify-between px-5 py-4 bg-white hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
         aria-expanded={isOpen}
       >
         <span className="text-base font-medium text-gray-800">{title}</span>
@@ -28,7 +28,7 @@ const Accordion = ({ title, children, styles = "", initialOpenValue }: SimpleAcc
       </button>
 
       <Activity mode={isOpen ? "visible" : "hidden"}>
-        <div className="px-5 pb-4 pt-1 text-sm text-gray-600 leading-relaxed border-t border-gray-100 flex flex-col gap-5">
+        <div className="py-5 text-sm text-gray-600 leading-relaxed border-t border-gray-100 flex flex-col justify-center  items-center gap-5">
           {children}
         </div>
       </Activity>
