@@ -33,7 +33,8 @@ export const formSchema = z
       .string()
       .min(12, "The phone number is not valid")
       .refine(
-        (val) => !isNaN(Number(val.substring(3))),
+        (val) =>
+          val.substring(0, 3) === "+40" && !isNaN(Number(val.substring(3))),
         "The phone number is not valid",
       ),
     otherInformation: z
@@ -46,7 +47,7 @@ export const formSchema = z
       ctx.addIssue({
         code: "custom",
         message: "Start date must be before end date",
-        path: ["date"],
+        path: ["step1 | date"],
       });
     }
   });

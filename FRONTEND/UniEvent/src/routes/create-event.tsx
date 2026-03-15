@@ -85,6 +85,7 @@ function RouteComponent() {
           type="button"
           disabled={currentStep == formSteps.length - 1}
           onClick={() => {
+            console.log(form.state);
             if (!form.state.isTouched) {
               return;
             }
@@ -99,6 +100,12 @@ function RouteComponent() {
                     (element) => element.name === key,
                   )
                 ) {
+                  return;
+                }
+              }
+
+              for (const [key] of Object.entries(errors[0] ?? {})) {
+                if (key.startsWith(`step${currentStep + 1} |`)) {
                   return;
                 }
               }
