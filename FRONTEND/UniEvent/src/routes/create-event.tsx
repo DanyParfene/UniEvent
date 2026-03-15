@@ -91,14 +91,13 @@ function RouteComponent() {
           <button
             type="button"
             disabled={currentStep == formSteps.length - 1}
+            className="px-6 py-2 w-fit rounded-md bg-secondary text-text-primary text-lg hover:shadow-lg hover:bg-primary hover:cursor-pointer transition-all duration-300"
             onClick={() => {
-              console.log(form.state);
               if (!form.state.isTouched) {
                 return;
               }
 
               const errors = form.state.errors;
-              console.log(errors);
 
               if (errors.length > 0) {
                 for (const [key] of Object.entries(errors[0] ?? {})) {
@@ -128,8 +127,9 @@ function RouteComponent() {
                 }
                 if (ok == true) return;
               }
-              setCurrentStep((prev) => prev + 1);
+
               setFormErrors(null);
+              setCurrentStep((prev) => prev + 1);
             }}
           >
             Continue

@@ -11,7 +11,9 @@ const NumberInput = ({ label, ...props }: Props) => {
 
   return (
     <div className="flex flex-col gap-1.5 mb-4">
-      <label className="font-[Sans-Source-Now] text-lg" htmlFor={field.name}>{label}</label>
+      <label className="font-[Sans-Source-Now] text-lg" htmlFor={field.name}>
+        {label}
+      </label>
       <input
         id={field.name}
         type="text"
