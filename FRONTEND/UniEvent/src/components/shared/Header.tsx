@@ -29,7 +29,7 @@ const eventActions = [
 
 const Header = () => {
   return (
-    <header className="fixed top-0 left-0 z-50 w-full bg-gradient-to-r from-primary to-secondary text-white shadow-md font-[Source_Sans_Pro]">
+    <header className="sticky top-0 left-0 z-50 w-full bg-gradient-to-r from-primary to-secondary text-white shadow-md font-[Source_Sans_Pro]">
       <div className="relative mx-auto flex h-16 w-full items-center px-6">
         <div className="flex items-center justify-center w-10 h-10 cursor-pointer">
           <img src={shortLogo} alt="Logo-uvt" />
