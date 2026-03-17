@@ -1,5 +1,4 @@
-import { PartnerCard } from "./PartnerCard";
-import { type Partner } from "../../types/Partner";
+import { PartnerCard, type Partner } from "./PartnerCard";
 import nokiaLogo from "../../assets/nokia_logo.png";
 import continentalLogo from "../../assets/continental_logo.png";
 import atosLogo from "../../assets/atos_logo.png";
@@ -16,15 +15,27 @@ const partners: Partner[] = [
 
 export const PartnersList = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [isPartnerFormActive, setIsPartnerFormActive] =
-    useState<boolean>(false);
+  const [isPartnerFormActive, setIsPartnerFormActive] = useState<boolean>(false);
   const [defaultName, setDefaultName] = useState<string>("");
   const [defaultLogo, setDefaultLogo] = useState<string>("");
+
+  // 1. Create a dedicated handler for the edit action
+  const handleEditClick = (partner: Partner) => {
+    setDefaultName(partner.name);
+    setDefaultLogo(partner.logo);
+    setIsPartnerFormActive(true);
+  };
+
+  // Optional: Set up a placeholder handler for delete
+  const handleDeleteClick = (partnerId: number) => {
+    // TODO: Add delete logic here later
+    console.log("Delete partner clicked for ID:", partnerId);
+  };
 
   return (
     <section className="max-w-7xl mx-auto py-16 px-4">
       <div className="mb-12">
-        <h2 className="text-3xl font-bold text-[#121212] mb-4 border-l-4 border-[primary] pl-4">
+        <h2 className="text-3xl font-bold text-[#121212] mb-4 border-l-4 border-primary pl-4">
           Parteneriate
         </h2>
         <p className="text-gray-600 leading-relaxed max-w-5xl">
@@ -37,18 +48,17 @@ export const PartnersList = () => {
           de parteneri din mediul socio-economic:
         </p>
       </div>
+
       {/* Containerul FLEX */}
       <div className="flex flex-wrap justify-center gap-8 mb-12">
         {partners.map((item) => (
-          // W-full pe mobil, w-[calc(50%-1rem)] pe tableta, w-64 pe desktop
           <div key={item.id} className="w-full sm:w-[calc(50%-1rem)] md:w-64">
+            {/* PartnerCard */}
             <PartnerCard
-              partner={item}
+              {...item}
               isEditMode={isEditMode}
-              setDefaultName={setDefaultName}
-              setDefaultLogo={setDefaultLogo}
-              setIsPartnerFormActive={setIsPartnerFormActive}
-              onDelete={undefined}
+              onEdit={handleEditClick}
+              onDelete={() => handleDeleteClick(item.id)} 
             />
           </div>
         ))}
@@ -75,6 +85,7 @@ export const PartnersList = () => {
             + Adaugă Partener Nou
           </button>
         )}
+
         {isPartnerFormActive && (
           <PartnerPopUp
             name={defaultName}
