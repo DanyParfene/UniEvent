@@ -1,22 +1,24 @@
-type Field = { label: string; value: any };
+type SocialMediaLink = {
+  link: string;
+  reach: number;
+  engagement: number;
+};
+
+type Field = { label: string; value: string | number | SocialMediaLink[] };
+
+export const bannerLabel = "Afiș eveniment";
 
 type Section = {
   sectionTitle: string;
   fields: Field[];
 };
 
-type SocialMediaLink = {
-  link: string,
-  reach: number,
-  engagement: number
-};
-
 export const eventData: Section[] = [
   {
     sectionTitle: "Date generale",
     fields: [
-      { label: "Afiș eveniment", value: "https://uvt.ro/afis.pdf" },
       { label: "Denumire eveniment", value: "Conferința Tech 2026" },
+      { label: bannerLabel, value: "https://drive.google.com/file/d/1Og0Z_OVBbmOvgn8WS5ZwmxIaP3pqOWIt/view?usp=sharing" },
       { label: "Dată eveniment", value: "15.05.2026" },
       { label: "Oră eveniment", value: "13:00" },
       { label: "Ediție", value: "Ediția a 10-a" },
@@ -67,16 +69,168 @@ export const eventData: Section[] = [
     ],
   },
   {
-    sectionTitle: "Media & Social Media",
+    sectionTitle: "Social Media",
     fields: [
-      { label: "Album foto", value: "https://photos.google.com/album123" },
-      { label: "Facebook UVT", value: "https://facebook.com/uvt/post1" },
-      { label: "Instagram", value: "https://instagram.com/uvt/post2" },
-      { label: "TikTok", value: "https://tiktok.com/@uvt/video3" },
-      { label: "Comunicat de presă", value: "https://uvt.ro/comunicat-presa" },
-      { label: "Apariții în presă", value: "Digi24, Tion, Radio Timișoara" },
-      { label: "Statistici", value: "Reach: 15.000, Engagement: 1.200" },
-      { label: "Link Podcast", value: "https://spotify.com/uvt-podcast" },
+      {
+        label: "Album foto",
+        value: [
+          {
+            link: "https://photos.google.com/album123",
+            reach: 1000,
+            engagement: 89,
+          },
+          {
+            link: "https://photos.google.com/album1234",
+            reach: 899,
+            engagement: 17,
+          },
+          {
+            link: "https://photos.google.com/album12345",
+            reach: 27058,
+            engagement: 154,
+          },
+        ],
+      },
+      {
+        label: "Facebook UVT",
+        value: [
+          {
+            link: "https://photos.google.com/album123",
+            reach: 1000,
+            engagement: 89,
+          },
+          {
+            link: "https://photos.google.com/album1234",
+            reach: 899,
+            engagement: 17,
+          },
+          {
+            link: "https://photos.google.com/album12345",
+            reach: 27058,
+            engagement: 154,
+          },
+        ],
+      },
+      {
+        label: "Instagram",
+        value: [
+          {
+            link: "https://photos.google.com/album123",
+            reach: 1000,
+            engagement: 89,
+          },
+          {
+            link: "https://photos.google.com/album1234",
+            reach: 899,
+            engagement: 17,
+          },
+          {
+            link: "https://photos.google.com/album12345",
+            reach: 27058,
+            engagement: 154,
+          },
+        ],
+      },
+      {
+        label: "TikTok",
+        value: [
+          {
+            link: "https://photos.google.com/album123",
+            reach: 1000,
+            engagement: 89,
+          },
+          {
+            link: "https://photos.google.com/album1234",
+            reach: 899,
+            engagement: 17,
+          },
+          {
+            link: "https://photos.google.com/album12345",
+            reach: 27058,
+            engagement: 154,
+          },
+        ],
+      },
+      {
+        label: "Comunicat de presă",
+        value: [
+          {
+            link: "https://photos.google.com/album123",
+            reach: 1000,
+            engagement: 89,
+          },
+          {
+            link: "https://photos.google.com/album1234",
+            reach: 899,
+            engagement: 17,
+          },
+          {
+            link: "https://photos.google.com/album12345",
+            reach: 27058,
+            engagement: 154,
+          },
+        ],
+      },
+      {
+        label: "Apariții în presă",
+        value: [
+          {
+            link: "https://photos.google.com/album123",
+            reach: 1000,
+            engagement: 89,
+          },
+          {
+            link: "https://photos.google.com/album1234",
+            reach: 899,
+            engagement: 17,
+          },
+          {
+            link: "https://photos.google.com/album12345",
+            reach: 27058,
+            engagement: 154,
+          },
+        ],
+      },
+      {
+        label: "Statistici",
+        value: [
+          {
+            link: "https://photos.google.com/album123",
+            reach: 1000,
+            engagement: 89,
+          },
+          {
+            link: "https://photos.google.com/album1234",
+            reach: 899,
+            engagement: 17,
+          },
+          {
+            link: "https://photos.google.com/album12345",
+            reach: 27058,
+            engagement: 154,
+          },
+        ],
+      },
+      {
+        label: "Link Podcast",
+        value: [
+          {
+            link: "https://photos.google.com/album123",
+            reach: 1000,
+            engagement: 89,
+          },
+          {
+            link: "https://photos.google.com/album1234",
+            reach: 899,
+            engagement: 17,
+          },
+          {
+            link: "https://photos.google.com/album12345",
+            reach: 27058,
+            engagement: 154,
+          },
+        ],
+      },
     ],
   },
 ];
