@@ -4,18 +4,24 @@ import imageIcon from "../../assets/image_icon.svg";
 type Props = {
   name: string;
   logo: string;
-  setIsPartnerFormActive: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
 };
 
-const PartnerPopUp = ({ name, logo, setIsPartnerFormActive }: Props) => {
+const PartnerPopUp = ({ name, logo, onClose }: Props) => {
   const [inputName, setInputName] = useState<string>(name);
-  const [inputLogo, setInputLogo] = useState<string>(logo);
   const [previewUrl, setPreviewUrl] = useState<string>(logo);
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    console.log("Testing Save Data:", { name: inputName, logo: previewUrl });
+
+    onClose();
+  }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Luăm primul fișier selectat
@@ -35,7 +41,7 @@ const PartnerPopUp = ({ name, logo, setIsPartnerFormActive }: Props) => {
         <div className={`bg-white rounded-2xl shadow-xl w-full max-w-md p-6 transform transition-all duration-300 ease-out ${
             isMounted ? "scale-100 opacity-100 translate-y-0" : "scale-0 opacity-0 translate-y-10"
           }`}>
-          <form className="flex flex-col gap-4" onSubmit={(e) => {e.preventDefault(); console.log("Testing")}}>
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             {/* Field Nume */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -101,7 +107,7 @@ const PartnerPopUp = ({ name, logo, setIsPartnerFormActive }: Props) => {
               <button
                 className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium cursor-pointer"
                 type="button"
-                onClick={() => {setIsPartnerFormActive(false)}}
+                onClick={onClose}
               >
                 Cancel
               </button>

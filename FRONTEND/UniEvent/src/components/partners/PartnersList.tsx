@@ -3,8 +3,8 @@ import nokiaLogo from "../../assets/nokia_logo.png";
 import continentalLogo from "../../assets/continental_logo.png";
 import atosLogo from "../../assets/atos_logo.png";
 import bcrLogo from "../../assets/bcr_logo.png";
-import { useState } from "react";
 import PartnerPopUp from "./PartnerPopUp";
+import { useNavigate } from "@tanstack/react-router";
 
 const partners: Partner[] = [
   { id: 0, name: "Nokia", logo: nokiaLogo },
@@ -13,29 +13,39 @@ const partners: Partner[] = [
   { id: 3, name: "BCR", logo: bcrLogo },
 ];
 
-export const PartnersList = () => {
-  const [isEditMode, setIsEditMode] = useState<boolean>(false);
-  const [isPartnerFormActive, setIsPartnerFormActive] = useState<boolean>(false);
-  const [defaultName, setDefaultName] = useState<string>("");
-  const [defaultLogo, setDefaultLogo] = useState<string>("");
+type PartnersListProps = {
+  isAdminMode?: boolean;
+  isAddMode?: boolean;
+  isEditMode?: boolean;
+  editPartnerId?: number;
+};
 
-  // 1. Create a dedicated handler for the edit action
+export const PartnersList = ({
+  isAdminMode = false,
+  isAddMode = false,
+  isEditMode = false,
+  editPartnerId
+}: PartnersListProps) => {
+  const navigate = useNavigate();
+
+  const partnerToEdit = (isEditMode && editPartnerId !== undefined) ? partners.find(p => p.id === editPartnerId) : null;
+
   const handleEditClick = (partner: Partner) => {
-    setDefaultName(partner.name);
-    setDefaultLogo(partner.logo);
-    setIsPartnerFormActive(true);
+    navigate({
+      to: '/parteneri-editare/$partnerId',
+      params: {partnerId: partner.id.toString()}
+    });
   };
 
-  // Optional: Set up a placeholder handler for delete
   const handleDeleteClick = (partnerId: number) => {
-    // TODO: Add delete logic here later
+    // TODO
     console.log("Delete partner clicked for ID:", partnerId);
   };
 
   return (
     <section className="max-w-7xl mx-auto py-16 px-4">
       <div className="mb-12">
-        <h2 className="text-3xl font-bold text-[#121212] mb-4 border-l-4 border-primary pl-4">
+        <h2 className="text-3xl font-bold text-text-secondary mb-4 border-l-4 border-primary pl-4">
           Parteneriate
         </h2>
         <p className="text-gray-600 leading-relaxed max-w-5xl">
@@ -56,9 +66,9 @@ export const PartnersList = () => {
             {/* PartnerCard */}
             <PartnerCard
               {...item}
-              isEditMode={isEditMode}
+              isEditMode={isAdminMode}
               onEdit={handleEditClick}
-              onDelete={() => handleDeleteClick(item.id)} 
+              onDelete={() => handleDeleteClick(item.id)}
             />
           </div>
         ))}
@@ -67,30 +77,30 @@ export const PartnersList = () => {
       {/* Admin controls area */}
       <div>
         <button
-          onClick={() => setIsEditMode(!isEditMode)}
+          onClick={() => navigate({
+            to: isAdminMode ? '/parteneri' : '/parteneri-administrare'
+          })}
           className="px-6 py-2 mx-2 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-colors shadow-sm cursor-pointer"
         >
-          {isEditMode ? "Ieși din Editare" : "Administrează"}
+          {isAdminMode ? "Ieși din Editare" : "Administrează"}
         </button>
 
-        {isEditMode && (
+        {isAdminMode && (
           <button
-            onClick={() => {
-              setIsPartnerFormActive(true);
-              setDefaultName("");
-              setDefaultLogo("");
-            }}
+            onClick={() => navigate({
+              to: '/parteneri-adaugare'
+            })}
             className="px-6 py-2 mx-2 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-colors shadow-sm cursor-pointer"
           >
             + Adaugă Partener Nou
           </button>
         )}
 
-        {isPartnerFormActive && (
+        {(isAddMode || (isEditMode && (editPartnerId !== undefined))) && (
           <PartnerPopUp
-            name={defaultName}
-            logo={defaultLogo}
-            setIsPartnerFormActive={setIsPartnerFormActive}
+            name={partnerToEdit? partnerToEdit.name : ""}
+            logo={partnerToEdit? partnerToEdit.logo : ""}
+            onClose={() => navigate({to: '/parteneri-administrare'})}
           />
         )}
       </div>

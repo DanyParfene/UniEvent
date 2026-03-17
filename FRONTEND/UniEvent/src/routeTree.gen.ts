@@ -9,10 +9,29 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ParteneriAdministrareRouteImport } from './routes/parteneri-administrare'
+import { Route as ParteneriAdaugareRouteImport } from './routes/parteneri-adaugare'
+import { Route as ParteneriRouteImport } from './routes/parteneri'
 import { Route as FormRouteImport } from './routes/form'
 import { Route as FiltrareEvenimenteRouteImport } from './routes/filtrare-evenimente'
 import { Route as CreateEventRouteImport } from './routes/create-event'
+import { Route as ParteneriEditarePartnerIdRouteImport } from './routes/parteneri-editare.$partnerId'
 
+const ParteneriAdministrareRoute = ParteneriAdministrareRouteImport.update({
+  id: '/parteneri-administrare',
+  path: '/parteneri-administrare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParteneriAdaugareRoute = ParteneriAdaugareRouteImport.update({
+  id: '/parteneri-adaugare',
+  path: '/parteneri-adaugare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ParteneriRoute = ParteneriRouteImport.update({
+  id: '/parteneri',
+  path: '/parteneri',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FormRoute = FormRouteImport.update({
   id: '/form',
   path: '/form',
@@ -28,39 +47,104 @@ const CreateEventRoute = CreateEventRouteImport.update({
   path: '/create-event',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ParteneriEditarePartnerIdRoute =
+  ParteneriEditarePartnerIdRouteImport.update({
+    id: '/parteneri-editare/$partnerId',
+    path: '/parteneri-editare/$partnerId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/create-event': typeof CreateEventRoute
   '/filtrare-evenimente': typeof FiltrareEvenimenteRoute
   '/form': typeof FormRoute
+  '/parteneri': typeof ParteneriRoute
+  '/parteneri-adaugare': typeof ParteneriAdaugareRoute
+  '/parteneri-administrare': typeof ParteneriAdministrareRoute
+  '/parteneri-editare/$partnerId': typeof ParteneriEditarePartnerIdRoute
 }
 export interface FileRoutesByTo {
   '/create-event': typeof CreateEventRoute
   '/filtrare-evenimente': typeof FiltrareEvenimenteRoute
   '/form': typeof FormRoute
+  '/parteneri': typeof ParteneriRoute
+  '/parteneri-adaugare': typeof ParteneriAdaugareRoute
+  '/parteneri-administrare': typeof ParteneriAdministrareRoute
+  '/parteneri-editare/$partnerId': typeof ParteneriEditarePartnerIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/create-event': typeof CreateEventRoute
   '/filtrare-evenimente': typeof FiltrareEvenimenteRoute
   '/form': typeof FormRoute
+  '/parteneri': typeof ParteneriRoute
+  '/parteneri-adaugare': typeof ParteneriAdaugareRoute
+  '/parteneri-administrare': typeof ParteneriAdministrareRoute
+  '/parteneri-editare/$partnerId': typeof ParteneriEditarePartnerIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/create-event' | '/filtrare-evenimente' | '/form'
+  fullPaths:
+    | '/create-event'
+    | '/filtrare-evenimente'
+    | '/form'
+    | '/parteneri'
+    | '/parteneri-adaugare'
+    | '/parteneri-administrare'
+    | '/parteneri-editare/$partnerId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/create-event' | '/filtrare-evenimente' | '/form'
-  id: '__root__' | '/create-event' | '/filtrare-evenimente' | '/form'
+  to:
+    | '/create-event'
+    | '/filtrare-evenimente'
+    | '/form'
+    | '/parteneri'
+    | '/parteneri-adaugare'
+    | '/parteneri-administrare'
+    | '/parteneri-editare/$partnerId'
+  id:
+    | '__root__'
+    | '/create-event'
+    | '/filtrare-evenimente'
+    | '/form'
+    | '/parteneri'
+    | '/parteneri-adaugare'
+    | '/parteneri-administrare'
+    | '/parteneri-editare/$partnerId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   CreateEventRoute: typeof CreateEventRoute
   FiltrareEvenimenteRoute: typeof FiltrareEvenimenteRoute
   FormRoute: typeof FormRoute
+  ParteneriRoute: typeof ParteneriRoute
+  ParteneriAdaugareRoute: typeof ParteneriAdaugareRoute
+  ParteneriAdministrareRoute: typeof ParteneriAdministrareRoute
+  ParteneriEditarePartnerIdRoute: typeof ParteneriEditarePartnerIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/parteneri-administrare': {
+      id: '/parteneri-administrare'
+      path: '/parteneri-administrare'
+      fullPath: '/parteneri-administrare'
+      preLoaderRoute: typeof ParteneriAdministrareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parteneri-adaugare': {
+      id: '/parteneri-adaugare'
+      path: '/parteneri-adaugare'
+      fullPath: '/parteneri-adaugare'
+      preLoaderRoute: typeof ParteneriAdaugareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parteneri': {
+      id: '/parteneri'
+      path: '/parteneri'
+      fullPath: '/parteneri'
+      preLoaderRoute: typeof ParteneriRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/form': {
       id: '/form'
       path: '/form'
@@ -82,6 +166,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateEventRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/parteneri-editare/$partnerId': {
+      id: '/parteneri-editare/$partnerId'
+      path: '/parteneri-editare/$partnerId'
+      fullPath: '/parteneri-editare/$partnerId'
+      preLoaderRoute: typeof ParteneriEditarePartnerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +180,10 @@ const rootRouteChildren: RootRouteChildren = {
   CreateEventRoute: CreateEventRoute,
   FiltrareEvenimenteRoute: FiltrareEvenimenteRoute,
   FormRoute: FormRoute,
+  ParteneriRoute: ParteneriRoute,
+  ParteneriAdaugareRoute: ParteneriAdaugareRoute,
+  ParteneriAdministrareRoute: ParteneriAdministrareRoute,
+  ParteneriEditarePartnerIdRoute: ParteneriEditarePartnerIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
