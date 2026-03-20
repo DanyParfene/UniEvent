@@ -14,7 +14,7 @@ const HeaderDropdown = ({
         <Icon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary" />
         <span className="hidden md:block">{title}</span>
       </span>
-      <div className="invisible fixed left-0 top-full w-full translate-y-2 opacity-0 transition-all duration-300 ease-out group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+      <div className="invisible fixed left-0 top-full w-full translate-y-2 opacity-0 transition-all duration-150 ease-out group-hover:pointer-events-auto group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
         <div className="border-t border-slate-200 bg-white text-gray-800 shadow-xl rounded-b-2xl">
           <div className="mx-auto max-w-7xl px-10 py-8">
             <div className="mb-4">

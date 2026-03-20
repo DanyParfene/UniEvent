@@ -14,15 +14,15 @@ export const faculties: DropdownLink[] = [
 ];
 
 export const eventActions: DropdownLink[] = [
-  { label: "Adăugare Eveniment", to: "/evenimente/adaugare" },
-  { label: "Filtrare Evenimente", to: "/evenimente/filtrare" },
+  { label: "Adăugare Eveniment", to: "/create-event" },
+  { label: "Filtrare Evenimente", to: "/filtrare-evenimente" },
   { label: "Completare Post Eveniment", to: "/evenimente/completare-post" },
   { label: "Arhivă", to: "/evenimente/arhiva" },
 ];
 
 export const partnerActions: DropdownLink[] = [
-  { label: "Adăugare Partener", to: "/parteneri/adaugare" },
-  { label: "Editare Parteneri", to: "/parteneri/editare" },
+  { label: "Adăugare Partener", to: "/parteneri-adaugare" },
+  { label: "Editare Parteneri", to: "/parteneri-administrare" },
 ];
 
 export const reportActions: DropdownLink[] = [
