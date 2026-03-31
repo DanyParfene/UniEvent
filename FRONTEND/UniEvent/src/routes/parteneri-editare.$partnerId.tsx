@@ -9,7 +9,11 @@ function RouteComponent() {
   const { partnerId } = Route.useParams();
   return (
     <>
-      <PartnersList isAdminMode={true} isEditMode={true} editPartnerId={Number(partnerId)}/>
+      <PartnersList
+        isAdminMode={true}
+        isEditMode={true}
+        editPartnerId={Number(partnerId)}
+      />
     </>
   );
 }

@@ -5,6 +5,7 @@ import atosLogo from "../../assets/atos_logo.png";
 import bcrLogo from "../../assets/bcr_logo.png";
 import PartnerPopUp from "./PartnerPopUp";
 import { useNavigate } from "@tanstack/react-router";
+import RedirectButton from "../common/RedirectButton";
 
 const partners: Partner[] = [
   { id: 0, name: "Nokia", logo: nokiaLogo },
@@ -24,18 +25,14 @@ export const PartnersList = ({
   isAdminMode = false,
   isAddMode = false,
   isEditMode = false,
-  editPartnerId
+  editPartnerId,
 }: PartnersListProps) => {
   const navigate = useNavigate();
 
-  const partnerToEdit = (isEditMode && editPartnerId !== undefined) ? partners.find(p => p.id === editPartnerId) : null;
-
-  const handleEditClick = (partner: Partner) => {
-    navigate({
-      to: '/parteneri-editare/$partnerId',
-      params: {partnerId: partner.id.toString()}
-    });
-  };
+  const partnerToEdit =
+    isEditMode && editPartnerId !== undefined
+      ? partners.find((p) => p.id === editPartnerId)
+      : null;
 
   const handleDeleteClick = (partnerId: number) => {
     // TODO
@@ -67,7 +64,6 @@ export const PartnersList = ({
             <PartnerCard
               {...item}
               isEditMode={isAdminMode}
-              onEdit={handleEditClick}
               onDelete={() => handleDeleteClick(item.id)}
             />
           </div>
@@ -75,32 +71,28 @@ export const PartnersList = ({
       </div>
 
       {/* Admin controls area */}
-      <div>
-        <button
-          onClick={() => navigate({
-            to: isAdminMode ? '/parteneri' : '/parteneri-administrare'
-          })}
+      <div className="flex items-center">
+        <RedirectButton
+          to={ isAdminMode ? "/parteneri" : "/parteneri-administrare"}
           className="px-6 py-2 mx-2 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-colors shadow-sm cursor-pointer"
         >
           {isAdminMode ? "Ieși din Editare" : "Administrează"}
-        </button>
+        </RedirectButton>
 
         {isAdminMode && (
-          <button
-            onClick={() => navigate({
-              to: '/parteneri-adaugare'
-            })}
+          <RedirectButton
+            to="/parteneri-adaugare"
             className="px-6 py-2 mx-2 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-colors shadow-sm cursor-pointer"
           >
-            + Adaugă Partener Nou
-          </button>
+            + Adauga Partener
+          </RedirectButton>
         )}
 
-        {(isAddMode || (isEditMode && (editPartnerId !== undefined))) && (
+        {(isAddMode || (isEditMode && editPartnerId !== undefined)) && (
           <PartnerPopUp
-            name={partnerToEdit? partnerToEdit.name : ""}
-            logo={partnerToEdit? partnerToEdit.logo : ""}
-            onClose={() => navigate({to: '/parteneri-administrare'})}
+            name={partnerToEdit ? partnerToEdit.name : ""}
+            logo={partnerToEdit ? partnerToEdit.logo : ""}
+            onClose={() => navigate({ to: "/parteneri-administrare" })}
           />
         )}
       </div>

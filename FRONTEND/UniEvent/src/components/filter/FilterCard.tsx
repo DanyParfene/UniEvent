@@ -1,8 +1,7 @@
 import Accordion from "../common/Accordion";
 import Input from "../common/Input";
 import RedirectButton from "../common/RedirectButton";
-import type { Partner } from "../../types/Partner";
-
+import type { Partner } from "../partners/PartnerCard";
 import nokiaLogo from "../../assets/nokia_logo.png";
 import continentalLogo from "../../assets/continental_logo.png";
 import atosLogo from "../../assets/atos_logo.png";
@@ -43,9 +42,7 @@ const FilterCard = () => {
       </Accordion>
       <Accordion title="Ordonare" styles="!w-[clamp(200px,55vw,650px)]">
         <label className="flex flex-col gap-1 w-[clamp(150px,50vw,600px)]">
-          <span className="font-bold">
-          După
-          </span>
+          <span className="font-bold">După</span>
           <select className="appearance-none rounded-md px-4 py-2 shadow-sm focus:outline-none focus:shadow-md hover:shadow-md focus:shadow-accent transition-all duration-300">
             <option className="focus:bg-gray-100">Dată</option>
             <option>Denumire</option>
@@ -53,16 +50,16 @@ const FilterCard = () => {
           </select>
         </label>
         <label className="flex flex-col gap-1 w-[clamp(150px,50vw,600px)]">
-          <span className="font-bold">
-          Direcție
-          </span>
+          <span className="font-bold">Direcție</span>
           <select className="appearance-none rounded-md px-4 py-2 shadow-sm focus:outline-none focus:shadow-md hover:shadow-md focus:shadow-accent transition-all duration-300">
             <option>Crescător</option>
             <option>Descrescător</option>
           </select>
         </label>
       </Accordion>
-      <RedirectButton path="/" title="Caută" />
+      <RedirectButton to="/filtrare-evenimente" title="Caută">
+        Cautare
+      </RedirectButton>
     </div>
   );
 };
