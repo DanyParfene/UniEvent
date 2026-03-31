@@ -2,6 +2,7 @@ import type React from "react";
 import { useFieldContext } from "../context";
 import { useRef } from "react";
 import FieldErrors from "./FieldErrors";
+import Chip from "../../filter/Chip";
 
 type Props = {
   label: string;
@@ -41,19 +42,17 @@ const ArrayInput = ({ label, ...props }: Props) => {
         >
           Add
         </button>
-        {field.state.value.map((el) => (
-          <div key={el}>
-            <p>{el}</p>
-            <button
-              onClick={() =>
+        <div className="flex gap-5 flex-wrap">
+          {field.state.value.map((el) => (
+            <Chip
+              key={el}
+              value={el}
+              onClose={() =>
                 field.handleChange((prev) => prev.filter((val) => val != el))
               }
-              className="font-[Sans-Source-Now] text-lg text-secondary hover:text-primary hover:font-semibold transition duration-300 cursor-pointer"
-            >
-              Delete
-            </button>
-          </div>
-        ))}
+            />
+          ))}
+        </div>
       </div>
       <FieldErrors field={field} />
     </div>
