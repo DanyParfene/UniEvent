@@ -46,7 +46,7 @@ const Carousel = () => {
       }
     };
 
-    updateVisibleItems(); // run once on mount
+    updateVisibleItems();
 
     window.addEventListener("resize", updateVisibleItems);
 
@@ -58,7 +58,7 @@ const Carousel = () => {
   console.log(visibleItems)
 
   return (
-    <div className="relative w-full max-w-[60vw]">
+    <div className="relative w-full max-w-7xl mx-auto px-4 md:px-12">
       <div className="overflow-hidden">
         <div
           className="-ml-4 flex transition-transform duration-500 ease-in-out"

@@ -33,3 +33,7 @@
   --color-primary-fsgc: #3558b0;
   --color-secondary-fsgc: #5ac9ed;
 }
+
+.recharts-wrapper *:focus {
+    outline: none !important;
+}
