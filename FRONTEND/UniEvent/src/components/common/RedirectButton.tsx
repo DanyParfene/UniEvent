@@ -1,14 +1,26 @@
-type RedirectButtonType = {
-  path: string;
-  title?: string;
-  image?: string;
+import { Link, type LinkProps } from "@tanstack/react-router";
+import { type ReactNode } from "react";
+import { type ComponentProps } from "react";
+
+type RedirectButtonProps = LinkProps & Omit<ComponentProps<"a">, "href"> & {
+  children: ReactNode;
+  className?: string;
 };
 
-const RedirectButton = ({ path, title, image }: RedirectButtonType) => {
+const RedirectButton = ({
+  to,
+  children,
+  className = "",
+  ...props
+}: RedirectButtonProps) => {
   return (
-    <button onClick={() => console.log(path)} className="px-6 py-2 w-fit rounded-md bg-secondary text-text-primary text-lg hover:shadow-lg hover:bg-primary hover:cursor-pointer transition-all duration-300">
-      {title ? title : image ? <img src={image} /> : "button"}
-    </button>
+    <Link
+      to={to}
+      className={`${className} inline-flex items-center justify-center gap-2 font-medium w-fit`}
+      {...props}
+    >
+      {children}
+    </Link>
   );
 };
 
