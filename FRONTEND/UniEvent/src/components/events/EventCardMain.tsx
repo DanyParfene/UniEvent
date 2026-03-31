@@ -23,7 +23,7 @@ const EventCardMain = () => {
                   <Accordion title={f.label} styles="">
                     <div className="ml-2 flex flex-col gap-4 w-full items-center px-4">
                       {f.value.map((link) => (
-                        <div className="rounded-lg shadow-sm px-4 py-2 flex flex-col justify-between items-center hover:shadow-md transition-all duration-300 w-full md:flex-row lg:flex-row">
+                        <div className="rounded-lg shadow-sm px-4 py-2 flex flex-col justify-between items-start md:items-center lg:items-center hover:shadow-md transition-all duration-300 w-full md:flex-row lg:flex-row">
                           <Link link={link.link} />
                           <label className="flex flex-row md:flex-col lg:flex-col gap-2">
                             <span className="font-semibold">Reach</span>

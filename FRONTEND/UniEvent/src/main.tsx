@@ -3,7 +3,9 @@ import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { routeTree } from "./routeTree.gen.ts";
-import './index.css';
+import "./index.css";
+import "./safelist.ts";
+import { FacultyProvider } from "./context/FacultyContext.tsx";
 
 const queryClient = new QueryClient();
 
@@ -22,8 +24,10 @@ declare module "@tanstack/react-router" {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+    <FacultyProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </FacultyProvider>
   </StrictMode>,
 );
