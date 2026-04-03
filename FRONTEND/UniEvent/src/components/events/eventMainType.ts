@@ -8,7 +8,7 @@ type Field = { label: string; value: string | number | SocialMediaLink[] };
 
 export const bannerLabel = "Afiș eveniment";
 
-type Section = {
+export type Section = {
   sectionTitle: string;
   fields: Field[];
 };

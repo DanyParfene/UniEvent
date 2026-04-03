@@ -58,7 +58,7 @@ const Carousel = () => {
   console.log(visibleItems)
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto px-4 md:px-12">
+    <div className="relative w-full max-w-7xl mx-auto px-4 md:px-12 py-5">
       <div className="overflow-hidden">
         <div
           className="-ml-4 flex transition-transform duration-500 ease-in-out"
