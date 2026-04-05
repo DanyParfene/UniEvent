@@ -9,17 +9,6 @@ import {
 } from "recharts";
 import { RechartsDevtools } from "@recharts/devtools";
 
-// #region Sample data
-const data = [
-  { name: "Ian", value: 400 },
-  { name: "Feb", value: 300 },
-  { name: "Mar", value: 300 },
-  { name: "Apr", value: 50 },
-  { name: "Mai", value: 300 },
-  { name: "Iun", value: 150 },
-];
-
-// #endregion
 const renderActiveShape = ({
   cx,
   cy,
@@ -93,9 +82,11 @@ const renderActiveShape = ({
 };
 
 export default function CustomActiveShapePieChart({
+  chartData,
   isAnimationActive = true,
   defaultIndex = undefined,
 }: {
+  chartData: {name: string, value: number}[];
   isAnimationActive?: boolean;
   defaultIndex?: TooltipIndex;
 }) {
@@ -123,7 +114,7 @@ export default function CustomActiveShapePieChart({
           </defs>
           <Pie
             activeShape={renderActiveShape}
-            data={data}
+            data={chartData}
             cx="50%"
             cy="50%"
             innerRadius="50%"

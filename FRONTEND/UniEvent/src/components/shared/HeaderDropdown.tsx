@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 
 const HeaderDropdown = ({
   title,
+  to = "/",
   description,
   icon: Icon,
   items,
@@ -10,9 +11,9 @@ const HeaderDropdown = ({
 }: Props) => {
   return (
     <li className="group relative">
-      <span className="flex h-16 w-10 md:w-auto items-center transition-all duration-300 ease-out hover:scale-105 cursor-pointer">
+      <span className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">
         <Icon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary" />
-        <span className="hidden md:block">{title}</span>
+        <Link to={to} className="hidden md:block">{title}</Link>
       </span>
       <div className="invisible fixed left-0 top-full w-full translate-y-2 opacity-0 transition-all duration-150 ease-out group-hover:pointer-events-auto group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
         <div className="border-t border-slate-200 bg-white text-gray-800 shadow-xl rounded-b-2xl">

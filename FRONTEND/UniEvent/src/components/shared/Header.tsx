@@ -11,15 +11,15 @@ import {
   partnerActions,
   reportActions,
 } from "./headerType";
+import RedirectButton from "../common/RedirectButton";
 
 const Header = () => {
   return (
     <header className="sticky top-0 left-0 z-50 w-full bg-gradient-to-r from-primary to-secondary text-white shadow-md font-[Source_Sans_Pro]">
       <div className="relative mx-auto flex h-16 w-full items-center px-6">
-        <div className="flex items-center justify-center w-10 h-10 cursor-pointer">
-          <img src={shortLogo} alt="Logo-uvt" />
-        </div>
-
+          <RedirectButton to={"/dashboard"} className="w-6 h-6 hover:scale-105 transition-transform">
+            <img src={shortLogo} alt="Logo-uvt" className="w-full h-full object-contain" />
+          </RedirectButton>
         <nav className="absolute left-1/2 -translate-x-1/2">
           <ul className="flex items-center gap-10 text-xl font-semibold">
             <HeaderDropdown
@@ -37,6 +37,7 @@ const Header = () => {
             />
             <HeaderDropdown
               title="Parteneri"
+              to="/parteneri"
               description="Alege o acțiune din cele posibile pentru parteneri."
               icon={PartnerIcon}
               items={partnerActions}
