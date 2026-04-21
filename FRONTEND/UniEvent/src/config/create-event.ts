@@ -52,7 +52,7 @@ export const formSchema = z
     }
   });
 
-type Form = z.infer<typeof formSchema>;
+export type Form = z.infer<typeof formSchema>;
 
 export const defaultFormValues: Form = {
   eventName: "",
