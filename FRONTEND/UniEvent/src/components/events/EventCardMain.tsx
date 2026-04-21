@@ -1,52 +1,92 @@
 import Accordion from "../common/Accordion.tsx";
-import { eventData, bannerLabel } from "./eventMainType.ts";
+import { bannerLabel } from "./eventMainType.ts";
 import Link from "../common/Link.tsx";
 import DriveImage from "../common/DriveImage.tsx";
+import ActionButton from "../common/ActionButton.tsx";
+import SocialMediaCard from "./SocialMediaCard.tsx";
+import { useEffect, useState } from "react";
+import type { Form } from "../../config/create-event.ts";
 
-const EventCardMain = () => {
+const EventCardMain = ({
+  eventData,
+  editDataAction,
+  editSocialMediaAction,
+}: {
+  eventData: Form | null;
+  editDataAction: () => void;
+  editSocialMediaAction: () => void;
+}) => {
+  const editGeneralDataButtonIndex = 0;
+  const editSocialMediaButtonIndex = 6;
+
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+
+  useEffect(() => {
+    
+  });
+
   return (
-    <div className="flex flex-col justify-center w-[60vw] px-16 py-10 gap-4 shadow-md rounded-2xl m-auto">
-      {eventData.map((e) => (
-        <div>
-          <div className="font-bold text-2xl">{e.sectionTitle}</div>
-          <div className="">
-            {e.fields.map((f) =>
-              f.label === bannerLabel ? (
-                <div className="ml-4">
-                  <div className="text-lg font-semibold">{f.label}</div>
-                  <div className="ml-2">
-                    <DriveImage link={f.value.toString()} />
-                  </div>
-                </div>
-              ) : Array.isArray(f.value) ? (
-                <div className="ml-4">
-                  <Accordion title={f.label} styles="">
-                    <div className="ml-2 flex flex-col gap-4 w-full items-center px-4">
-                      {f.value.map((link) => (
-                        <div className="rounded-lg shadow-sm px-4 py-2 flex flex-col justify-between items-start md:items-center lg:items-center hover:shadow-md transition-all duration-300 w-full md:flex-row lg:flex-row">
-                          <Link link={link.link} />
-                          <label className="flex flex-row md:flex-col lg:flex-col gap-2">
-                            <span className="font-semibold">Reach</span>
-                            {link.reach}
-                          </label>
-                          <label className="flex flex-row md:flex-col lg:flex-col gap-2">
-                            <span className="font-semibold">Engagement</span>
-                            {link.engagement}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </Accordion>
-                </div>
-              ) : (
-                <div className="ml-4">
-                  <div className="text-lg font-semibold">{f.label}</div>
-                  <div className="ml-2">{f.value}</div>
-                </div>
-              ),
+    isEditMode ? "" :
+    <div className="max-w-4xl mx-auto my-10 flex flex-col gap-8 px-6 py-8 bg-white border border-slate-100 shadow-xl shadow-slate-200/50 rounded-3xl">
+      {eventData.map((section: any, idx: any) => (
+        <div key={idx} className="group">
+          <div className="flex items-center gap-4 mb-6">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-800">
+              {section.sectionTitle}
+            </h2>
+            <div className="h-px flex-1 bg-slate-100" />
+            {editGeneralDataButtonIndex === idx && (
+              <ActionButton action={editDataAction}>Editează</ActionButton>
+            )}
+            {editSocialMediaButtonIndex === idx && (
+              <ActionButton action={editSocialMediaAction}>
+                Editează
+              </ActionButton>
             )}
           </div>
-          <hr className="m-2" />
+
+          <div className="space-y-6">
+            {section.fields.map((f: any, fIdx: any) => (
+              <div key={fIdx} className="ml-2">
+                {f.label === bannerLabel ? (
+                  <div className="space-y-3">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                      {f.label}
+                    </span>
+                    <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
+                      <DriveImage link={f.value.toString()} />
+                    </div>
+                  </div>
+                ) : Array.isArray(f.value) ? (
+                  <div className="ml-4">
+                    <Accordion
+                      title={f.label + " (" + f.value.length + " link-rui)"}
+                      styles=""
+                    >
+                      <div className="ml-2 flex flex-col gap-4 w-full items-center px-4">
+                        {f.value.map((link: any) => (
+                          <SocialMediaCard
+                            link={link.link}
+                            reach={link.reach}
+                            engagement={link.engagement}
+                          />
+                        ))}
+                      </div>
+                    </Accordion>
+                  </div>
+                ) : (
+                  <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
+                    <span className="min-w-[120px] text-sm font-semibold text-slate-500">
+                      {f.label}
+                    </span>
+                    <span className="text-slate-800 font-medium">
+                      {f.value}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>

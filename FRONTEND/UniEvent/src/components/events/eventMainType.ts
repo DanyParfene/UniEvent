@@ -13,6 +13,8 @@ export type Section = {
   fields: Field[];
 };
 
+const eventDataToDefaultFormValues = () => {}
+
 export const eventData: Section[] = [
   {
     sectionTitle: "Date generale",
@@ -234,3 +236,30 @@ export const eventData: Section[] = [
     ],
   },
 ];
+
+export const eventDataToFormValues = (data: Section[], defaultBaseValues: any = {}) => {
+  const formValues: Record<string, any> = { ...defaultBaseValues };
+  
+  data.forEach((section) => {
+    section.fields.forEach((field) => {
+      // Maps the value using the label as the key
+      formValues[field.label] = field.value;
+    });
+  });
+  
+  return formValues;
+};
+
+export const formValuesToEventData = (
+  formValues: Record<string, any>,
+  originalData: Section[]
+): Section[] => {
+  return originalData.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      // Replaces the old value with the new form value if it exists, otherwise keeps the old one
+      value: formValues[field.label] !== undefined ? formValues[field.label] : field.value,
+    })),
+  }));
+};
