@@ -5,6 +5,7 @@ import { Link } from "@tanstack/react-router";
 
 interface BentoStats {
   upcomingEvents: string[];
+  userName: string;
   topOrganiser: string;
   topSponsorLogo: string;
   pressAppearances: number;
@@ -16,8 +17,9 @@ const Bento = ({ stats }: { stats: BentoStats }) => {
   return (
     <div className="p-6 flex items-center justify-center">
       <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-4 md:grid-rows-4 gap-4 h-auto md:h-[750px]">
-        <div className="md:col-span-1 md:row-span-4 bg-white rounded-3xl p-6 shadow-sm border border-gray-200 flex flex-col justify-center items-center h-full">
-          <h3 className="text-gray-400 text-xs text-xl mb-4 uppercase">
+        <div className="md:col-span-1 md:row-span-4 bg-white rounded-3xl p-6 shadow-sm border border-gray-200 flex flex-col justify-start items-center h-full">
+          <h1 className="text-text-secondary text-2xl font-bold px-2 py-15">Bună, {stats.userName}</h1>
+          <h3 className="text-gray-400 text-xs mt-7 mb-5 uppercase">
             Următoarele 5 evenimente
           </h3>
           <ul className="w-full">

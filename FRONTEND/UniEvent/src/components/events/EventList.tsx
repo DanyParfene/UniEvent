@@ -1,16 +1,29 @@
 import EventCard from "./EventCard";
 import { eventData } from "./eventMainType";
 
-const EventList = () => {
-    const allEvents = [eventData, eventData, eventData, eventData, eventData];
-
-    return(
-        <div className="flex flex-col w-full items-center gap-5 my-10">
-            {allEvents.map((singleEvent, index) => (
-                <EventCard key={index} data={singleEvent}/>
-            ))}
-        </div>
-    );
+interface EventListProps {
+    maxItems?: number;
 }
+
+const EventList = ({ maxItems } : EventListProps) => {
+  const allEvents = [eventData, eventData, eventData, eventData, eventData, eventData, eventData];
+
+  const displayedEvents = maxItems ? allEvents.slice(0, maxItems) : allEvents;
+
+  return (
+    <div className="flex flex-col w-full max-w-7xl gap-8">
+      {displayedEvents.map((singleEvent, index) => (
+        <EventCard key={index} data={singleEvent} />
+      ))}
+
+      {allEvents.length === 0 && (
+        <p className="text-center text-gray-400 py-10">
+          Momentan nu sunt evenimente disponibile.
+        </p>
+      )}
+
+    </div>
+  );
+};
 
 export default EventList;

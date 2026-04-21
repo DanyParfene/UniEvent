@@ -55,9 +55,9 @@ const EventCard = ({ data }: EventCardProps) => {
         to = "/eveniment"
         className="mt-6 sm:mt-0 sm:ml-6 w-full sm:w-auto px-8 py-3 
                         bg-white border border-gray-200 rounded-2xl shadow-sm 
-                        text-sm font-black text-[#033a89] 
+                        text-sm font-black text-primary 
                         transition-all duration-300 
-                        hover:bg-[#033a89] hover:text-white cursor-pointer 
+                        hover:bg-primary hover:text-text-primary cursor-pointer 
                         active:scale-95 shrink-0"
       >
         Detalii eveniment

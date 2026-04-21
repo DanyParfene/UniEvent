@@ -31,6 +31,7 @@ const Header = () => {
             />
             <HeaderDropdown
               title="Evenimente"
+              to="/evenimente"
               description="Alege o acțiune din cele posibile pentru evenimente."
               icon={EventIcon}
               items={eventActions}

@@ -14,6 +14,7 @@ import { Route as ParteneriAdaugareRouteImport } from './routes/parteneri-adauga
 import { Route as ParteneriRouteImport } from './routes/parteneri'
 import { Route as FormRouteImport } from './routes/form'
 import { Route as FiltrareEvenimenteRouteImport } from './routes/filtrare-evenimente'
+import { Route as EvenimenteRouteImport } from './routes/evenimente'
 import { Route as EvenimentRouteImport } from './routes/eveniment'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CreateEventRouteImport } from './routes/create-event'
@@ -43,6 +44,11 @@ const FormRoute = FormRouteImport.update({
 const FiltrareEvenimenteRoute = FiltrareEvenimenteRouteImport.update({
   id: '/filtrare-evenimente',
   path: '/filtrare-evenimente',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvenimenteRoute = EvenimenteRouteImport.update({
+  id: '/evenimente',
+  path: '/evenimente',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EvenimentRoute = EvenimentRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/create-event': typeof CreateEventRoute
   '/dashboard': typeof DashboardRoute
   '/eveniment': typeof EvenimentRoute
+  '/evenimente': typeof EvenimenteRoute
   '/filtrare-evenimente': typeof FiltrareEvenimenteRoute
   '/form': typeof FormRoute
   '/parteneri': typeof ParteneriRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/create-event': typeof CreateEventRoute
   '/dashboard': typeof DashboardRoute
   '/eveniment': typeof EvenimentRoute
+  '/evenimente': typeof EvenimenteRoute
   '/filtrare-evenimente': typeof FiltrareEvenimenteRoute
   '/form': typeof FormRoute
   '/parteneri': typeof ParteneriRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/create-event': typeof CreateEventRoute
   '/dashboard': typeof DashboardRoute
   '/eveniment': typeof EvenimentRoute
+  '/evenimente': typeof EvenimenteRoute
   '/filtrare-evenimente': typeof FiltrareEvenimenteRoute
   '/form': typeof FormRoute
   '/parteneri': typeof ParteneriRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/create-event'
     | '/dashboard'
     | '/eveniment'
+    | '/evenimente'
     | '/filtrare-evenimente'
     | '/form'
     | '/parteneri'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/create-event'
     | '/dashboard'
     | '/eveniment'
+    | '/evenimente'
     | '/filtrare-evenimente'
     | '/form'
     | '/parteneri'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/create-event'
     | '/dashboard'
     | '/eveniment'
+    | '/evenimente'
     | '/filtrare-evenimente'
     | '/form'
     | '/parteneri'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   CreateEventRoute: typeof CreateEventRoute
   DashboardRoute: typeof DashboardRoute
   EvenimentRoute: typeof EvenimentRoute
+  EvenimenteRoute: typeof EvenimenteRoute
   FiltrareEvenimenteRoute: typeof FiltrareEvenimenteRoute
   FormRoute: typeof FormRoute
   ParteneriRoute: typeof ParteneriRoute
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FiltrareEvenimenteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/evenimente': {
+      id: '/evenimente'
+      path: '/evenimente'
+      fullPath: '/evenimente'
+      preLoaderRoute: typeof EvenimenteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/eveniment': {
       id: '/eveniment'
       path: '/eveniment'
@@ -241,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreateEventRoute: CreateEventRoute,
   DashboardRoute: DashboardRoute,
   EvenimentRoute: EvenimentRoute,
+  EvenimenteRoute: EvenimenteRoute,
   FiltrareEvenimenteRoute: FiltrareEvenimenteRoute,
   FormRoute: FormRoute,
   ParteneriRoute: ParteneriRoute,
