@@ -1,17 +1,17 @@
 import { useAppForm } from "../form";
 import {
-  defaultFormValues,
   formSchema,
   formSteps,
+  type Form,
 } from "../../config/create-event";
 import { useState } from "react";
 
-const EventCardEditor = ({eventData}: {eventData: string}) => {
+const EventCardEditor = ({ eventData }: { eventData: Partial<Form> }) => {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [formErrors, setFormErrors] = useState<string[] | null>(null);
 
   const form = useAppForm({
-    defaultValues: defaultFormValues,
+    defaultValues: eventData,
     validators: {
       onChange: formSchema,
     },
@@ -31,7 +31,7 @@ const EventCardEditor = ({eventData}: {eventData: string}) => {
           }}
         >
           {formSteps.map((formStep, index) => (
-            <div>
+            <div key={index}>
               <h3 className="font-[Sans-Source-Now] text-2xl font-semibold mb-3">
                 {formStep.name}
               </h3>
