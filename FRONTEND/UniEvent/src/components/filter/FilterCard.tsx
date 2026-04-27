@@ -17,49 +17,71 @@ const partners: Partner[] = [
 
 const FilterCard = () => {
   return (
-    <div className="flex flex-col justify-center items-center w-[60vw] px-16 py-10 gap-4 shadow-md rounded-2xl m-auto">
-      <h1 className="text-2xl font-cold">Filtrare căutare</h1>
+    /* - min-h-[480px]: Păstrează dimensiunea mare "standard".
+       - h-auto: Îi permite să crească vertical când deschizi acordioanele.
+    */
+    <div className="w-full max-w-2xl bg-white border border-gray-200 px-6 py-8 sm:px-10 shadow-xl rounded-2xl flex flex-col min-h-[480px] h-auto">
+      
+      <h1 className="text-xl font-bold text-center w-full mb-6 text-gray-800">
+        Filtrare căutare
+      </h1>
 
-      <Accordion
-        title="General"
-        styles="!w-[clamp(200px,55vw,650px)]"
-        initialOpenValue={true}
-      >
-        <Input label="Denumire" />
-        <Input label="Dată început" type="date" />
-        <Input label="Dată sfârșit" type="date" />{" "}
-        {/* e automat data inceput; nu poate fi mai mica decat data de inceput*/}
-      </Accordion>
-      <Accordion title="Parteneri" styles="!w-[clamp(200px,55vw,650px)]">
-        <div className="grid grid-cols-2 gap-y-2 gap-x-4 px-6">
-          {partners.map((item) => (
-            <label className="flex flex-row  gap-2 items-center">
-              <input type="checkbox" className="w-5 h-5 shrink-0" />
-              {item.name}
-            </label>
-          ))}
-        </div>
-      </Accordion>
-      <Accordion title="Ordonare" styles="!w-[clamp(200px,55vw,650px)]">
-        <label className="flex flex-col gap-1 w-[clamp(150px,50vw,600px)]">
-          <span className="font-bold">După</span>
-          <select className="appearance-none rounded-md px-4 py-2 shadow-sm focus:outline-none focus:shadow-md hover:shadow-md focus:shadow-accent transition-all duration-300">
-            <option className="focus:bg-gray-100">Dată</option>
-            <option>Denumire</option>
-            <option>Dată</option>
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 w-[clamp(150px,50vw,600px)]">
-          <span className="font-bold">Direcție</span>
-          <select className="appearance-none rounded-md px-4 py-2 shadow-sm focus:outline-none focus:shadow-md hover:shadow-md focus:shadow-accent transition-all duration-300">
-            <option>Crescător</option>
-            <option>Descrescător</option>
-          </select>
-        </label>
-      </Accordion>
-      <RedirectButton to="/filtrare-evenimente" title="Caută">
-        Cautare
-      </RedirectButton>
+      {/* Containerul pentru acordioane (fără overflow-y-auto aici, folosim scroll-ul paginii) */}
+      <div className="flex flex-col gap-4 w-full">
+        <Accordion title="General" initialOpenValue={true}>
+          <div className="flex flex-col gap-4 w-[90%] max-w-md mx-auto">
+            <Input label="Denumire" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+               <Input label="Dată început" type="date" />
+               <Input label="Dată sfârșit" type="date" />
+            </div>
+          </div>
+        </Accordion>
+
+        <Accordion title="Parteneri">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 w-[90%] max-w-md mx-auto px-2">
+            {partners.map((item, index) => (
+              <label key={`${item.id}-${index}`} className="flex flex-row gap-2 items-center cursor-pointer py-1">
+                <input type="checkbox" className="w-4 h-4 shrink-0 rounded border-gray-300 text-[#033a89]" />
+                <span className="text-sm text-gray-700">{item.name}</span>
+              </label>
+            ))}
+          </div>
+        </Accordion>
+
+        <Accordion title="Ordonare">
+          <div className="flex flex-col gap-4 w-[90%] max-w-md mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1">
+                <span className="font-bold text-xs text-gray-600">După</span>
+                <select className="w-full border border-gray-200 rounded-md px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#033a89]">
+                  <option>Dată</option>
+                  <option>Denumire</option>
+                </select>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="font-bold text-xs text-gray-600">Direcție</span>
+                <select className="w-full border border-gray-200 rounded-md px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#033a89]">
+                  <option>Crescător</option>
+                  <option>Descrescător</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </Accordion>
+      </div>
+
+      {/* Butonul de jos: Folosim mt-auto pentru a-l ține la baza cardului de 480px, 
+          dar va coborî natural dacă cardul se lungește. */}
+      <div className="mt-auto pt-8 flex justify-center w-full">
+        <RedirectButton 
+          to="/filtrare-evenimente" 
+          title="Caută"
+          className="w-full sm:w-auto px-10 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-[#033a89] hover:bg-[#033a89] hover:text-white transition-all cursor-pointer active:scale-95"
+        >
+          Căutare
+        </RedirectButton>
+      </div>
     </div>
   );
 };

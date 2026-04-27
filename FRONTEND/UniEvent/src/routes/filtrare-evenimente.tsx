@@ -6,7 +6,9 @@ export const Route = createFileRoute('/filtrare-evenimente')({
 })
 
 function RouteComponent() {
-  return <div className='w-screen h-screen flex flex-col items-center overflow-y-auto py-16'>
-    <FilterCard/>
-  </div>
+  return (
+    <div className='w-full flex flex-col items-center justify-center bg-gray-50 py-12 px-4 min-h-[calc(100vh-5rem)]'>
+      <FilterCard />
+    </div>
+  )
 }

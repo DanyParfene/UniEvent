@@ -10,8 +10,8 @@ const TextInput = ({ label, ...props }: Props) => {
   const field = useFieldContext<string>();
 
   return (
-    <div className="flex flex-col gap-1.5 mb-4">
-      <label className="text-lg font-[Sans-Source-Now]" htmlFor={field.name}>
+    <div className="flex flex-col gap-1.5 w-full mb-4">
+      <label className="text-sm font-bold text-gray-700" htmlFor={field.name}>
         {label}
       </label>
       <input
@@ -20,7 +20,7 @@ const TextInput = ({ label, ...props }: Props) => {
         value={field.state.value}
         onChange={(e) => field.handleChange(e.target.value)}
         {...props}
-        className="px-2 py-2 border border-gray-200 rounded-md text-sm shadow-gray-300 shadow-sm outline-none transition-all duration-300 focus:shadow-xl"
+        className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition-all duration-300 focus:border-[#033a89] focus:outline-none focus:ring-1 focus:ring-[#033a89] hover:border-gray-400 bg-white"
       />
       <FieldErrors field={field} />
     </div>

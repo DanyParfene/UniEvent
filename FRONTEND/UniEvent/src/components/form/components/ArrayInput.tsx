@@ -13,22 +13,25 @@ const ArrayInput = ({ label, ...props }: Props) => {
   const field = useFieldContext<string[]>();
 
   return (
-    <div className="flex flex-col gap-1.5 mb-4">
-      <label className="font-[Sans-Source-Now] text-lg" htmlFor={field.name}>
+    <div className="flex flex-col gap-1.5 w-full mb-4">
+      
+      <label className="text-sm font-bold text-gray-700" htmlFor={field.name}>
         {label}
       </label>
-      <div className="flex flex-col gap-5">
+      
+      <div className="flex flex-col gap-4">
         <input
-          className="px-2 py-2 border border-gray-200 rounded-md text-sm shadow-gray-300 shadow-sm outline-none transition-all duration-300 focus:shadow-xl"
           id={field.name}
           type="text"
           ref={inputRef}
           {...props}
+          className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition-all duration-300 focus:border-[#033a89] focus:outline-none focus:ring-1 focus:ring-[#033a89] hover:border-gray-400 bg-white"
         />
+        
         <button
           type="button"
           onClick={() => {
-            if (inputRef.current == null || inputRef.current.value == "") {
+            if (inputRef.current == null || inputRef.current.value === "") {
               return;
             }
             const value = inputRef.current.value;
@@ -38,17 +41,18 @@ const ArrayInput = ({ label, ...props }: Props) => {
             field.handleChange((prev) => [...prev, value]);
             inputRef.current.value = "";
           }}
-          className="cursor-pointer bg-secondary rounded-md px-5 py-2 text-sm text-text-primary shadow-sm font-semibold transition-all duration-300 hover:bg-primary"
+          className="w-full sm:w-auto px-8 py-2.5 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-[#033a89] transition-all duration-300 hover:bg-[#033a89] hover:text-white cursor-pointer active:scale-95"
         >
-          Add
+          Adaugă
         </button>
-        <div className="flex gap-5 flex-wrap">
+
+        <div className="flex gap-3 flex-wrap mt-2">
           {field.state.value.map((el) => (
             <Chip
               key={el}
               value={el}
               onClose={() =>
-                field.handleChange((prev) => prev.filter((val) => val != el))
+                field.handleChange((prev) => prev.filter((val) => val !== el))
               }
             />
           ))}

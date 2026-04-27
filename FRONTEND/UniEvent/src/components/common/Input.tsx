@@ -3,13 +3,13 @@ type inputTypes = {
   type?: string;
 };
 
-const Input = ({ label, type }: inputTypes) => {
+const Input = ({ label, type = "text" }: inputTypes) => {
   return (
-    <div className="flex flex-col">
-      {label && <label className="font-bold">{label}</label>}
+    <div className="flex flex-col gap-1.5 w-full">
+      {label && <label className="text-sm font-bold text-gray-700">{label}</label>}
       <input
-        className="rounded-md px-4 py-2 w-[clamp(150px,50vw,600px)] shadow-sm focus:outline-none focus:shadow-md hover:shadow-md focus:shadow-accent transition-all duration-300"
-        type={type || "text"}
+        className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition-all duration-300 focus:border-[#033a89] focus:outline-none focus:ring-1 focus:ring-[#033a89] hover:border-gray-400 bg-white"
+        type={type}
       />
     </div>
   );
