@@ -6,7 +6,12 @@ import {
 } from "../../config/create-event";
 import { useState } from "react";
 
-const EventCardEditor = ({ eventData }: { eventData: Partial<Form> }) => {
+type EventCardEditorProps = {
+  eventData: Partial<Form>;
+  onCancel: () => void;
+};
+
+const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
   const [formErrors, setFormErrors] = useState<string[] | null>(null);
 
   const form = useAppForm({
@@ -15,8 +20,11 @@ const EventCardEditor = ({ eventData }: { eventData: Partial<Form> }) => {
       onChange: formSchema,
     },
     onSubmit: ({ value }) => {
-      console.log("object");
-      console.log(value);
+      console.log("Datele salvate sunt:", value);
+      
+      // TO DO
+
+      onCancel(); 
     },
   });
 
@@ -95,7 +103,7 @@ const EventCardEditor = ({ eventData }: { eventData: Partial<Form> }) => {
             <button
               type="button"
               className={actionButtonStyle}
-              onClick={() => console.log("Înapoi apăsat")}
+              onClick={() => onCancel()}
             >
               Înapoi
             </button>

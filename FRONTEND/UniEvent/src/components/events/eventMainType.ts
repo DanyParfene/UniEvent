@@ -1,10 +1,11 @@
-type SocialMediaLink = {
+export type SocialMediaLink = {
   link: string;
   reach: number;
   engagement: number;
 };
 
-type Field = { label: string; value: string | number | SocialMediaLink[] };
+// Am adăugat string[] aici ca să suporte array-ul de "Invitați" cerut de formular
+export type Field = { label: string; value: string | number | string[] | SocialMediaLink[] };
 
 export const bannerLabel = "Afiș eveniment";
 
@@ -19,9 +20,9 @@ export const eventData: Section[] = [
     fields: [
       { label: "Denumire eveniment", value: "Conferința Tech 2026" },
       { label: bannerLabel, value: "https://drive.google.com/file/d/1Og0Z_OVBbmOvgn8WS5ZwmxIaP3pqOWIt/view?usp=sharing" },
-      { label: "Dată eveniment", value: "15.05.2026" },
-      { label: "Oră eveniment", value: "13:00" },
-      { label: "Ediție", value: "Ediția a 10-a" },
+      { label: "Dată eveniment", value: "2026-05-15" }, // Formatat YYYY-MM-DD pentru validarea Zod
+      { label: "Dată final eveniment", value: "2026-05-16" }, // Adăugat pentru validarea Zod finishEventDate
+      { label: "Ediție", value: 10 }, // Număr pentru validarea Zod
       { label: "Organizator", value: "Universitatea de Vest din Timișoara" },
     ],
   },
@@ -33,8 +34,8 @@ export const eventData: Section[] = [
         value: "Un eveniment despre viitorul AI în educația universitară.",
       },
       { label: "Locație", value: "Aula Magna UVT" },
-      { label: "Invitați", value: "Andrei Terbea, Maria Popescu" },
-      { label: "Mod organizare", value: "Hibrid" },
+      { label: "Invitați", value: ["Andrei Terbea", "Maria Popescu"] }, // Transformat în Array pentru z.array(z.string())
+      { label: "Mod organizare", value: "hybrid" }, // Enum Zod: physical | hybrid | online
     ],
   },
   {
@@ -42,15 +43,15 @@ export const eventData: Section[] = [
     fields: [
       { label: "Număr estimat participanți", value: 450 },
       { label: "Grup țintă", value: "Studenți, Profesori, Parteneri IT" },
-      { label: "Livestream", value: "DA" },
+      { label: "Livestream", value: "YES" }, // Enum Zod: YES | NO
     ],
   },
   {
     sectionTitle: "Contact",
     fields: [
       { label: "Coordonator", value: "Popescu Ion" },
-      { label: "Email", value: "ion.popescu@e-uvt.ro" },
-      { label: "Telefon", value: "+40 722 123 456" },
+      { label: "Email", value: "ion.popescu12@e-uvt.ro" }, // Adaptat pentru regex-ul tău de e-uvt.ro (are nevoie de 2 cifre înainte de @)
+      { label: "Telefon", value: "+40722123456" }, // Adaptat pentru regex-ul tău (+40 și cifre)
     ],
   },
   {
@@ -74,161 +75,65 @@ export const eventData: Section[] = [
       {
         label: "Album foto",
         value: [
-          {
-            link: "https://photos.google.com/album123",
-            reach: 1000,
-            engagement: 89,
-          },
-          {
-            link: "https://photos.google.com/album1234",
-            reach: 899,
-            engagement: 17,
-          },
-          {
-            link: "https://photos.google.com/album12345",
-            reach: 27058,
-            engagement: 154,
-          },
+          { link: "https://photos.google.com/album123", reach: 1000, engagement: 89 },
+          { link: "https://photos.google.com/album1234", reach: 899, engagement: 17 },
+          { link: "https://photos.google.com/album12345", reach: 27058, engagement: 154 },
         ],
       },
       {
         label: "Facebook UVT",
         value: [
-          {
-            link: "https://photos.google.com/album123",
-            reach: 1000,
-            engagement: 89,
-          },
-          {
-            link: "https://photos.google.com/album1234",
-            reach: 899,
-            engagement: 17,
-          },
-          {
-            link: "https://photos.google.com/album12345",
-            reach: 27058,
-            engagement: 154,
-          },
+          { link: "https://photos.google.com/album123", reach: 1000, engagement: 89 },
+          { link: "https://photos.google.com/album1234", reach: 899, engagement: 17 },
+          { link: "https://photos.google.com/album12345", reach: 27058, engagement: 154 },
         ],
       },
       {
         label: "Instagram",
         value: [
-          {
-            link: "https://photos.google.com/album123",
-            reach: 1000,
-            engagement: 89,
-          },
-          {
-            link: "https://photos.google.com/album1234",
-            reach: 899,
-            engagement: 17,
-          },
-          {
-            link: "https://photos.google.com/album12345",
-            reach: 27058,
-            engagement: 154,
-          },
+          { link: "https://photos.google.com/album123", reach: 1000, engagement: 89 },
+          { link: "https://photos.google.com/album1234", reach: 899, engagement: 17 },
+          { link: "https://photos.google.com/album12345", reach: 27058, engagement: 154 },
         ],
       },
       {
         label: "TikTok",
         value: [
-          {
-            link: "https://photos.google.com/album123",
-            reach: 1000,
-            engagement: 89,
-          },
-          {
-            link: "https://photos.google.com/album1234",
-            reach: 899,
-            engagement: 17,
-          },
-          {
-            link: "https://photos.google.com/album12345",
-            reach: 27058,
-            engagement: 154,
-          },
+          { link: "https://photos.google.com/album123", reach: 1000, engagement: 89 },
+          { link: "https://photos.google.com/album1234", reach: 899, engagement: 17 },
+          { link: "https://photos.google.com/album12345", reach: 27058, engagement: 154 },
         ],
       },
       {
         label: "Comunicat de presă",
         value: [
-          {
-            link: "https://photos.google.com/album123",
-            reach: 1000,
-            engagement: 89,
-          },
-          {
-            link: "https://photos.google.com/album1234",
-            reach: 899,
-            engagement: 17,
-          },
-          {
-            link: "https://photos.google.com/album12345",
-            reach: 27058,
-            engagement: 154,
-          },
+          { link: "https://photos.google.com/album123", reach: 1000, engagement: 89 },
+          { link: "https://photos.google.com/album1234", reach: 899, engagement: 17 },
+          { link: "https://photos.google.com/album12345", reach: 27058, engagement: 154 },
         ],
       },
       {
         label: "Apariții în presă",
         value: [
-          {
-            link: "https://photos.google.com/album123",
-            reach: 1000,
-            engagement: 89,
-          },
-          {
-            link: "https://photos.google.com/album1234",
-            reach: 899,
-            engagement: 17,
-          },
-          {
-            link: "https://photos.google.com/album12345",
-            reach: 27058,
-            engagement: 154,
-          },
+          { link: "https://photos.google.com/album123", reach: 1000, engagement: 89 },
+          { link: "https://photos.google.com/album1234", reach: 899, engagement: 17 },
+          { link: "https://photos.google.com/album12345", reach: 27058, engagement: 154 },
         ],
       },
       {
         label: "Statistici",
         value: [
-          {
-            link: "https://photos.google.com/album123",
-            reach: 1000,
-            engagement: 89,
-          },
-          {
-            link: "https://photos.google.com/album1234",
-            reach: 899,
-            engagement: 17,
-          },
-          {
-            link: "https://photos.google.com/album12345",
-            reach: 27058,
-            engagement: 154,
-          },
+          { link: "https://photos.google.com/album123", reach: 1000, engagement: 89 },
+          { link: "https://photos.google.com/album1234", reach: 899, engagement: 17 },
+          { link: "https://photos.google.com/album12345", reach: 27058, engagement: 154 },
         ],
       },
       {
         label: "Link Podcast",
         value: [
-          {
-            link: "https://photos.google.com/album123",
-            reach: 1000,
-            engagement: 89,
-          },
-          {
-            link: "https://photos.google.com/album1234",
-            reach: 899,
-            engagement: 17,
-          },
-          {
-            link: "https://photos.google.com/album12345",
-            reach: 27058,
-            engagement: 154,
-          },
+          { link: "https://photos.google.com/album123", reach: 1000, engagement: 89 },
+          { link: "https://photos.google.com/album1234", reach: 899, engagement: 17 },
+          { link: "https://photos.google.com/album12345", reach: 27058, engagement: 154 },
         ],
       },
     ],
@@ -238,10 +143,33 @@ export const eventData: Section[] = [
 export const eventDataToFormValues = (data: Section[], defaultBaseValues: any = {}) => {
   const formValues: Record<string, any> = { ...defaultBaseValues };
   
+  // Mapăm etichetele românești din UI cu cheile schemei Zod
+  const labelToKeyMap: Record<string, string> = {
+    "Denumire eveniment": "eventName",
+    [bannerLabel]: "banner",
+    "Dată eveniment": "startEventDate",
+    "Dată final eveniment": "finishEventDate",
+    "Ediție": "edition",
+    "Organizator": "organizer",
+    "Descriere": "description",
+    "Locație": "location",
+    "Invitați": "invitations",
+    "Mod organizare": "organizationMode",
+    "Număr estimat participanți": "numberOfParticipants",
+    "Grup țintă": "targetGroup",
+    "Livestream": "livestream",
+    "Coordonator": "coordinator",
+    "Email": "email",
+    "Telefon": "telephone",
+    "Informații suplimentare": "otherInformation",
+  };
+  
   data.forEach((section) => {
     section.fields.forEach((field) => {
-      // Maps the value using the label as the key
-      formValues[field.label] = field.value;
+      const formKey = labelToKeyMap[field.label];
+      if (formKey) {
+        formValues[formKey] = field.value;
+      }
     });
   });
   
@@ -252,12 +180,38 @@ export const formValuesToEventData = (
   formValues: Record<string, any>,
   originalData: Section[]
 ): Section[] => {
+
+  const keyToLabelMap: Record<string, string> = {
+    eventName: "Denumire eveniment",
+    banner: bannerLabel,
+    startEventDate: "Dată eveniment",
+    finishEventDate: "Dată final eveniment",
+    edition: "Ediție",
+    organizer: "Organizator",
+    description: "Descriere",
+    location: "Locație",
+    invitations: "Invitați",
+    organizationMode: "Mod organizare",
+    numberOfParticipants: "Număr estimat participanți",
+    targetGroup: "Grup țintă",
+    livestream: "Livestream",
+    coordinator: "Coordonator",
+    email: "Email",
+    telephone: "Telefon",
+    otherInformation: "Informații suplimentare",
+  };
+
   return originalData.map((section) => ({
     ...section,
-    fields: section.fields.map((field) => ({
-      ...field,
-      // Replaces the old value with the new form value if it exists, otherwise keeps the old one
-      value: formValues[field.label] !== undefined ? formValues[field.label] : field.value,
-    })),
+    fields: section.fields.map((field) => {
+      const formKey = Object.keys(keyToLabelMap).find(
+        (key) => keyToLabelMap[key] === field.label
+      );
+
+      return {
+        ...field,
+        value: formKey && formValues[formKey] !== undefined ? formValues[formKey] : field.value,
+      };
+    }),
   }));
 };
