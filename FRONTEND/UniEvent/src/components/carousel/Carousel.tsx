@@ -66,7 +66,7 @@ const Carousel = () => {
       </div>
 
       <div className="relative">
-        <div className="overflow-hidden">
+        <div className="overflow-hidden p-2">
           <div
             className="-ml-4 flex transition-transform duration-500 ease-in-out"
             style={{

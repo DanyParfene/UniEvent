@@ -13,23 +13,6 @@ export const faculties: DropdownLink[] = [
   { label: "FSGC", to: "/facultati/fsgc" },
 ];
 
-export const eventActions: DropdownLink[] = [
-  { label: "Adăugare eveniment", to: "/create-event" },
-  { label: "Filtrare evenimente", to: "/filtrare-evenimente" },
-  { label: "Completare post eveniment", to: "/evenimente/completare-post" },
-  { label: "Arhivă", to: "/evenimente/arhiva" },
-];
-
-export const partnerActions: DropdownLink[] = [
-  { label: "Adăugare partener", to: "/parteneri-adaugare" },
-  { label: "Editare parteneri", to: "/parteneri-administrare" },
-];
-
-export const reportActions: DropdownLink[] = [
-  { label: "Generare raport", to: "/rapoarte/generare" },
-  { label: "Raport anual", to: "/rapoarte/anual" },
-];
-
 export type DropdownLink = {
     label: string;
     to: string;

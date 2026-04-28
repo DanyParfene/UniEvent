@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import type { Props } from "./headerType";
 import { Link } from "@tanstack/react-router";
 
@@ -9,13 +10,46 @@ const HeaderDropdown = ({
   items,
   className,
 }: Props) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const timeoutRef = useRef<number | null>(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setIsOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = window.setTimeout(() => {
+      setIsOpen(false);
+    }, 100);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
   return (
-    <li className="group relative">
-      <span className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">
+    <li
+      className="relative"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <Link to={to} className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">
         <Icon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary" />
-        <Link to={to} className="hidden md:block">{title}</Link>
-      </span>
-      <div className="invisible fixed left-0 top-full w-full translate-y-2 opacity-0 transition-all duration-150 ease-out group-hover:pointer-events-auto group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+        <h3 className="hidden md:block">
+          {title}
+        </h3>
+      </Link>
+      <div
+        className={`fixed left-0 top-full w-full transition-all duration-150 ease-out 
+          ${isOpen ? "visible opacity-100 translate-y-0 pointer-events-auto" : "invisible opacity-0 pointer-events-none"}
+        `}
+      >
         <div className="border-t border-slate-200 bg-white text-gray-800 shadow-xl rounded-b-2xl">
           <div className="mx-auto max-w-7xl px-10 py-8">
             <div className="mb-4">
@@ -31,6 +65,7 @@ const HeaderDropdown = ({
                   <Link
                     to={item.to}
                     className="block w-full rounded-md px-3 py-2 font-semibold duration-200 hover:text-primary"
+                    onClick={() => setIsOpen(false)}
                   >
                     {item.label}
                   </Link>

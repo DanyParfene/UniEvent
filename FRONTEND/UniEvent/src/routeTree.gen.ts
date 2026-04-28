@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RapoarteRouteImport } from './routes/rapoarte'
 import { Route as ParteneriAdministrareRouteImport } from './routes/parteneri-administrare'
 import { Route as ParteneriAdaugareRouteImport } from './routes/parteneri-adaugare'
 import { Route as ParteneriRouteImport } from './routes/parteneri'
@@ -23,6 +24,11 @@ import { Route as ConectareRouteImport } from './routes/conectare'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ParteneriEditarePartnerIdRouteImport } from './routes/parteneri-editare.$partnerId'
 
+const RapoarteRoute = RapoarteRouteImport.update({
+  id: '/rapoarte',
+  path: '/rapoarte',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ParteneriAdministrareRoute = ParteneriAdministrareRouteImport.update({
   id: '/parteneri-administrare',
   path: '/parteneri-administrare',
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/parteneri': typeof ParteneriRoute
   '/parteneri-adaugare': typeof ParteneriAdaugareRoute
   '/parteneri-administrare': typeof ParteneriAdministrareRoute
+  '/rapoarte': typeof RapoarteRoute
   '/parteneri-editare/$partnerId': typeof ParteneriEditarePartnerIdRoute
 }
 export interface FileRoutesByTo {
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/parteneri': typeof ParteneriRoute
   '/parteneri-adaugare': typeof ParteneriAdaugareRoute
   '/parteneri-administrare': typeof ParteneriAdministrareRoute
+  '/rapoarte': typeof RapoarteRoute
   '/parteneri-editare/$partnerId': typeof ParteneriEditarePartnerIdRoute
 }
 export interface FileRoutesById {
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/parteneri': typeof ParteneriRoute
   '/parteneri-adaugare': typeof ParteneriAdaugareRoute
   '/parteneri-administrare': typeof ParteneriAdministrareRoute
+  '/rapoarte': typeof RapoarteRoute
   '/parteneri-editare/$partnerId': typeof ParteneriEditarePartnerIdRoute
 }
 export interface FileRouteTypes {
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/parteneri'
     | '/parteneri-adaugare'
     | '/parteneri-administrare'
+    | '/rapoarte'
     | '/parteneri-editare/$partnerId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/parteneri'
     | '/parteneri-adaugare'
     | '/parteneri-administrare'
+    | '/rapoarte'
     | '/parteneri-editare/$partnerId'
   id:
     | '__root__'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '/parteneri'
     | '/parteneri-adaugare'
     | '/parteneri-administrare'
+    | '/rapoarte'
     | '/parteneri-editare/$partnerId'
   fileRoutesById: FileRoutesById
 }
@@ -197,11 +209,19 @@ export interface RootRouteChildren {
   ParteneriRoute: typeof ParteneriRoute
   ParteneriAdaugareRoute: typeof ParteneriAdaugareRoute
   ParteneriAdministrareRoute: typeof ParteneriAdministrareRoute
+  RapoarteRoute: typeof RapoarteRoute
   ParteneriEditarePartnerIdRoute: typeof ParteneriEditarePartnerIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/rapoarte': {
+      id: '/rapoarte'
+      path: '/rapoarte'
+      fullPath: '/rapoarte'
+      preLoaderRoute: typeof RapoarteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/parteneri-administrare': {
       id: '/parteneri-administrare'
       path: '/parteneri-administrare'
@@ -309,6 +329,7 @@ const rootRouteChildren: RootRouteChildren = {
   ParteneriRoute: ParteneriRoute,
   ParteneriAdaugareRoute: ParteneriAdaugareRoute,
   ParteneriAdministrareRoute: ParteneriAdministrareRoute,
+  RapoarteRoute: RapoarteRoute,
   ParteneriEditarePartnerIdRoute: ParteneriEditarePartnerIdRoute,
 }
 export const routeTree = rootRouteImport
