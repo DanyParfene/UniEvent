@@ -13,8 +13,6 @@ export type Section = {
   fields: Field[];
 };
 
-const eventDataToDefaultFormValues = () => {}
-
 export const eventData: Section[] = [
   {
     sectionTitle: "Date generale",
