@@ -17,7 +17,7 @@ const Accordion = ({ title, children, styles = "", initialOpenValue = false }: S
       <button
         type="button" // Este o bună practică să specificăm type="button" pentru butoanele care nu fac submit
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#033a89] cursor-pointer"
+        className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
         aria-expanded={isOpen}
       >
         <span className="font-semibold text-gray-800">{title}</span>

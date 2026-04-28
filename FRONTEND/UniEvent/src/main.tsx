@@ -4,7 +4,6 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { routeTree } from "./routeTree.gen.ts";
 import "./index.css";
-import "./safelist.ts";
 import { FacultyProvider } from "./context/FacultyContext.tsx";
 
 const queryClient = new QueryClient();

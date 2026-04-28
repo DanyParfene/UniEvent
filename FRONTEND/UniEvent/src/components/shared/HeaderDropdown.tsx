@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Props } from "./headerType";
 import { Link } from "@tanstack/react-router";
+import { useFaculty } from "../../context/FacultyContext";
 
 const HeaderDropdown = ({
   title,
@@ -9,10 +10,13 @@ const HeaderDropdown = ({
   icon: Icon,
   items,
   className,
+  onClick,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const timeoutRef = useRef<number | null>(null);
+
+  const { changeFaculty } = useFaculty();
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) {
@@ -40,8 +44,8 @@ const HeaderDropdown = ({
       onMouseLeave={handleMouseLeave}
     >
       <Link to={to} className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">
-        <Icon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary" />
-        <h3 className="hidden md:block">
+        <Icon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary border" />
+        <h3 className="hidden md:block"  onClick={onClick}>
           {title}
         </h3>
       </Link>
@@ -61,14 +65,13 @@ const HeaderDropdown = ({
               className={`grid grid-cols-2 gap-x-10 gap-y-3 ${className || ""}`}
             >
               {items.map((item) => (
-                <li key={item.to}>
-                  <Link
-                    to={item.to}
-                    className="block w-full rounded-md px-3 py-2 font-semibold duration-200 hover:text-primary"
+                <li key={item.to} onClick={() => changeFaculty( item.id )}>
+                  <div
+                    className="block w-full rounded-md px-3 py-2 font-semibold duration-200 hover:text-primary cursor-pointer"
                     onClick={() => setIsOpen(false)}
                   >
                     {item.label}
-                  </Link>
+                  </div>
                 </li>
               ))}
             </ul>

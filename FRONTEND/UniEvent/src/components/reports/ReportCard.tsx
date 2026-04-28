@@ -7,9 +7,9 @@ export type ReportData = {
 const ReportCard = ({ title, imageUrl }: ReportData) => {
     return (
         <div className="w-full max-w-xs p-4 flex flex-col justify-between items-center border-2 border-gray-200 shadow-sm rounded-3xl 
-                        transition-all duration-300 hover:shadow-xl hover:shadow-blue-100/50">
+                        transition-all duration-300 hover:shadow-xl hover:shadow-secondary/10">
             
-            <div className="w-full flex flex-col items-center justify-center p-6 w-full">
+            <div className="w-full flex flex-col items-center justify-center p-6">
                 {title && (
                     <h3 className="text-xl font-black text-text-secondary leading-tight text-center mb-4">
                         {title}

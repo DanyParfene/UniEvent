@@ -1,6 +1,12 @@
-import { createContext, useContext, useReducer, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  type ReactNode,
+} from "react";
 
-type FacultyId =
+export type FacultyId =
   | "UVT"
   | "ARTE"
   | "CBG"
@@ -21,7 +27,7 @@ interface FacultyTheme {
 }
 
 const facultyThemeMap: Record<FacultyId, FacultyTheme> = {
-  UVT: { primary: "primary", secondary: "secondary" },
+  UVT: { primary: "primary-uvt", secondary: "secondary-uvt" },
   ARTE: { primary: "primary-arte", secondary: "secondary-arte" },
   CBG: { primary: "primary-cbg", secondary: "secondary-cbg" },
   DREPT: { primary: "primary-drept", secondary: "secondary-drept" },
@@ -39,12 +45,11 @@ const facultyThemeMap: Record<FacultyId, FacultyTheme> = {
 interface FacultyState {
   isAdmin: boolean;
   currentFaculty: FacultyId;
-  theme: FacultyTheme;
 }
 
 type FacultyAction =
   | { type: "CHANGE_FACULTY"; payload: FacultyId }
-  | { type: "SET_IS_ADMIN" }
+  | { type: "SET_IS_ADMIN" };
 
 interface FacultyContextType {
   state: FacultyState;
@@ -53,12 +58,14 @@ interface FacultyContextType {
 }
 
 const initialState: FacultyState = {
-  isAdmin: false,
-  currentFaculty: "UVT",
-  theme: facultyThemeMap["INFO"],
+  isAdmin: true,
+  currentFaculty: sessionStorage.getItem("user_faculty") as FacultyId | "UVT",
 };
 
-const FacultyReducer = (state: FacultyState, action: FacultyAction): FacultyState => {
+const FacultyReducer = (
+  state: FacultyState,
+  action: FacultyAction,
+): FacultyState => {
   switch (action.type) {
     case "CHANGE_FACULTY":
       if (!state.isAdmin) {
@@ -67,7 +74,6 @@ const FacultyReducer = (state: FacultyState, action: FacultyAction): FacultyStat
       return {
         ...state,
         currentFaculty: action.payload,
-        theme: facultyThemeMap[action.payload],
       };
     case "SET_IS_ADMIN":
       return {
@@ -83,6 +89,25 @@ const FacultyContext = createContext<FacultyContextType | undefined>(undefined);
 
 export const FacultyProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(FacultyReducer, initialState);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const currentTheme = facultyThemeMap[state.currentFaculty];
+    console.log(currentTheme);
+
+    if (currentTheme) {
+      root.style.setProperty(
+        "--color-primary",
+        `var(--color-${currentTheme.primary})`,
+      );
+      root.style.setProperty(
+        "--color-secondary",
+        `var(--color-${currentTheme.secondary})`,
+      );
+    }
+    
+    sessionStorage.setItem("user_faculty", state.currentFaculty);
+  }, [state.currentFaculty]);
 
   const changeFaculty = (faculty: FacultyId) => {
     dispatch({

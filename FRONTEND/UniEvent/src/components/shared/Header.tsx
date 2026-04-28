@@ -7,10 +7,12 @@ import ReportIcon from "../../assets/report.svg?react";
 import HeaderDropdown from "./HeaderDropdown";
 import { faculties } from "./headerType";
 import { Link } from "@tanstack/react-router";
+import { useFaculty } from "../../context/FacultyContext";
 
 const Header = () => {
+  const { changeFaculty } = useFaculty();
   return (
-    <header className="sticky top-0 left-0 z-50 w-full bg-gradient-to-r from-primary to-secondary text-white shadow-md font-[Source_Sans_Pro]">
+    <header className="sticky top-0 left-0 z-50 w-full bg-linear-to-r from-primary to-secondary text-white shadow-md font-[Source_Sans_Pro]">
       <div className="relative mx-auto flex h-16 w-full items-center px-6">
         <Link
           to={"/dashboard"}
@@ -30,6 +32,7 @@ const Header = () => {
               icon={FacultyIcon}
               items={faculties}
               className="md:grid-cols-3 lg:grid-cols-4"
+              onClick={() => changeFaculty("UVT")}
             />
             <li>
               <Link to="/evenimente" className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">

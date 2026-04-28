@@ -108,8 +108,8 @@ export default function CustomActiveShapePieChart({
               y2="500"
               gradientUnits="userSpaceOnUse"
             >
-              <stop offset="0%" stopColor="#2588e7" />
-              <stop offset="100%" stopColor="#033a89" />
+              <stop offset="0%" stopColor="var(--color-secondary)" />
+              <stop offset="100%" stopColor="var(--color-primary)" />
             </linearGradient>
           </defs>
           <Pie

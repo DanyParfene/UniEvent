@@ -23,7 +23,7 @@ const NumberInput = ({ label, ...props }: Props) => {
           field.handleChange(!isNaN(value) ? value : 0);
         }}
         {...props}
-        className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition-all duration-300 focus:border-[#033a89] focus:outline-none focus:ring-1 focus:ring-[#033a89] hover:border-gray-400 bg-white"
+        className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition-all duration-300 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary hover:border-gray-400 bg-white"
       />
       <FieldErrors field={field} />
     </div>

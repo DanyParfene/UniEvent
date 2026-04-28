@@ -28,7 +28,7 @@ const Bento = ({ stats }: { stats: BentoStats }) => {
                 <li
                   key={index}
                 >
-                  <Link to={"/eveniment"} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-300 hover:bg-blue-50 group cursor-pointer">
+                  <Link to={"/eveniment"} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-300 hover:bg-secondary/10 group cursor-pointer">
                     <span className="w-2 h-2 rounded-full bg-secondary shrink-0 transition-transform duration-300 group-hover:scale-150"></span>
                     <span className="font-medium text-text-secondary italic group-hover:text-primary transition-colors duration-300">
                       {eventName}
@@ -49,7 +49,7 @@ const Bento = ({ stats }: { stats: BentoStats }) => {
         </div>
 
         <div className="md:col-span-1 md:row-span-1 bg-gradient-to-br from-secondary to-primary rounded-3xl p-6 flex flex-col justify-center h-full">
-          <p className="text-blue-100 text-xs uppercase tracking-wider">
+          <p className="text-white/90 text-xs uppercase tracking-wider">
             Cel mai implicat organizator
           </p>
           <p className="text-text-primary font-bold text-lg">
@@ -82,7 +82,7 @@ const Bento = ({ stats }: { stats: BentoStats }) => {
 
         <div className="md:col-span-2 md:row-span-1 bg-gradient-to-b from-secondary to-primary rounded-3xl p-6 flex items-center justify-between h-full">
           <div>
-            <p className="text-blue-100 text-xs uppercase">
+            <p className="text-white/90 text-xs uppercase">
               Cel mai mare nr. participanți
             </p>
             <p className="text-4xl font-black text-text-primary">

@@ -33,7 +33,7 @@ function RouteComponent() {
           <div className="mt-2 h-1.5 w-20 bg-primary rounded-full"></div>
         </div>
 
-        <button className="flex items-center justify-center gap-2 px-8 py-3 bg-primary rounded-2xl shadow-md text-sm font-bold text-white hover:bg-[#022d6b] transition-all hover:shadow-lg active:scale-95 cursor-pointer">
+        <button className="flex items-center justify-center gap-2 px-8 py-3 bg-primary rounded-2xl shadow-md text-sm font-bold text-white transition-all hover:shadow-lg active:scale-95 cursor-pointer">
           Generare Avansată
         </button>
       </div>

@@ -38,7 +38,7 @@ const RegisterCard = () => {
           <select
             value={selectedFaculty}
             onChange={(e) => setSelectedFaculty(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition-all duration-300 focus:border-[#033a89] focus:outline-none focus:ring-1 focus:ring-[#033a89] hover:border-gray-400 bg-white appearance-none font-normal"
+            className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition-all duration-300 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary hover:border-gray-400 bg-white appearance-none font-normal"
           >
             <option value="" disabled hidden>
               --Alege facultate--
@@ -52,8 +52,8 @@ const RegisterCard = () => {
           </select>
         </label>
       </div>
-      <div className="mt-auto pt-8 flex justify-center w-full flex-col items-center w-full">
-        <button className="w-full sm:w-auto px-10 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-[#033a89] hover:bg-[#033a89] hover:text-white transition-all transition-800 cursor-pointer active:scale-95">
+      <div className="mt-auto pt-8 flex justify-center flex-col items-center w-full">
+        <button className="w-full sm:w-auto px-10 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary hover:bg-primary hover:text-white transition-all transition-800 cursor-pointer active:scale-95">
           Înregistrare
         </button>
         <div className="flex pt-4 gap-1">

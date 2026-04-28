@@ -27,7 +27,7 @@ const LoginCard = () => {
         />
       </div>
       <div className="mt-auto pt-8 flex justify-center w-full flex-col items-center w-full">
-        <button className="w-full sm:w-auto px-10 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-[#033a89] hover:bg-[#033a89] hover:text-white transition-all cursor-pointer active:scale-95">
+        <button className="w-full sm:w-auto px-10 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary hover:bg-primary hover:text-white transition-all cursor-pointer active:scale-95">
           Conectare
         </button>
         <div className="flex pt-4 gap-1">

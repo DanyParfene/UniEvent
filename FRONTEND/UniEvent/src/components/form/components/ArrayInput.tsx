@@ -25,7 +25,7 @@ const ArrayInput = ({ label, ...props }: Props) => {
           type="text"
           ref={inputRef}
           {...props}
-          className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition-all duration-300 focus:border-[#033a89] focus:outline-none focus:ring-1 focus:ring-[#033a89] hover:border-gray-400 bg-white"
+          className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm shadow-sm transition-all duration-300 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary hover:border-gray-400 bg-white"
         />
         
         <button
@@ -41,7 +41,7 @@ const ArrayInput = ({ label, ...props }: Props) => {
             field.handleChange((prev) => [...prev, value]);
             inputRef.current.value = "";
           }}
-          className="w-full sm:w-auto px-8 py-2.5 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-[#033a89] transition-all duration-300 hover:bg-[#033a89] hover:text-white cursor-pointer active:scale-95"
+          className="w-full sm:w-auto px-8 py-2.5 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary transition-all duration-300 hover:bg-primary hover:text-white cursor-pointer active:scale-95"
         >
           Adaugă
         </button>

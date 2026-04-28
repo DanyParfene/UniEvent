@@ -27,12 +27,12 @@ function RouteComponent() {
     },
   });
 
-  const buttonStyle = "w-full sm:w-auto px-8 py-2.5 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-[#033a89] transition-all duration-300 hover:bg-[#033a89] hover:text-white disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#033a89] disabled:cursor-not-allowed cursor-pointer active:scale-95 shrink-0";
+  const buttonStyle = "w-full sm:w-auto px-8 py-2.5 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary transition-all duration-300 hover:bg-primary hover:text-white disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-primary disabled:cursor-not-allowed cursor-pointer active:scale-95 shrink-0";
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] px-4 w-full">
       
-      <div className="w-full max-w-2xl bg-white border border-gray-200 px-6 py-6 sm:px-10 shadow-xl rounded-2xl flex flex-col min-h-[480px] h-fit">
+      <div className="w-full max-w-2xl bg-white border border-gray-200 px-6 py-6 sm:px-10 shadow-xl rounded-2xl flex flex-col min-h-120 h-fit">
         
         <form
           className="w-full flex flex-col flex-1 h-full"

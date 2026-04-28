@@ -27,7 +27,7 @@ const EventCard = ({ data }: EventCardProps) => {
       className="group max-w-7xl w-full mx-auto 
                     flex flex-col sm:flex-row justify-between items-start sm:items-center 
                     p-6 bg-white border border-gray-200 shadow-sm rounded-3xl 
-                    transition-all duration-300 hover:shadow-xl hover:shadow-blue-100/50"
+                    transition-all duration-300 hover:shadow-xl hover:shadow-secondary/10"
     >
       <div className="flex flex-col w-full sm:w-auto">
         <div className="flex items-center gap-2 mb-1">

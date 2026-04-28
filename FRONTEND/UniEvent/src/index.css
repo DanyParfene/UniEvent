@@ -1,13 +1,8 @@
 @import "tailwindcss";
 
-@theme {
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #121212;
-
-  --color-primary: #033a89;
-  --color-secondary: #2588e7;
-  --color-accent: #aed9f8;
-
+:root {
+  --color-primary-uvt: #033a89;
+  --color-secondary-uvt: #2588e7;
   --color-primary-arte: #9f2772;
   --color-secondary-arte: #eb7096;
   --color-primary-cbg: #165f30;
@@ -32,6 +27,15 @@
   --color-secondary-fsas: #89dda1;
   --color-primary-fsgc: #3558b0;
   --color-secondary-fsgc: #5ac9ed;
+}
+
+@theme {
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #121212;
+
+  --color-primary: #033a89;
+  --color-secondary: #2588e7;
+  --color-accent: #aed9f8;
 }
 
 .recharts-wrapper *:focus {

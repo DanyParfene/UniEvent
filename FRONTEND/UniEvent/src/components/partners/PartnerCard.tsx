@@ -32,7 +32,7 @@ export const PartnerCard = ({
   
   const hoverCardClasses = disableHover
     ? ""
-    : "group hover:shadow-xl hover:shadow-blue-500/5 hover:border-secondary hover:-translate-y-1";
+    : "group hover:shadow-xl hover:shadow-secondary/10 ";
 
   const baseImageClasses =
     "max-h-full max-w-35 object-contain filter opacity-80 transition-all duration-300";

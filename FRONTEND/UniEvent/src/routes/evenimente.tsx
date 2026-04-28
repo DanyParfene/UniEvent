@@ -20,9 +20,9 @@ function RouteComponent() {
 
           <Link
             to="/create-event"
-            className="bg-text-primary w-9 h-9 md:w-12 md:h-12 rounded-full border font-semibold border-gray-200 shadow-sm text-primary text-2xl md:text-4xl flex justify-center items-center cursor-pointer hover:bg-primary hover:text-text-primary transition-all shadow-sm"
+            className="bg-text-primary w-9 h-9 md:w-12 md:h-12 rounded-full border font-semibold border-gray-200 text-primary text-2xl md:text-4xl flex justify-center items-center cursor-pointer hover:bg-primary hover:text-text-primary transition-all shadow-sm"
           >
-            <span className="leading-none -translate-y-[4px]">+</span>
+            <span className="leading-none -translate-y-1">+</span>
           </Link>
         </div>
 
