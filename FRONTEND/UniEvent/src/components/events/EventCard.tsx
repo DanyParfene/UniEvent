@@ -31,8 +31,8 @@ const EventCard = ({ data }: EventCardProps) => {
     >
       <div className="flex flex-col w-full sm:w-auto">
         <div className="flex items-center gap-2 mb-1">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#2588e7] shrink-0"></span>
-          <h1 className="text-base md:text-lg font-black text-[#033a89] leading-tight">
+          <span className="w-2.5 h-2.5 rounded-full bg-secondary shrink-0"></span>
+          <h1 className="text-base md:text-lg font-black text-primary leading-tight">
             {getEventField(data, "Denumire eveniment")}
           </h1>
         </div>
@@ -46,7 +46,7 @@ const EventCard = ({ data }: EventCardProps) => {
           </p>
         </div>
 
-        <p className="mt-2 ml-4 text-sm font-semibold text-gray-500 group-hover:text-[#2588e7] transition-colors">
+        <p className="mt-2 ml-4 text-sm font-semibold text-gray-500 group-hover:text-secondary transition-colors">
           {getEventField(data, "Locație")}
         </p>
       </div>

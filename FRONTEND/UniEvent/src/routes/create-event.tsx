@@ -30,10 +30,8 @@ function RouteComponent() {
   const buttonStyle = "w-full sm:w-auto px-8 py-2.5 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-[#033a89] transition-all duration-300 hover:bg-[#033a89] hover:text-white disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#033a89] disabled:cursor-not-allowed cursor-pointer active:scale-95 shrink-0";
 
   return (
-    // 1. Am scos padding-ul vertical (py) și am pus min-h-[calc(100vh-4rem)] ca să lăsăm loc pentru header/navbar
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] px-4 w-full">
       
-      {/* 2. Am scăzut min-h la 480px și am redus padding-ul vertical interior (py-6) */}
       <div className="w-full max-w-2xl bg-white border border-gray-200 px-6 py-6 sm:px-10 shadow-xl rounded-2xl flex flex-col min-h-[480px] h-fit">
         
         <form
@@ -48,15 +46,12 @@ function RouteComponent() {
               mode={index === currentStep ? "visible" : "hidden"}
               key={index}
             >
-              {/* Am șters min-h-ul de aici ca să îi dăm libertate absolută în cei 480px ai cardului */}
               <div className="flex flex-col flex-1 h-full">
                 
-                {/* 3. Am micșorat marginea de sub titlu (mb-2 în loc de mb-4) */}
                 <h3 className="font-[Sans-Source-Now] text-xl font-bold mb-2 text-center w-full text-gray-800">
                   {formStep.name}
                 </h3>
                 
-                {/* my-auto ține câmpurile pe centru */}
                 <div className="flex flex-col w-[90%] max-w-md mx-auto my-auto">
                   {formStep.elements.map((element) => {
                     return (
@@ -102,8 +97,7 @@ function RouteComponent() {
             </div>
           )}
 
-          {/* 4. Am redus padding-top (pt-4) la butoane */}
-          <div className="flex flex-wrap justify-center gap-4 mt-auto pt-4 border-t border-gray-100 w-full">
+          <div className="flex flex-wrap justify-center gap-4 mt-auto pt-4  w-full">
             <button
               type="button"
               disabled={currentStep < 1}

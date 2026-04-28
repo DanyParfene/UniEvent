@@ -24,11 +24,12 @@ export const PartnerCard = ({
   logo,
   isEditMode = false,
   onDelete,
-  className,
+  className = "", 
   disableHover,
 }: PartnerCardProps) => {
   const baseCardClasses =
-    "relative flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-2xl transition-all duration-300";
+    "relative flex flex-col items-center justify-center p-6 bg-white border border-gray-200 shadow-sm rounded-2xl transition-all duration-300";
+  
   const hoverCardClasses = disableHover
     ? ""
     : "group hover:shadow-xl hover:shadow-blue-500/5 hover:border-secondary hover:-translate-y-1";
@@ -49,7 +50,6 @@ export const PartnerCard = ({
       {isEditMode && (
         <div className="absolute top-3 right-3 flex gap-2 z-10">
           {/* Edit button */}
-
           <RedirectButton
             to="/parteneri-editare/$partnerId"
             params={{ partnerId: id.toString() }}
@@ -66,14 +66,14 @@ export const PartnerCard = ({
           {/* Delete button */}
           {onDelete && (
             <ActionButton
-              onClick={onDelete}
-              className="group/delete p-1.5! bg-white border border-gray-200 rounded-md shadow-sm hover:bg-red-500 hover:border-white transition-all cursor-pointer"
+              action={onDelete}
+              className="group/delete p-1.5 bg-white border border-gray-200 rounded-md shadow-sm hover:bg-red-500 hover:border-transparent"
               title="Delete"
             >
               <img
                 src={deleteIcon}
                 alt="Delete"
-                className="w-4 h-4 group-hover/delete:brightness-0 group-hover/delete:invert"
+                className="w-4 h-4 transition-all group-hover/delete:brightness-0 group-hover/delete:invert"
               />
             </ActionButton>
           )}

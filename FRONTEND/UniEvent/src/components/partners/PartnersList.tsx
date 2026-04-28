@@ -4,8 +4,7 @@ import continentalLogo from "../../assets/continental_logo.png";
 import atosLogo from "../../assets/atos_logo.png";
 import bcrLogo from "../../assets/bcr_logo.png";
 import PartnerPopUp from "./PartnerPopUp";
-import { useNavigate } from "@tanstack/react-router";
-import RedirectButton from "../common/RedirectButton";
+import { useNavigate, Link } from "@tanstack/react-router";
 
 const partners: Partner[] = [
   { id: 0, name: "Nokia", logo: nokiaLogo },
@@ -39,12 +38,18 @@ export const PartnersList = ({
     console.log("Delete partner clicked for ID:", partnerId);
   };
 
+  const actionButtonStyle = "mt-6 sm:mt-0 sm:ml-6 w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary transition-all duration-300 hover:bg-primary hover:text-text-primary cursor-pointer active:scale-95 shrink-0";
+
   return (
-    <section className="max-w-7xl mx-auto py-16 px-4">
+    <section className="w-full max-w-7xl mx-auto py-10 px-4 md:px-12">
       <div className="mb-12">
-        <h2 className="text-3xl font-bold text-text-secondary mb-4 border-l-4 border-primary pl-4">
-          Parteneriate
-        </h2>
+        <div className="mb-6">
+          <h1 className="text-3xl md:text-5xl font-bold text-text-secondary tracking-tight">
+            Parteneriate
+          </h1>
+          <div className="mt-2 h-1 w-20 bg-primary rounded-full"></div>
+        </div>
+        
         <p className="text-gray-600 leading-relaxed max-w-5xl">
           Proiectele educaţionale, de cercetare ştiinţifică, culturale,
           artistice şi sportive implementate de către UVT au primit un sprijin
@@ -56,11 +61,9 @@ export const PartnersList = ({
         </p>
       </div>
 
-      {/* Containerul FLEX */}
       <div className="flex flex-wrap justify-center gap-8 mb-12">
         {partners.map((item) => (
           <div key={item.id} className="w-full sm:w-[calc(50%-1rem)] md:w-64">
-            {/* PartnerCard */}
             <PartnerCard
               {...item}
               isEditMode={isAdminMode}
@@ -70,22 +73,21 @@ export const PartnersList = ({
         ))}
       </div>
 
-      {/* Admin controls area */}
-      <div className="flex items-center">
-        <RedirectButton
-          to={ isAdminMode ? "/parteneri" : "/parteneri-administrare"}
-          className="px-6 py-2 mx-2 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-colors shadow-sm cursor-pointer"
+      <div className="flex flex-wrap items-center gap-4">
+        <Link
+          to={isAdminMode ? "/parteneri" : "/parteneri-administrare"}
+          className={actionButtonStyle}
         >
           {isAdminMode ? "Ieși din Editare" : "Administrează"}
-        </RedirectButton>
+        </Link>
 
         {isAdminMode && (
-          <RedirectButton
+          <Link
             to="/parteneri-adaugare"
-            className="px-6 py-2 mx-2 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-colors shadow-sm cursor-pointer"
+            className={actionButtonStyle}
           >
-            + Adauga Partener
-          </RedirectButton>
+            + Adaugă Partener
+          </Link>
         )}
 
         {(isAddMode || (isEditMode && editPartnerId !== undefined)) && (
