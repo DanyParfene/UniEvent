@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { Props } from "./headerType";
-import { Link } from "@tanstack/react-router";
 import { useFaculty } from "../../context/FacultyContext";
 
 const HeaderDropdown = ({
   title,
-  to = "",
   description,
   icon: Icon,
   items,
@@ -43,12 +41,12 @@ const HeaderDropdown = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <Link to={to} className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">
+      <div className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">
         <Icon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary border" />
         <h3 className="hidden md:block"  onClick={onClick}>
           {title}
         </h3>
-      </Link>
+      </div>
       <div
         className={`fixed left-0 top-full w-full transition-all duration-150 ease-out 
           ${isOpen ? "visible opacity-100 translate-y-0 pointer-events-auto" : "invisible opacity-0 pointer-events-none"}
