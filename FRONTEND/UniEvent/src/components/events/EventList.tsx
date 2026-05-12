@@ -3,9 +3,10 @@ import { eventData } from "./eventMainType";
 
 interface EventListProps {
     maxItems?: number;
+    isArchived?: boolean;
 }
 
-const EventList = ({ maxItems } : EventListProps) => {
+const EventList = ({ maxItems, isArchived = false } : EventListProps) => {
   const allEvents = [eventData, eventData, eventData, eventData, eventData, eventData, eventData];
 
   const displayedEvents = maxItems ? allEvents.slice(0, maxItems) : allEvents;
@@ -13,7 +14,7 @@ const EventList = ({ maxItems } : EventListProps) => {
   return (
     <div className="flex flex-col w-full max-w-7xl gap-8">
       {displayedEvents.map((singleEvent, index) => (
-        <EventCard key={index} data={singleEvent} />
+        <EventCard key={index} data={singleEvent} isArchived={isArchived ? true : false}/>
       ))}
 
       {allEvents.length === 0 && (

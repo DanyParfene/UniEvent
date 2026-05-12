@@ -12,7 +12,11 @@ import {
   type Section,
 } from "./eventMainType";
 
-const EventCardMain = () => {
+interface EventCardMainProps {
+  isArchived?: boolean;
+}
+
+const EventCardMain = ( { isArchived = false } : EventCardMainProps) => {
   const editGeneralDataButtonIndex = 0;
   const editSocialMediaButtonIndex = 6;
 
@@ -116,7 +120,7 @@ const EventCardMain = () => {
                 </h2>
                 <div className="h-px flex-1 bg-slate-100" />
 
-                {editGeneralDataButtonIndex === idx && (
+                {!isArchived && editGeneralDataButtonIndex === idx && (
                   <ActionButton
                     className="text-primary font-bold hover:underline"
                     action={editDataAction}
@@ -125,7 +129,7 @@ const EventCardMain = () => {
                   </ActionButton>
                 )}
 
-                {editSocialMediaButtonIndex === idx && (
+                {!isArchived && editSocialMediaButtonIndex === idx && (
                   <div className="flex gap-2">
                     <ActionButton
                       className="text-primary font-bold hover:underline"

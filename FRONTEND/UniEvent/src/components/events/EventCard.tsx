@@ -3,6 +3,7 @@ import type { Section } from "./eventMainType";
 
 interface EventCardProps {
   data: Section[];
+  isArchived?: boolean;
 }
 
 const getEventField = (data: Section[], label: string): string => {
@@ -21,7 +22,7 @@ const getEventField = (data: Section[], label: string): string => {
   return "";
 };
 
-const EventCard = ({ data }: EventCardProps) => {
+const EventCard = ({ data, isArchived = false }: EventCardProps) => {
   return (
     <div
       className="group max-w-7xl w-full mx-auto 
@@ -52,7 +53,7 @@ const EventCard = ({ data }: EventCardProps) => {
       </div>
 
       <Link
-        to = "/eveniment"
+        to = {!isArchived ? "/eveniment" : "/eveniment-arhivat"}
         className="mt-6 sm:mt-0 sm:ml-6 w-full sm:w-auto px-8 py-3 
                         bg-white border border-gray-200 rounded-2xl shadow-sm 
                         text-sm font-black text-primary 
