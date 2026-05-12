@@ -5,7 +5,7 @@ import { useFaculty } from "../../context/FacultyContext";
 
 const HeaderDropdown = ({
   title,
-  to = "/",
+  to = "",
   description,
   icon: Icon,
   items,

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RecuperareParolaRouteImport } from './routes/recuperare-parola'
 import { Route as RapoarteRouteImport } from './routes/rapoarte'
 import { Route as ParteneriAdministrareRouteImport } from './routes/parteneri-administrare'
 import { Route as ParteneriAdaugareRouteImport } from './routes/parteneri-adaugare'
@@ -20,10 +21,16 @@ import { Route as EvenimenteRouteImport } from './routes/evenimente'
 import { Route as EvenimentRouteImport } from './routes/eveniment'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CreateEventRouteImport } from './routes/create-event'
+import { Route as ContRouteImport } from './routes/cont'
 import { Route as ConectareRouteImport } from './routes/conectare'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ParteneriEditarePartnerIdRouteImport } from './routes/parteneri-editare.$partnerId'
 
+const RecuperareParolaRoute = RecuperareParolaRouteImport.update({
+  id: '/recuperare-parola',
+  path: '/recuperare-parola',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RapoarteRoute = RapoarteRouteImport.update({
   id: '/rapoarte',
   path: '/rapoarte',
@@ -79,6 +86,11 @@ const CreateEventRoute = CreateEventRouteImport.update({
   path: '/create-event',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContRoute = ContRouteImport.update({
+  id: '/cont',
+  path: '/cont',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConectareRoute = ConectareRouteImport.update({
   id: '/conectare',
   path: '/conectare',
@@ -99,6 +111,7 @@ const ParteneriEditarePartnerIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/conectare': typeof ConectareRoute
+  '/cont': typeof ContRoute
   '/create-event': typeof CreateEventRoute
   '/dashboard': typeof DashboardRoute
   '/eveniment': typeof EvenimentRoute
@@ -110,11 +123,13 @@ export interface FileRoutesByFullPath {
   '/parteneri-adaugare': typeof ParteneriAdaugareRoute
   '/parteneri-administrare': typeof ParteneriAdministrareRoute
   '/rapoarte': typeof RapoarteRoute
+  '/recuperare-parola': typeof RecuperareParolaRoute
   '/parteneri-editare/$partnerId': typeof ParteneriEditarePartnerIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/conectare': typeof ConectareRoute
+  '/cont': typeof ContRoute
   '/create-event': typeof CreateEventRoute
   '/dashboard': typeof DashboardRoute
   '/eveniment': typeof EvenimentRoute
@@ -126,12 +141,14 @@ export interface FileRoutesByTo {
   '/parteneri-adaugare': typeof ParteneriAdaugareRoute
   '/parteneri-administrare': typeof ParteneriAdministrareRoute
   '/rapoarte': typeof RapoarteRoute
+  '/recuperare-parola': typeof RecuperareParolaRoute
   '/parteneri-editare/$partnerId': typeof ParteneriEditarePartnerIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/conectare': typeof ConectareRoute
+  '/cont': typeof ContRoute
   '/create-event': typeof CreateEventRoute
   '/dashboard': typeof DashboardRoute
   '/eveniment': typeof EvenimentRoute
@@ -143,6 +160,7 @@ export interface FileRoutesById {
   '/parteneri-adaugare': typeof ParteneriAdaugareRoute
   '/parteneri-administrare': typeof ParteneriAdministrareRoute
   '/rapoarte': typeof RapoarteRoute
+  '/recuperare-parola': typeof RecuperareParolaRoute
   '/parteneri-editare/$partnerId': typeof ParteneriEditarePartnerIdRoute
 }
 export interface FileRouteTypes {
@@ -150,6 +168,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/conectare'
+    | '/cont'
     | '/create-event'
     | '/dashboard'
     | '/eveniment'
@@ -161,11 +180,13 @@ export interface FileRouteTypes {
     | '/parteneri-adaugare'
     | '/parteneri-administrare'
     | '/rapoarte'
+    | '/recuperare-parola'
     | '/parteneri-editare/$partnerId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/conectare'
+    | '/cont'
     | '/create-event'
     | '/dashboard'
     | '/eveniment'
@@ -177,11 +198,13 @@ export interface FileRouteTypes {
     | '/parteneri-adaugare'
     | '/parteneri-administrare'
     | '/rapoarte'
+    | '/recuperare-parola'
     | '/parteneri-editare/$partnerId'
   id:
     | '__root__'
     | '/'
     | '/conectare'
+    | '/cont'
     | '/create-event'
     | '/dashboard'
     | '/eveniment'
@@ -193,12 +216,14 @@ export interface FileRouteTypes {
     | '/parteneri-adaugare'
     | '/parteneri-administrare'
     | '/rapoarte'
+    | '/recuperare-parola'
     | '/parteneri-editare/$partnerId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ConectareRoute: typeof ConectareRoute
+  ContRoute: typeof ContRoute
   CreateEventRoute: typeof CreateEventRoute
   DashboardRoute: typeof DashboardRoute
   EvenimentRoute: typeof EvenimentRoute
@@ -210,11 +235,19 @@ export interface RootRouteChildren {
   ParteneriAdaugareRoute: typeof ParteneriAdaugareRoute
   ParteneriAdministrareRoute: typeof ParteneriAdministrareRoute
   RapoarteRoute: typeof RapoarteRoute
+  RecuperareParolaRoute: typeof RecuperareParolaRoute
   ParteneriEditarePartnerIdRoute: typeof ParteneriEditarePartnerIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/recuperare-parola': {
+      id: '/recuperare-parola'
+      path: '/recuperare-parola'
+      fullPath: '/recuperare-parola'
+      preLoaderRoute: typeof RecuperareParolaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rapoarte': {
       id: '/rapoarte'
       path: '/rapoarte'
@@ -292,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateEventRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cont': {
+      id: '/cont'
+      path: '/cont'
+      fullPath: '/cont'
+      preLoaderRoute: typeof ContRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/conectare': {
       id: '/conectare'
       path: '/conectare'
@@ -319,6 +359,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ConectareRoute: ConectareRoute,
+  ContRoute: ContRoute,
   CreateEventRoute: CreateEventRoute,
   DashboardRoute: DashboardRoute,
   EvenimentRoute: EvenimentRoute,
@@ -330,6 +371,7 @@ const rootRouteChildren: RootRouteChildren = {
   ParteneriAdaugareRoute: ParteneriAdaugareRoute,
   ParteneriAdministrareRoute: ParteneriAdministrareRoute,
   RapoarteRoute: RapoarteRoute,
+  RecuperareParolaRoute: RecuperareParolaRoute,
   ParteneriEditarePartnerIdRoute: ParteneriEditarePartnerIdRoute,
 }
 export const routeTree = rootRouteImport

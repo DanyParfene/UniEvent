@@ -11,12 +11,16 @@ import { useFaculty } from "../../context/FacultyContext";
 
 const Header = () => {
   const { changeFaculty } = useFaculty();
+
+  const userRole = "Super Administrator"; // role-ul asta trebuie schimbat cumva din context
+
   return (
     <header className="sticky top-0 left-0 z-50 w-full bg-linear-to-r from-primary to-secondary text-white shadow-md font-[Source_Sans_Pro]">
       <div className="relative mx-auto flex h-16 w-full items-center px-6">
+    
         <Link
           to={"/dashboard"}
-          className="w-6 h-6 hover:scale-105 transition-transform"
+          className="w-6 h-6"
         >
           <img
             src={shortLogo}
@@ -24,16 +28,21 @@ const Header = () => {
             className="w-full h-full object-contain"
           />
         </Link>
+        
         <nav className="absolute left-1/2 -translate-x-1/2">
           <ul className="flex items-center gap-10 text-xl font-semibold">
-            <HeaderDropdown
-              title="Facultăți"
-              description="Alege facultatea asupra căreia dorești să efectuezi acțiuni."
-              icon={FacultyIcon}
-              items={faculties}
-              className="md:grid-cols-3 lg:grid-cols-4"
-              onClick={() => changeFaculty("UVT")}
-            />
+            
+            {userRole === "Super Administrator" && (
+              <HeaderDropdown
+                title="Facultăți"
+                description="Alege facultatea asupra căreia dorești să efectuezi acțiuni."
+                icon={FacultyIcon}
+                items={faculties}
+                className="md:grid-cols-3 lg:grid-cols-4"
+                onClick={() => changeFaculty("UVT")}
+              />
+            )}
+
             <li>
               <Link to="/evenimente" className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">
                 <EventIcon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary" />
@@ -61,7 +70,7 @@ const Header = () => {
           </ul>
         </nav>
 
-        <Link to="/conectare" className="flex justify-center items-center ml-auto cursor-pointer transition-colors">
+        <Link to="/cont" className="flex justify-center items-center ml-auto cursor-pointer transition-colors">
           <AccountIcon className="w-10 h-16 fill-text-primary" />
         </Link>
       </div>
