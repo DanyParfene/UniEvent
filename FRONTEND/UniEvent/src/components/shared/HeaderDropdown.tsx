@@ -43,7 +43,7 @@ const HeaderDropdown = ({
     >
       <div className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">
         <Icon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary border" />
-        <h3 className="hidden md:block"  onClick={onClick}>
+        <h3 className="hidden md:block" onClick={onClick}>
           {title}
         </h3>
       </div>
@@ -63,11 +63,14 @@ const HeaderDropdown = ({
               className={`grid grid-cols-2 gap-x-10 gap-y-3 ${className || ""}`}
             >
               {items.map((item) => (
-                <li key={item.to} onClick={() => changeFaculty( item.id )}>
-                  <div
-                    className="block w-full rounded-md px-3 py-2 font-semibold duration-200 hover:text-primary cursor-pointer"
-                    onClick={() => setIsOpen(false)}
-                  >
+                <li
+                  key={item.to}
+                  onClick={() => {
+                    changeFaculty(item.id);
+                    setIsOpen(false);
+                  }}
+                >
+                  <div className="block w-full rounded-md px-3 py-2 font-semibold duration-200 hover:text-primary cursor-pointer">
                     {item.label}
                   </div>
                 </li>

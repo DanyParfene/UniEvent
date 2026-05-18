@@ -15,6 +15,7 @@ import { Route as ParteneriAdministrareRouteImport } from './routes/parteneri-ad
 import { Route as ParteneriAdaugareRouteImport } from './routes/parteneri-adaugare'
 import { Route as ParteneriRouteImport } from './routes/parteneri'
 import { Route as InregistrareRouteImport } from './routes/inregistrare'
+import { Route as GenerareAvansataRouteImport } from './routes/generare-avansata'
 import { Route as FormRouteImport } from './routes/form'
 import { Route as FiltrareEvenimenteRouteImport } from './routes/filtrare-evenimente'
 import { Route as EvenimenteArhivateRouteImport } from './routes/evenimente-arhivate'
@@ -56,6 +57,11 @@ const ParteneriRoute = ParteneriRouteImport.update({
 const InregistrareRoute = InregistrareRouteImport.update({
   id: '/inregistrare',
   path: '/inregistrare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GenerareAvansataRoute = GenerareAvansataRouteImport.update({
+  id: '/generare-avansata',
+  path: '/generare-avansata',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FormRoute = FormRouteImport.update({
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/evenimente-arhivate': typeof EvenimenteArhivateRoute
   '/filtrare-evenimente': typeof FiltrareEvenimenteRoute
   '/form': typeof FormRoute
+  '/generare-avansata': typeof GenerareAvansataRoute
   '/inregistrare': typeof InregistrareRoute
   '/parteneri': typeof ParteneriRoute
   '/parteneri-adaugare': typeof ParteneriAdaugareRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/evenimente-arhivate': typeof EvenimenteArhivateRoute
   '/filtrare-evenimente': typeof FiltrareEvenimenteRoute
   '/form': typeof FormRoute
+  '/generare-avansata': typeof GenerareAvansataRoute
   '/inregistrare': typeof InregistrareRoute
   '/parteneri': typeof ParteneriRoute
   '/parteneri-adaugare': typeof ParteneriAdaugareRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/evenimente-arhivate': typeof EvenimenteArhivateRoute
   '/filtrare-evenimente': typeof FiltrareEvenimenteRoute
   '/form': typeof FormRoute
+  '/generare-avansata': typeof GenerareAvansataRoute
   '/inregistrare': typeof InregistrareRoute
   '/parteneri': typeof ParteneriRoute
   '/parteneri-adaugare': typeof ParteneriAdaugareRoute
@@ -195,6 +204,7 @@ export interface FileRouteTypes {
     | '/evenimente-arhivate'
     | '/filtrare-evenimente'
     | '/form'
+    | '/generare-avansata'
     | '/inregistrare'
     | '/parteneri'
     | '/parteneri-adaugare'
@@ -215,6 +225,7 @@ export interface FileRouteTypes {
     | '/evenimente-arhivate'
     | '/filtrare-evenimente'
     | '/form'
+    | '/generare-avansata'
     | '/inregistrare'
     | '/parteneri'
     | '/parteneri-adaugare'
@@ -235,6 +246,7 @@ export interface FileRouteTypes {
     | '/evenimente-arhivate'
     | '/filtrare-evenimente'
     | '/form'
+    | '/generare-avansata'
     | '/inregistrare'
     | '/parteneri'
     | '/parteneri-adaugare'
@@ -256,6 +268,7 @@ export interface RootRouteChildren {
   EvenimenteArhivateRoute: typeof EvenimenteArhivateRoute
   FiltrareEvenimenteRoute: typeof FiltrareEvenimenteRoute
   FormRoute: typeof FormRoute
+  GenerareAvansataRoute: typeof GenerareAvansataRoute
   InregistrareRoute: typeof InregistrareRoute
   ParteneriRoute: typeof ParteneriRoute
   ParteneriAdaugareRoute: typeof ParteneriAdaugareRoute
@@ -307,6 +320,13 @@ declare module '@tanstack/react-router' {
       path: '/inregistrare'
       fullPath: '/inregistrare'
       preLoaderRoute: typeof InregistrareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/generare-avansata': {
+      id: '/generare-avansata'
+      path: '/generare-avansata'
+      fullPath: '/generare-avansata'
+      preLoaderRoute: typeof GenerareAvansataRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/form': {
@@ -408,6 +428,7 @@ const rootRouteChildren: RootRouteChildren = {
   EvenimenteArhivateRoute: EvenimenteArhivateRoute,
   FiltrareEvenimenteRoute: FiltrareEvenimenteRoute,
   FormRoute: FormRoute,
+  GenerareAvansataRoute: GenerareAvansataRoute,
   InregistrareRoute: InregistrareRoute,
   ParteneriRoute: ParteneriRoute,
   ParteneriAdaugareRoute: ParteneriAdaugareRoute,

@@ -5,6 +5,7 @@ import bcrLogo from "../assets/bcr_logo.png";
 import ReportCard from "../components/reports/ReportCard";
 import ReportSection from "../components/reports/ReportSection";
 import { type ReportData } from "../components/reports/ReportCard";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/rapoarte")({
   component: RouteComponent,
@@ -33,9 +34,9 @@ function RouteComponent() {
           <div className="mt-2 h-1.5 w-20 bg-primary rounded-full"></div>
         </div>
 
-        <button className="flex items-center justify-center gap-2 px-8 py-3 bg-primary rounded-2xl shadow-md text-sm font-bold text-white transition-all hover:shadow-lg active:scale-95 cursor-pointer">
+        <Link to="/generare-avansata" className="flex items-center justify-center gap-2 px-8 py-3 bg-primary rounded-2xl shadow-md text-sm font-bold text-white transition-all hover:shadow-lg active:scale-95 cursor-pointer">
           Generare Avansată
-        </button>
+        </Link>
       </div>
 
       <div className="flex flex-col gap-12">

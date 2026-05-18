@@ -1,28 +1,23 @@
 import EventCard from "./EventCard";
-import { eventData } from "./eventMainType";
+import { type Section } from "./eventMainType";
 
 interface EventListProps {
-    maxItems?: number;
-    isArchived?: boolean;
+  events: Section[][]; 
+  isArchived: boolean;
 }
 
-const EventList = ({ maxItems, isArchived = false } : EventListProps) => {
-  const allEvents = [eventData, eventData, eventData, eventData, eventData, eventData, eventData];
-
-  const displayedEvents = maxItems ? allEvents.slice(0, maxItems) : allEvents;
-
+const EventList = ({ events, isArchived }: EventListProps) => {
   return (
     <div className="flex flex-col w-full max-w-7xl gap-8">
-      {displayedEvents.map((singleEvent, index) => (
+      {events.map((singleEvent, index) => (
         <EventCard key={index} data={singleEvent} isArchived={isArchived ? true : false}/>
       ))}
 
-      {allEvents.length === 0 && (
+      {events.length === 0 && (
         <p className="text-center text-gray-400 py-10">
           Momentan nu sunt evenimente disponibile.
         </p>
       )}
-
     </div>
   );
 };

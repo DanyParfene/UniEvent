@@ -10,68 +10,86 @@ import { Link } from "@tanstack/react-router";
 import { useFaculty } from "../../context/FacultyContext";
 
 const Header = () => {
-  const { changeFaculty } = useFaculty();
+  const { state } = useFaculty();
+  const { currentFaculty } = state;
 
   const userRole = "Super Administrator"; // role-ul asta trebuie schimbat cumva din context
+
+  let filteredFaculties = faculties.filter((f) => f.id !== currentFaculty);
+
+  if (currentFaculty !== "UVT") {
+    filteredFaculties = [
+      { id: "UVT", label: "UVT", to: "/dashboard" },
+      ...filteredFaculties,
+    ];
+  } else {
+    filteredFaculties = [
+      ...filteredFaculties,
+    ];
+  }
 
   return (
     <header className="sticky top-0 left-0 z-50 w-full bg-linear-to-r from-primary to-secondary text-white shadow-md font-[Source_Sans_Pro]">
       <div className="relative mx-auto flex h-16 w-full items-center px-6">
-    
-        <Link
-          to={"/dashboard"}
-          className="w-6 h-6"
-        >
+        <Link to={"/dashboard"} className="w-6 h-6">
           <img
             src={shortLogo}
             alt="Logo-uvt"
             className="w-full h-full object-contain"
           />
         </Link>
-        
+
         <nav className="absolute left-1/2 -translate-x-1/2">
           <ul className="flex items-center gap-10 text-xl font-semibold">
-            
             {userRole === "Super Administrator" && (
               <HeaderDropdown
                 title="Facultăți"
                 description="Alege facultatea asupra căreia dorești să efectuezi acțiuni."
                 icon={FacultyIcon}
-                items={faculties}
+                items={filteredFaculties}
                 className="md:grid-cols-3 lg:grid-cols-4"
-                onClick={() => changeFaculty("UVT")}
+                onClick={() => {}}
               />
             )}
 
             <li>
-              <Link to="/evenimente" className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">
+              <Link
+                to="/evenimente"
+                search={{
+                  page: 1,
+                }}
+                className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer"
+              >
                 <EventIcon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary" />
-                <h3 className="hidden md:block">
-                  Evenimente
-                </h3>
+                <h3 className="hidden md:block">Evenimente</h3>
               </Link>
             </li>
             <li>
-              <Link to="/parteneri" className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">
+              <Link
+                to="/parteneri"
+                className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer"
+              >
                 <PartnerIcon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary" />
-                <h3 className="hidden md:block">
-                  Parteneri
-                </h3>
+                <h3 className="hidden md:block">Parteneri</h3>
               </Link>
             </li>
             <li>
-              <Link to="/rapoarte" className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">
+              <Link
+                to="/rapoarte"
+                className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer"
+              >
                 <ReportIcon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary" />
-                <h3 className="hidden md:block">
-                  Rapoarte
-                </h3>
+                <h3 className="hidden md:block">Rapoarte</h3>
               </Link>
             </li>
           </ul>
         </nav>
 
-        <Link to="/cont" className="flex justify-center items-center ml-auto cursor-pointer transition-colors">
-          <AccountIcon className="w-10 h-16 fill-text-primary" />
+        <Link
+          to="/cont"
+          className="flex justify-center items-center ml-auto cursor-pointer transition-colors"
+        >
+          <AccountIcon className="w-9 h-9 fill-text-primary" />
         </Link>
       </div>
     </header>

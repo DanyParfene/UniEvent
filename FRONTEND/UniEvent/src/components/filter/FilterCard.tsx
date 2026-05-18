@@ -16,14 +16,18 @@ const partners: Partner[] = [
   { id: 3, name: "BCR", logo: bcrLogo },
 ];
 
-const FilterCard = () => {
+interface FilterCardProps {
+  title: string;
+}
+
+const FilterCard = ( { title } : FilterCardProps ) => {
   const actionButtonStyle = "w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary transition-all duration-300 hover:bg-primary hover:text-text-primary cursor-pointer active:scale-95 shrink-0";
 
   return (
     <div className="w-full max-w-2xl bg-white border border-gray-200 px-6 py-8 sm:px-10 shadow-xl rounded-2xl flex flex-col min-h-[480px] h-auto">
       
       <h1 className="font-[Sans-Source-Now] text-2xl font-bold text-center w-full mb-6 text-gray-800">
-        Filtrare căutare
+        {title}
       </h1>
 
       <div className="flex flex-col gap-4 w-full">

@@ -4,6 +4,7 @@ import Carousel from "../components/carousel/Carousel";
 import EventList from "../components/events/EventList";
 import nokiaLogo from "../assets/nokia_logo.png";
 import { Link } from "@tanstack/react-router";
+import { eventData } from "../components/events/eventMainType";
 
 export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
@@ -32,6 +33,19 @@ function RouteComponent() {
       { name: "Iun", value: 150 },
     ],
   };
+
+  const allEvents = [
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+  ];
+  const dashboardEvents = allEvents.slice(0, 5);
+  const hasEvents = allEvents.length > 0;
+
   return (
     <>
       <Bento stats={mockBentoData} />
@@ -43,19 +57,32 @@ function RouteComponent() {
           <div className="mt-2 h-1 w-20 bg-primary mx-auto rounded-full"></div>
         </div>
 
-        <EventList maxItems={5} />
+        {!hasEvents ? (
+          <div className="py-10 text-center">
+            <p className="text-lg font-bold text-gray-400">
+              Nu exista evenimente disponibile!
+            </p>
+          </div>
+        ) : (
+          <>
+            <EventList events={dashboardEvents} />
 
-        <div className="mt-12 md:mt-16">
-          <Link
-            to="/evenimente"
-            className="inline-block px-10 py-4 bg-white border border-gray-200 
-                     rounded-2xl shadow-sm text-sm font-black text-primary 
-                     transition-all duration-300 hover:bg-primary hover:text-white 
-                     hover:shadow-lg active:scale-95"
-          >
-            Vezi mai multe evenimente
-          </Link>
-        </div>
+            <div className="mt-12 md:mt-16">
+              <Link
+                to="/evenimente"
+                search={{
+                  page: 1,
+                }}
+                className="inline-block px-10 py-4 bg-white border border-gray-200 
+                         rounded-2xl shadow-sm text-sm font-black text-primary 
+                         transition-all duration-300 hover:bg-primary hover:text-white 
+                         hover:shadow-lg active:scale-95"
+              >
+                Vezi mai multe evenimente
+              </Link>
+            </div>
+          </>
+        )}
       </div>
       <Carousel />
     </>

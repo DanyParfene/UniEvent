@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import EventList from "../components/events/EventList";
-import { Link } from "@tanstack/react-router";
+import { eventData } from "../components/events/eventMainType";
 
 export const Route = createFileRoute("/evenimente-arhivate")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const allEvents = [eventData, eventData, eventData, eventData];
+
   return (
     <div className="w-full max-w-7xl px-4 py-10 md:px-12">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -19,7 +21,7 @@ function RouteComponent() {
           </div>
         </div>
       </div>
-      <EventList isArchived = {true}/>
+      <EventList events={allEvents} isArchived = {true}/>
     </div>
   );
 }

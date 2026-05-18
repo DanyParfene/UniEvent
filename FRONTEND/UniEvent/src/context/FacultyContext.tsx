@@ -6,6 +6,20 @@ import {
   type ReactNode,
 } from "react";
 
+import uvtLogo from "../assets/uvt-long.png"
+import arteLogo from "../assets/ARTE-logo.png"
+import cbgLogo from "../assets/CBG-logo.png"
+import dreptLogo from "../assets/DREPT-logo.png"
+import feeaLogo from "../assets/FEAA-logo.png"
+import fefsLogo from "../assets/FEFS-logo.png"
+import ffmLogo from "../assets/FFM-logo.png"
+import infoLogo from "../assets/INFO-logo.png"
+import fliftLogo from "../assets/FLIFT-logo.png"
+import fmtLogo from "../assets/FMT-logo.png"
+import fpseLogo from "../assets/FPSExDPPD-logo.png"
+import fsasLogo from "../assets/FSAS-logo.png"
+import fsgcLogo from "../assets/FSGC-logo.png"
+
 export type FacultyId =
   | "UVT"
   | "ARTE"
@@ -26,6 +40,22 @@ interface FacultyTheme {
   secondary: string;
 }
 
+export const facultyLogoMap: Record<FacultyId, string> = {
+  UVT: uvtLogo,
+  ARTE: arteLogo,
+  CBG: cbgLogo,
+  DREPT: dreptLogo,
+  FEAA: feeaLogo,
+  FEFS: fefsLogo,
+  FFM: ffmLogo,
+  INFO: infoLogo,
+  FLIFT: fliftLogo,
+  FMT: fmtLogo,
+  FPSE: fpseLogo,
+  FSAS: fsasLogo,
+  FSGC: fsgcLogo,
+};
+
 const facultyThemeMap: Record<FacultyId, FacultyTheme> = {
   UVT: { primary: "primary-uvt", secondary: "secondary-uvt" },
   ARTE: { primary: "primary-arte", secondary: "secondary-arte" },
@@ -45,6 +75,7 @@ const facultyThemeMap: Record<FacultyId, FacultyTheme> = {
 interface FacultyState {
   isAdmin: boolean;
   currentFaculty: FacultyId;
+  currentLogo: string;
 }
 
 type FacultyAction =
@@ -54,12 +85,14 @@ type FacultyAction =
 interface FacultyContextType {
   state: FacultyState;
   changeFaculty: (faculty: FacultyId) => void;
+  // currentLogo: string;
   setIsAdmin: () => void;
 }
 
 const initialState: FacultyState = {
   isAdmin: true,
-  currentFaculty: sessionStorage.getItem("user_faculty") as FacultyId | "UVT",
+  currentFaculty: sessionStorage.getItem("user_faculty") as FacultyId || "UVT",
+  currentLogo: uvtLogo,
 };
 
 const FacultyReducer = (
@@ -74,6 +107,7 @@ const FacultyReducer = (
       return {
         ...state,
         currentFaculty: action.payload,
+        currentLogo: facultyLogoMap[action.payload],
       };
     case "SET_IS_ADMIN":
       return {
@@ -93,7 +127,6 @@ export const FacultyProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const root = document.documentElement;
     const currentTheme = facultyThemeMap[state.currentFaculty];
-    console.log(currentTheme);
 
     if (currentTheme) {
       root.style.setProperty(
@@ -115,6 +148,8 @@ export const FacultyProvider = ({ children }: { children: ReactNode }) => {
       payload: faculty,
     });
   };
+
+
 
   const setIsAdmin = () => {
     dispatch({ type: "SET_IS_ADMIN" });

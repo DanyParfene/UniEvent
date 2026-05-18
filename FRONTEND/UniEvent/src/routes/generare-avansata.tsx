@@ -1,14 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 import FilterCard from '../components/filter/FilterCard'
 
-export const Route = createFileRoute('/filtrare-evenimente')({
+export const Route = createFileRoute('/generare-avansata')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
   return (
     <div className='w-full flex flex-col items-center justify-center bg-gray-50 py-12 px-4 min-h-[calc(100vh-5rem)]'>
-      <FilterCard title="Filtrare evenimente"/>
+      <FilterCard title="Generare avansată"/>
     </div>
   )
 }

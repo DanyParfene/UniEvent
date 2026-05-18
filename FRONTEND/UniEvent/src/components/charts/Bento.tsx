@@ -1,7 +1,8 @@
 import CustomActiveShapePieChart from "./PieChart";
-import longLogo from "../../assets/uvt-long.png";
 import PressIcon from "../../assets/press.svg?react";
 import { Link } from "@tanstack/react-router";
+import { useFaculty } from "../../context/FacultyContext";
+
 
 interface BentoStats {
   upcomingEvents: string[];
@@ -14,6 +15,8 @@ interface BentoStats {
 }
 
 const Bento = ({ stats }: { stats: BentoStats }) => {
+  const { state } = useFaculty();
+
   return (
     <div className="p-6 flex items-center justify-center">
       <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-4 md:grid-rows-4 gap-4 h-auto md:h-[750px]">
@@ -45,7 +48,7 @@ const Bento = ({ stats }: { stats: BentoStats }) => {
         </div>
 
         <div className="md:col-span-1 md:row-span-1 bg-gradient-to-bl from-secondary to-primary rounded-3xl p-6 flex items-center justify-center text-white text-4xl font-black h-full">
-          <img src={longLogo} alt="UVT" className="p-6" />
+          <img src={state.currentLogo} alt={`${state.currentFaculty} Logo`} className="p-6" />
         </div>
 
         <div className="md:col-span-1 md:row-span-1 bg-gradient-to-br from-secondary to-primary rounded-3xl p-6 flex flex-col justify-center h-full">
