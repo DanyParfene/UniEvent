@@ -1,12 +1,10 @@
 import Accordion from "../common/Accordion";
 import Input from "../common/Input";
-import RedirectButton from "../common/RedirectButton";
 import type { Partner } from "../partners/PartnerCard";
 import nokiaLogo from "../../assets/nokia_logo.png";
 import continentalLogo from "../../assets/continental_logo.png";
 import atosLogo from "../../assets/atos_logo.png";
 import bcrLogo from "../../assets/bcr_logo.png";
-import { Link } from "@tanstack/react-router";
 
 const partners: Partner[] = [
   { id: 0, name: "Nokia", logo: nokiaLogo },
@@ -18,17 +16,19 @@ const partners: Partner[] = [
 
 interface FilterCardProps {
   title: string;
+  onSearch: () => void;
 }
 
-const FilterCard = ( { title } : FilterCardProps ) => {
-  const actionButtonStyle = "w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary transition-all duration-300 hover:bg-primary hover:text-text-primary cursor-pointer active:scale-95 shrink-0";
-
+const FilterCard = ( { title, onSearch } : FilterCardProps ) => {
   return (
     <div className="w-full max-w-2xl bg-white border border-gray-200 px-6 py-8 sm:px-10 shadow-xl rounded-2xl flex flex-col min-h-[480px] h-auto">
       
-      <h1 className="font-[Sans-Source-Now] text-2xl font-bold text-center w-full mb-6 text-gray-800">
-        {title}
-      </h1>
+      <div className="mb-10 text-center">
+        <h2 className="text-3xl font-bold text-text-secondary">
+          {title}
+        </h2>
+        <div className="mt-2 h-1 w-20 bg-primary mx-auto rounded-full"></div>
+      </div>
 
       <div className="flex flex-col gap-4 w-full">
         <Accordion title="General" initialOpenValue={true}>
@@ -75,13 +75,12 @@ const FilterCard = ( { title } : FilterCardProps ) => {
       </div>
 
       <div className="mt-auto pt-8 flex justify-center w-full">
-        <Link 
-          to="/filtrare-evenimente" 
-          title="Caută"
+        <button 
+          onClick={onSearch}
           className="mt-6 sm:mt-0 sm:ml-6 w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary transition-all duration-300 hover:bg-primary hover:text-text-primary cursor-pointer active:scale-95 shrink-0"
         >
           Căutare
-        </Link>
+        </button>
       </div>
     </div>
   );

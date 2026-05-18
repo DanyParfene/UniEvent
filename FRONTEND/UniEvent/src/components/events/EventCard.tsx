@@ -4,6 +4,7 @@ import type { Section } from "./eventMainType";
 interface EventCardProps {
   data: Section[];
   isArchived?: boolean;
+  showButton?: boolean;
 }
 
 const getEventField = (data: Section[], label: string): string => {
@@ -14,7 +15,7 @@ const getEventField = (data: Section[], label: string): string => {
   for (const section of data) {
     const field = section.fields.find((f) => f.label === label);
     if (field) {
-      if (Array.isArray(field.value)) return ""; 
+      if (Array.isArray(field.value)) return "";
       return String(field.value);
     }
   }
@@ -22,7 +23,11 @@ const getEventField = (data: Section[], label: string): string => {
   return "";
 };
 
-const EventCard = ({ data, isArchived = false }: EventCardProps) => {
+const EventCard = ({
+  data,
+  isArchived = false,
+  showButton = true,
+}: EventCardProps) => {
   return (
     <div
       className="group max-w-7xl w-full mx-auto 
@@ -52,17 +57,19 @@ const EventCard = ({ data, isArchived = false }: EventCardProps) => {
         </p>
       </div>
 
-      <Link
-        to = {!isArchived ? "/eveniment" : "/eveniment-arhivat"}
-        className="mt-6 sm:mt-0 sm:ml-6 w-full sm:w-auto px-8 py-3 
+      {showButton && (
+        <Link
+          to={!isArchived ? "/eveniment" : "/eveniment-arhivat"}
+          className="mt-6 sm:mt-0 sm:ml-6 w-full sm:w-auto px-8 py-3 
                         bg-white border border-gray-200 rounded-2xl shadow-sm 
                         text-sm font-black text-primary 
                         transition-all duration-300 
                         hover:bg-primary hover:text-text-primary cursor-pointer 
                         active:scale-95 shrink-0"
-      >
-        Detalii eveniment
-      </Link>
+        >
+          Detalii eveniment
+        </Link>
+      )}
     </div>
   );
 };

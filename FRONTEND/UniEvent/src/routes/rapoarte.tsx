@@ -31,7 +31,7 @@ function RouteComponent() {
           <h1 className="text-3xl md:text-5xl font-bold text-text-secondary tracking-tight">
             Rapoarte
           </h1>
-          <div className="mt-2 h-1.5 w-20 bg-primary rounded-full"></div>
+          <div className="mt-2 h-1 w-20 bg-primary rounded-full"></div>
         </div>
 
         <Link to="/generare-avansata" className="flex items-center justify-center gap-2 px-8 py-3 bg-primary rounded-2xl shadow-md text-sm font-bold text-white transition-all hover:shadow-lg active:scale-95 cursor-pointer">
