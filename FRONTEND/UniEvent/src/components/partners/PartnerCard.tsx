@@ -35,10 +35,7 @@ export const PartnerCard = ({
     : "group hover:shadow-xl hover:shadow-secondary/10 ";
 
   const baseImageClasses =
-    "max-h-full max-w-35 object-contain filter opacity-80 transition-all duration-300";
-  const hoverImageClasses = disableHover
-    ? ""
-    : "group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110";
+    "max-h-full max-w-35 object-contain filter transition-all duration-300";
 
   const baseTextClasses =
     "text-sm font-semibold text-gray-500 transition-colors duration-300";
@@ -84,7 +81,7 @@ export const PartnerCard = ({
         <img
           src={logo}
           alt={`${name} logo`}
-          className={`${baseImageClasses} ${hoverImageClasses}`}
+          className={`${baseImageClasses}`}
         />
       </div>
 
