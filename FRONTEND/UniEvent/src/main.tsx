@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import { routeTree } from "./routeTree.gen.ts";
 import "./index.css";
 import { FacultyProvider } from "./context/FacultyContext.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
 
 const queryClient = new QueryClient();
 
@@ -24,10 +25,12 @@ declare module "@tanstack/react-router" {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <FacultyProvider>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </FacultyProvider>
+    <AuthProvider>
+      <FacultyProvider>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </FacultyProvider>
+    </AuthProvider>
   </StrictMode>,
 );

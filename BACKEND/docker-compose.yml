@@ -1,0 +1,110 @@
+services:
+  mariadb:
+    image: 'mariadb:11'
+    container_name: uvt_events_db
+    environment:
+      MARIADB_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MARIADB_DATABASE: '${DB_DATABASE}'
+      MARIADB_USER: '${DB_USERNAME}'
+      MARIADB_PASSWORD: '${DB_PASSWORD}'
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    volumes:
+      - 'mariadb_data:/var/lib/mysql'
+      - './docker/mysql/init:/docker-entrypoint-initdb.d'
+    networks:
+      - uvt_network
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    restart: unless-stopped
+
+  redis:
+    image: 'redis:alpine'
+    container_name: uvt_events_redis
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    volumes:
+      - 'redis_data:/data'
+    networks:
+      - uvt_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: uvt_events_app
+    working_dir: /var/www/html
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    volumes:
+      - './:/var/www/html'
+    ports:
+      - '${APP_PORT:-8000}:8000'
+    env_file:
+      - .env
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - uvt_network
+    restart: unless-stopped
+
+  php-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: uvt_events_worker
+    working_dir: /var/www/html
+    command: php artisan queue:work redis --verbose --tries=3 --timeout=90
+    volumes:
+      - './:/var/www/html'
+    env_file:
+      - .env
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - uvt_network
+    restart: unless-stopped
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: uvt_events_scheduler
+    working_dir: /var/www/html
+    command: php artisan schedule:work
+    volumes:
+      - './:/var/www/html'
+    env_file:
+      - .env
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - uvt_network
+    restart: unless-stopped
+
+volumes:
+  mariadb_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  uvt_network:
+    driver: bridge
