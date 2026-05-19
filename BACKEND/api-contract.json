@@ -1,0 +1,754 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "UVT Events Platform API Contract",
+  "version": "1.0.0",
+  "generatedFrom": "Laravel routes, FormRequests, API Resources (2026-05-18)",
+  "basePath": "/api",
+  "contentType": "application/json",
+  "authentication": {
+    "primary": {
+      "type": "bearer",
+      "header": "Authorization",
+      "format": "Bearer {token}",
+      "obtainFrom": ["POST /api/auth/register", "POST /api/auth/login"],
+      "tokenField": "data.token"
+    },
+    "spaOptional": {
+      "type": "sanctum-stateful",
+      "note": "Cookie-based session when frontend origin is listed in SANCTUM_STATEFUL_DOMAINS; same endpoints."
+    }
+  },
+  "envelopes": {
+    "success": {
+      "shape": { "data": "T | null", "message": "string (optional)", "meta": "pagination (optional)" },
+      "statusCodes": [200, 201, 202]
+    },
+    "error": {
+      "shape": { "message": "string", "errors": "object<string, string[]> (optional)" },
+      "statusCodes": [400, 401, 403, 404, 422, 429]
+    },
+    "noContent": {
+      "status": 204,
+      "body": null
+    },
+    "exceptions": {
+      "GET /api/health": "No envelope — raw { status: \"ok\" }",
+      "GET /api/user": "No envelope — raw User model JSON (legacy Laravel route)"
+    }
+  },
+  "rateLimits": {
+    "POST /api/auth/login": "5 requests/minute per IP",
+    "GET and PUT (authenticated)": "60 requests/minute per user id or IP",
+    "POST /api/generate-report": "2 requests/minute per user id or IP"
+  },
+  "sharedTypes": {
+    "uuid": { "type": "string", "format": "uuid" },
+    "dateYmd": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "iso8601": { "type": "string", "format": "date-time" },
+    "roleName": {
+      "type": "string",
+      "enum": ["super_administrator", "department_administrator", "coordinator"]
+    },
+    "eventMode": { "type": "string", "enum": ["physical", "hybrid", "online"] },
+    "eventHasLivestream": { "type": "string", "enum": ["YES", "NO"] },
+    "eventStatus": { "type": "string", "enum": ["draft", "published", "archived"] },
+    "eventMetricCategory": {
+      "type": "string",
+      "enum": [
+        "album_foto",
+        "facebook",
+        "instagram",
+        "tiktok",
+        "comunicat_presa",
+        "aparitii_presa",
+        "statistici",
+        "podcast"
+      ]
+    },
+    "reportType": { "type": "string", "enum": ["partner", "normal"] },
+    "password": {
+      "type": "string",
+      "description": "Laravel Password::defaults() — typically min. 8 characters; tests use values like Password1!"
+    },
+    "paginationMeta": {
+      "type": "object",
+      "properties": {
+        "current_page": { "type": "integer" },
+        "per_page": { "type": "integer", "const": 15 },
+        "total": { "type": "integer" },
+        "last_page": { "type": "integer" }
+      },
+      "required": ["current_page", "per_page", "total", "last_page"]
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "department": { "type": "string" },
+        "current_role": { "$ref": "#/sharedTypes/roleName" }
+      },
+      "required": ["id", "name", "email", "department", "current_role"]
+    },
+    "userAdmin": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "current_role": { "$ref": "#/sharedTypes/roleName" }
+      },
+      "required": ["id", "name", "email", "current_role"]
+    },
+    "authTokenBundle": {
+      "type": "object",
+      "properties": {
+        "user": { "$ref": "#/sharedTypes/user" },
+        "token": { "type": "string" },
+        "token_type": { "type": "string", "const": "Bearer" }
+      },
+      "required": ["user", "token", "token_type"]
+    },
+    "partner": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/sharedTypes/uuid" },
+        "name": { "type": "string" },
+        "logo_path": { "type": ["string", "null"] },
+        "created_at": { "$ref": "#/sharedTypes/iso8601" },
+        "updated_at": { "$ref": "#/sharedTypes/iso8601" }
+      },
+      "required": ["id", "name", "logo_path", "created_at", "updated_at"]
+    },
+    "eventMetric": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/sharedTypes/uuid" },
+        "category": { "$ref": "#/sharedTypes/eventMetricCategory" },
+        "link": { "type": "string", "format": "uri" },
+        "reach": { "type": "integer", "minimum": 0 },
+        "engagement": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["id", "category", "link", "reach", "engagement"]
+    },
+    "event": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/sharedTypes/uuid" },
+        "department": { "type": "string" },
+        "name": { "type": "string" },
+        "banner_url": { "type": "string" },
+        "start_date": { "$ref": "#/sharedTypes/dateYmd" },
+        "finish_date": { "$ref": "#/sharedTypes/dateYmd" },
+        "edition": { "type": "integer", "minimum": 1 },
+        "organizer": { "type": "string" },
+        "description": { "type": "string" },
+        "location": { "type": "string" },
+        "guests": { "type": "array", "items": { "type": "string" } },
+        "mode": { "$ref": "#/sharedTypes/eventMode" },
+        "estimated_participants": { "type": "integer", "minimum": 1 },
+        "target_group": { "type": "string" },
+        "has_livestream": { "$ref": "#/sharedTypes/eventHasLivestream" },
+        "coordinator_name": { "type": "string" },
+        "coordinator_email": { "type": "string", "format": "email" },
+        "coordinator_phone": { "type": "string" },
+        "additional_info": { "type": ["string", "null"] },
+        "status": { "$ref": "#/sharedTypes/eventStatus" },
+        "partners": { "type": "array", "items": { "$ref": "#/sharedTypes/partner" } },
+        "metrics": { "type": "array", "items": { "$ref": "#/sharedTypes/eventMetric" } },
+        "created_at": { "$ref": "#/sharedTypes/iso8601" },
+        "updated_at": { "$ref": "#/sharedTypes/iso8601" }
+      },
+      "required": [
+        "id",
+        "department",
+        "name",
+        "banner_url",
+        "start_date",
+        "finish_date",
+        "edition",
+        "organizer",
+        "description",
+        "location",
+        "guests",
+        "mode",
+        "estimated_participants",
+        "target_group",
+        "has_livestream",
+        "coordinator_name",
+        "coordinator_email",
+        "coordinator_phone",
+        "additional_info",
+        "status",
+        "created_at",
+        "updated_at"
+      ],
+      "description": "partners and metrics are present when relations are eager-loaded (create, show, update, list)."
+    },
+    "statisticsDashboard": {
+      "type": "object",
+      "properties": {
+        "best_partner": { "oneOf": [{ "$ref": "#/sharedTypes/partner" }, { "type": "null" }] },
+        "last_month_press_aparitions": { "type": "integer" },
+        "next_5_events": {
+          "oneOf": [
+            { "type": "string", "const": "" },
+            {
+              "type": "array",
+              "maxItems": 5,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "$ref": "#/sharedTypes/uuid" },
+                  "name": { "type": "string" }
+                },
+                "required": ["id", "name"]
+              }
+            }
+          ]
+        },
+        "best_organizator": { "type": ["string", "null"] },
+        "most_participants": { "type": "integer" },
+        "number_of_events_per_month": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "month": { "type": "string", "description": "Romanian short label, e.g. Ian, Feb, Mar" },
+              "count": { "type": "integer" }
+            },
+            "required": ["month", "count"]
+          }
+        }
+      },
+      "required": [
+        "best_partner",
+        "last_month_press_aparitions",
+        "next_5_events",
+        "best_organizator",
+        "most_participants",
+        "number_of_events_per_month"
+      ]
+    }
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "auth": false,
+      "description": "Liveness check",
+      "response": {
+        "status": 200,
+        "body": { "status": "ok" },
+        "envelope": false
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/user",
+      "auth": "sanctum",
+      "description": "Legacy session user probe — prefer auth login/register user shape",
+      "response": {
+        "status": 200,
+        "body": {
+          "id": "integer",
+          "name": "string",
+          "email": "string",
+          "department": "string | null",
+          "email_verified_at": "iso8601 | null",
+          "created_at": "iso8601",
+          "updated_at": "iso8601"
+        },
+        "envelope": false,
+        "note": "Does NOT include current_role or Bearer token."
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "auth": false,
+      "requestBody": {
+        "required": ["name", "email", "password", "department"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 255 },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 255,
+            "pattern": ".+@e-uvt\\.ro$",
+            "description": "Must be unique; case-insensitive @e-uvt.ro domain"
+          },
+          "password": { "$ref": "#/sharedTypes/password" },
+          "department": { "type": "string", "maxLength": 255 }
+        }
+      },
+      "response": {
+        "status": 201,
+        "envelope": true,
+        "data": { "$ref": "#/sharedTypes/authTokenBundle" },
+        "message": "Registration successful.",
+        "sideEffects": "Assigns role coordinator"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "auth": false,
+      "throttle": "login",
+      "requestBody": {
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" }
+        }
+      },
+      "response": {
+        "status": 200,
+        "envelope": true,
+        "data": { "$ref": "#/sharedTypes/authTokenBundle" },
+        "message": "Login successful."
+      },
+      "errors": [{ "status": 401, "message": "auth.failed translation" }]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/logout",
+      "auth": "sanctum",
+      "response": { "status": 204, "body": null }
+    },
+    {
+      "method": "POST",
+      "path": "/auth/forgot-password",
+      "auth": false,
+      "requestBody": {
+        "required": ["email"],
+        "properties": { "email": { "type": "string", "format": "email" } }
+      },
+      "response": {
+        "status": 200,
+        "envelope": true,
+        "data": null,
+        "message": "If an account exists for this email, password reset instructions have been sent."
+      },
+      "errors": [{ "status": 429, "when": "reset throttled" }]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/reset-password",
+      "auth": false,
+      "requestBody": {
+        "required": ["email", "email_token", "new_password"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "email_token": { "type": "string", "description": "Token from reset email" },
+          "new_password": { "$ref": "#/sharedTypes/password" }
+        }
+      },
+      "response": { "status": 200, "envelope": true, "data": null, "message": "Password reset status string" },
+      "errors": [{ "status": 422, "when": "invalid token or password rules" }]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/change-password",
+      "auth": "sanctum",
+      "requestBody": {
+        "required": ["old_password", "new_password"],
+        "properties": {
+          "old_password": { "type": "string" },
+          "new_password": {
+            "$ref": "#/sharedTypes/password",
+            "description": "Must differ from old_password"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "envelope": true,
+        "data": null,
+        "message": "Password updated successfully."
+      },
+      "errors": [{ "status": 422, "field": "old_password", "when": "wrong current password" }]
+    },
+    {
+      "method": "GET",
+      "path": "/partners",
+      "auth": "sanctum",
+      "roles": "any authenticated",
+      "description": "Active (non-soft-deleted) partners ordered by name",
+      "response": {
+        "status": 200,
+        "envelope": true,
+        "data": { "type": "array", "items": { "$ref": "#/sharedTypes/partner" } }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/partners",
+      "auth": "sanctum",
+      "roles": ["super_administrator", "department_administrator"],
+      "requestBody": {
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 255 },
+          "logo_path": { "type": "string", "maxLength": 2048, "nullable": true }
+        }
+      },
+      "response": {
+        "status": 201,
+        "envelope": true,
+        "data": { "$ref": "#/sharedTypes/partner" },
+        "message": "Partner created successfully."
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/partners/{partner}",
+      "auth": "sanctum",
+      "roles": ["super_administrator", "department_administrator"],
+      "pathParams": { "partner": { "$ref": "#/sharedTypes/uuid" } },
+      "requestBody": {
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 255 },
+          "logo_path": { "type": "string", "maxLength": 2048, "nullable": true }
+        }
+      },
+      "response": {
+        "status": 200,
+        "envelope": true,
+        "data": { "$ref": "#/sharedTypes/partner" },
+        "message": "Partner updated successfully."
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/partners/{partner}",
+      "auth": "sanctum",
+      "roles": ["super_administrator", "department_administrator"],
+      "pathParams": { "partner": { "$ref": "#/sharedTypes/uuid" } },
+      "description": "Soft delete — hidden from GET /partners; still visible on linked event detail",
+      "response": { "status": 204, "body": null }
+    },
+    {
+      "method": "POST",
+      "path": "/event",
+      "auth": "sanctum",
+      "roles": ["super_administrator", "department_administrator", "coordinator"],
+      "requestBody": {
+        "description": "Full event create payload",
+        "required": [
+          "name",
+          "banner_url",
+          "start_date",
+          "finish_date",
+          "edition",
+          "organizer",
+          "description",
+          "location",
+          "mode",
+          "estimated_participants",
+          "target_group",
+          "has_livestream",
+          "coordinator_name",
+          "coordinator_email",
+          "coordinator_phone",
+          "status"
+        ],
+        "optional": ["guests", "additional_info", "partner_ids", "department"],
+        "roleRules": {
+          "super_administrator": { "department": "required string max 255" },
+          "department_administrator": { "department": "set automatically from user — do not send" },
+          "coordinator": {
+            "coordinator_email": "must equal authenticated user email",
+            "department": "set from user — do not send"
+          }
+        },
+        "properties": {
+          "name": { "type": "string", "maxLength": 255 },
+          "banner_url": { "type": "string", "maxLength": 2048 },
+          "start_date": { "$ref": "#/sharedTypes/dateYmd" },
+          "finish_date": { "$ref": "#/sharedTypes/dateYmd", "rule": "must be after start_date" },
+          "edition": { "type": "integer", "minimum": 1 },
+          "organizer": { "type": "string", "maxLength": 255 },
+          "description": { "type": "string" },
+          "location": { "type": "string", "maxLength": 255 },
+          "guests": { "type": "array", "items": { "type": "string", "maxLength": 255 } },
+          "mode": { "$ref": "#/sharedTypes/eventMode" },
+          "estimated_participants": { "type": "integer", "minimum": 1 },
+          "target_group": { "type": "string", "maxLength": 255 },
+          "has_livestream": { "$ref": "#/sharedTypes/eventHasLivestream" },
+          "coordinator_name": { "type": "string", "maxLength": 255 },
+          "coordinator_email": { "type": "string", "format": "email", "maxLength": 255 },
+          "coordinator_phone": { "type": "string", "maxLength": 50 },
+          "additional_info": { "type": "string", "nullable": true },
+          "status": { "$ref": "#/sharedTypes/eventStatus" },
+          "partner_ids": {
+            "type": "array",
+            "items": { "$ref": "#/sharedTypes/uuid" },
+            "description": "Each id must exist and partner must not be soft-deleted"
+          },
+          "department": { "type": "string", "maxLength": 255 }
+        }
+      },
+      "response": {
+        "status": 201,
+        "envelope": true,
+        "data": { "$ref": "#/sharedTypes/event" },
+        "message": "Event created successfully."
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/event/{event}",
+      "auth": "sanctum",
+      "pathParams": { "event": { "$ref": "#/sharedTypes/uuid" } },
+      "authorization": "EventPolicy view — super admin: all; dept admin: same department; coordinator: coordinator_email matches user email",
+      "response": {
+        "status": 200,
+        "envelope": true,
+        "data": { "$ref": "#/sharedTypes/event", "includes": ["partners", "metrics"] }
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/event/{event}",
+      "auth": "sanctum",
+      "pathParams": { "event": { "$ref": "#/sharedTypes/uuid" } },
+      "description": "Exactly ONE update mode per request. Mixed payloads return 422 on field payload.",
+      "modes": [
+        {
+          "name": "core",
+          "detectedWhen": "Any core field key is present in body",
+          "body": {
+            "partial": true,
+            "allowedKeys": [
+              "name",
+              "banner_url",
+              "start_date",
+              "finish_date",
+              "edition",
+              "organizer",
+              "description",
+              "location",
+              "guests",
+              "mode",
+              "estimated_participants",
+              "target_group",
+              "has_livestream",
+              "coordinator_name",
+              "coordinator_email",
+              "coordinator_phone",
+              "additional_info",
+              "status",
+              "partner_ids",
+              "department"
+            ],
+            "roleRules": {
+              "super_administrator": { "department": "optional when sent" },
+              "coordinator": { "coordinator_email": "if sent, must match user email" },
+              "department_administrator": { "department": "if sent, must match user department" }
+            },
+            "finish_dateRule": "If both start_date and finish_date sent, finish_date > start_date; if only finish_date, compared to existing event start_date"
+          }
+        },
+        {
+          "name": "metrics",
+          "detectedWhen": "metrics key present",
+          "body": {
+            "required": ["metrics"],
+            "properties": {
+              "metrics": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "required": ["category", "link", "reach", "engagement"],
+                  "properties": {
+                    "category": { "$ref": "#/sharedTypes/eventMetricCategory" },
+                    "link": { "type": "string", "format": "uri", "maxLength": 2048 },
+                    "reach": { "type": "integer", "minimum": 0 },
+                    "engagement": { "type": "integer", "minimum": 0 }
+                  }
+                },
+                "upsert": "One row per event_id + category; resend full metric list per category to update"
+              }
+            }
+          }
+        },
+        {
+          "name": "archive",
+          "detectedWhen": "archive key present and truthy",
+          "body": { "required": ["archive"], "properties": { "archive": { "type": "boolean", "mustBeAccepted": true } } },
+          "effect": "Sets status to archived"
+        }
+      ],
+      "response": {
+        "status": 200,
+        "envelope": true,
+        "data": { "$ref": "#/sharedTypes/event" },
+        "message": "Event updated successfully."
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/events",
+      "auth": "sanctum",
+      "queryParams": {
+        "name": { "type": "string", "required": false, "description": "Partial match (LIKE)" },
+        "start_date": { "$ref": "#/sharedTypes/dateYmd", "required": false, "filters": "events.start_date >=" },
+        "end_date": {
+          "$ref": "#/sharedTypes/dateYmd",
+          "required": false,
+          "rule": "after_or_equal:start_date",
+          "filters": "events.start_date <="
+        },
+        "partners": {
+          "type": "array of uuid",
+          "required": false,
+          "queryStyle": "partners[]=uuid&partners[]=uuid",
+          "filter": "OR — event has any listed active partner"
+        },
+        "sort_by": { "enum": ["date", "name"], "default": "date maps to start_date" },
+        "sort_direction": { "enum": ["asc", "desc"], "default": "desc" },
+        "page": { "type": "integer", "minimum": 1, "default": 1 },
+        "archived": {
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "behavior": "false/absent: exclude archived; true: only archived events"
+        },
+        "department": {
+          "type": "string",
+          "required": false,
+          "roles": ["super_administrator only"],
+          "ignoredFor": ["department_administrator", "coordinator"]
+        }
+      },
+      "scoping": {
+        "super_administrator": "All events unless department filter sent",
+        "department_administrator": "Forced to user.department",
+        "coordinator": "Forced to LOWER(coordinator_email) = user email"
+      },
+      "response": {
+        "status": 200,
+        "envelope": true,
+        "data": { "type": "array", "items": { "$ref": "#/sharedTypes/event" } },
+        "meta": { "$ref": "#/sharedTypes/paginationMeta" }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/statistics",
+      "auth": "sanctum",
+      "queryParams": {
+        "department": { "type": "string", "required": false, "roles": ["super_administrator only"] }
+      },
+      "scoping": "Same visibility as events listing (archived events excluded from aggregates)",
+      "response": {
+        "status": 200,
+        "envelope": true,
+        "data": { "$ref": "#/sharedTypes/statisticsDashboard" }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/generate-report",
+      "auth": "sanctum",
+      "throttle": "report",
+      "description": "Queues PDF generation; email with attachment sent asynchronously",
+      "requestBody": {
+        "rule": "At least one of partner_ids (non-empty), event_ids (non-empty), or filter_params (with at least one non-empty value)",
+        "properties": {
+          "partner_ids": {
+            "type": "array",
+            "items": { "$ref": "#/sharedTypes/uuid" },
+            "description": "If non-empty → partner report; event_ids ignored"
+          },
+          "event_ids": {
+            "type": "array",
+            "items": { "$ref": "#/sharedTypes/uuid" },
+            "description": "Normal report; order preserved; must be in user scope"
+          },
+          "filter_params": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "start_date": { "$ref": "#/sharedTypes/dateYmd" },
+              "end_date": { "$ref": "#/sharedTypes/dateYmd", "rule": "after_or_equal:start_date" },
+              "sort_by": { "enum": ["date", "name"] },
+              "sort_direction": { "enum": ["asc", "desc"] },
+              "department": { "type": "string", "roles": ["super_administrator only"] }
+            }
+          },
+          "report_title": { "type": "string", "maxLength": 255, "nullable": true }
+        }
+      },
+      "response": {
+        "status": 202,
+        "envelope": true,
+        "data": {
+          "type": "object",
+          "properties": {
+            "queued": { "type": "boolean", "const": true },
+            "report_type": { "$ref": "#/sharedTypes/reportType" }
+          }
+        },
+        "message": "Report generation has been queued. You will receive the PDF by email shortly."
+      },
+      "errors": [
+        {
+          "status": 422,
+          "when": "No matching events in scope",
+          "fields": ["partner_ids", "event_ids", "filter_params"]
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/users",
+      "auth": "sanctum",
+      "roles": ["super_administrator"],
+      "response": {
+        "status": 200,
+        "envelope": true,
+        "data": {
+          "type": "object",
+          "properties": {
+            "users": { "type": "array", "items": { "$ref": "#/sharedTypes/userAdmin" } }
+          }
+        },
+        "note": "Full list, no pagination"
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/users/{user}/role",
+      "auth": "sanctum",
+      "roles": ["super_administrator"],
+      "pathParams": { "user": { "type": "integer", "description": "User id (not UUID)" } },
+      "requestBody": {
+        "required": ["role_name"],
+        "properties": { "role_name": { "$ref": "#/sharedTypes/roleName" } }
+      },
+      "response": {
+        "status": 200,
+        "envelope": true,
+        "data": { "$ref": "#/sharedTypes/userAdmin" },
+        "message": "User role updated successfully."
+      },
+      "errors": [
+        {
+          "status": 422,
+          "field": "role_name",
+          "when": "Last super_administrator attempts to demote themselves"
+        }
+      ]
+    }
+  ],
+  "validationErrorExample": {
+    "message": "The given data was invalid.",
+    "errors": {
+      "email": ["The email field must be a valid email address."]
+    }
+  }
+}
