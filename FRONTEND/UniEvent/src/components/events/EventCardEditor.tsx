@@ -21,8 +21,8 @@ const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
     },
     onSubmit: ({ value }) => {
       console.log("Datele salvate sunt:", value);
-
-      // TO DO
+      
+      // TO DO: Aici vei face request-ul PUT/PATCH către backend
 
       onCancel();
     },
@@ -38,30 +38,42 @@ const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
           className="w-full"
           onSubmit={(e) => {
             e.preventDefault();
+            
+            // 1. Validăm strict tot formularul folosind schema Zod
+            const currentValues = form.state.values;
+            const validationResult = formSchema.safeParse(currentValues);
 
-            if (form.state.errors.length > 0) {
-              const errorsList = form.state.errors.flatMap((err) =>
-                Object.values(err).map((errObj: any) => errObj[0].message),
-              );
-              setFormErrors(errorsList);
-              return;
+            if (!validationResult.success) {
+              // 2. Dacă sunt erori (ex: a șters un câmp obligatoriu), le extragem și le afișăm
+              const zodIssues = validationResult.error.issues;
+              // Folosim Set pentru a nu afișa aceeași eroare de 2 ori
+              const errorMessages = Array.from(new Set(zodIssues.map((err: any) => err.message as string)));
+              
+              setFormErrors(errorMessages);
+              return; // Blocăm trimiterea formularului!
             }
-
+            
+            // 3. Dacă totul e valid, ștergem erorile și facem submit
             setFormErrors(null);
             form.handleSubmit();
           }}
         >
           {formSteps.map((formStep, index) => (
             <div key={index} className="w-full mb-10">
-              <h3 className="font-[Sans-Source-Now] text-2xl font-semibold mb-6 border-b border-gray-100 pb-2 text-gray-800">
-                {formStep.name}
-              </h3>
-
+              
+              {/* Styling actualizat pentru titlu, identic cu cel din create-event */}
+              <div className="w-full flex flex-col items-center mb-8 mt-4">
+                <h3 className="text-2xl font-bold text-gray-800 tracking-tight text-center">
+                  {formStep.name}
+                </h3>
+                <div className="mt-2 h-1 w-16 bg-primary rounded-full"></div>
+              </div>
+              
               <div className="flex flex-col w-full gap-2">
                 {formStep.elements.map((element) => {
                   return (
                     <form.AppField
-                      name={element.name}
+                      name={element.name as any}
                       key={element.name}
                       children={(field) => {
                         if (element.type === "textInput") {
@@ -85,7 +97,13 @@ const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
                         } else if (element.type === "textAreaInput") {
                           const { name, type, ...props } = element;
                           return <field.TextAreaInput {...props} />;
+                        } 
+                        // AM ADĂUGAT AICI MULTI-CHECKBOX-UL PENTRU PARTENERI:
+                        else if (element.type === "multiCheckboxInput") {
+                          const { name, type, ...props } = element;
+                          return <field.MultiCheckboxInput {...props} />;
                         }
+                        return null;
                       }}
                     />
                   );
@@ -94,8 +112,9 @@ const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
             </div>
           ))}
 
+          {/* Afișarea erorilor generale de submit */}
           {formErrors && (
-            <div className="w-full mt-4 text-red-600 bg-red-50 border border-red-100 p-4 rounded-lg text-sm font-medium text-center">
+            <div className="w-full mt-8 text-red-600 bg-red-50 border border-red-100 p-3 rounded-lg text-sm font-medium text-center">
               {formErrors.join("; ")}
             </div>
           )}

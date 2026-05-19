@@ -44,9 +44,12 @@ function RouteComponent() {
               key={index}
             >
               <div className="flex flex-col flex-1 h-full">
-                <h3 className="font-[Sans-Source-Now] text-xl font-bold mb-2 text-center w-full text-gray-800">
-                  {formStep.name}
-                </h3>
+                <div className="w-full flex flex-col items-center mb-8">
+                  <h3 className="text-3xl font-bold text-gray-800 tracking-tight text-center">
+                    {formStep.name}
+                  </h3>
+                  <div className="mt-2 h-1 w-20 bg-primary rounded-full"></div>
+                </div>
 
                 <div className="flex flex-col w-[90%] max-w-md mx-auto my-auto">
                   {formStep.elements.map((element) => {
@@ -76,6 +79,9 @@ function RouteComponent() {
                           } else if (element.type === "textAreaInput") {
                             const { name, type, ...props } = element;
                             return <field.TextAreaInput {...props} />;
+                          } else if (element.type === "multiCheckboxInput") {
+                            const { name, type, ...props } = element;
+                            return <field.MultiCheckboxInput {...props} />;
                           }
                           return null;
                         }}
@@ -88,7 +94,7 @@ function RouteComponent() {
           ))}
 
           {formErrors && (
-            <div className="w-[90%] max-w-md mx-auto text-red-600 bg-red-50 border border-red-100 p-2 rounded-lg mb-2 text-sm font-medium text-center">
+            <div className="w-[90%] max-w-md mx-auto mt-8 text-red-600 bg-red-50 border border-red-100 p-3 rounded-lg mb-2 text-sm font-medium text-center">
               {formErrors.join("; ")}
             </div>
           )}
@@ -107,36 +113,26 @@ function RouteComponent() {
               type="button"
               disabled={currentStep === formSteps.length - 1}
               onClick={() => {
-                if (!form.state.isTouched) return;
+                const currentValues = form.state.values;
 
-                const errors = form.state.errors;
+                const validationResult = formSchema.safeParse(currentValues);
 
-                if (errors.length > 0) {
-                  for (const [key] of Object.entries(errors[0] ?? {})) {
-                    if (
-                      formSteps[currentStep].elements.some(
-                        (element) => element.name === key,
-                      )
-                    ) {
-                      return;
-                    }
+                if (!validationResult.success) {
+                  const zodIssues = validationResult.error.issues;
+                  const currentStepFieldNames = formSteps[
+                    currentStep
+                  ].elements.map((el) => el.name as string);
+
+                  const errorsForThisStep = zodIssues.filter((err: any) =>
+                    currentStepFieldNames.includes(String(err.path[0])),
+                  );
+
+                  if (errorsForThisStep.length > 0) {
+                    setFormErrors(
+                      errorsForThisStep.map((e: any) => e.message as string),
+                    );
+                    return;
                   }
-
-                  let ok = false;
-                  for (const [key, value] of Object.entries(errors[0] ?? {})) {
-                    if (key.startsWith(`step${currentStep + 1} |`)) {
-                      if (formErrors === null) {
-                        setFormErrors([(value as any)[0].message]);
-                      } else {
-                        setFormErrors((prev) => [
-                          ...(prev || []),
-                          (value as any)[0].message,
-                        ]);
-                      }
-                      ok = true;
-                    }
-                  }
-                  if (ok === true) return;
                 }
 
                 setFormErrors(null);

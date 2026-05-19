@@ -3,6 +3,7 @@ import type React from "react";
 export type Element<T extends object> = {
   name: keyof T;
   label: string;
+  isRequired?: boolean;
 } & (
   | ({
       type: "textInput" | "dateInput" | "arrayInput" | "numberInput";
@@ -24,4 +25,7 @@ export type Element<T extends object> = {
   | ({
       type: "textAreaInput";
     } & React.TextareaHTMLAttributes<HTMLTextAreaElement>)
+  | ({
+    type: "multiCheckboxInput";
+    } & React.HTMLAttributes<HTMLDivElement>)
 );
