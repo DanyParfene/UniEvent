@@ -4,7 +4,7 @@ import continentalLogo from "../../assets/continental_logo.png";
 import atosLogo from "../../assets/atos_logo.png";
 import bcrLogo from "../../assets/bcr_logo.png";
 import PartnerPopUp from "./PartnerPopUp";
-import { useNavigate, Link } from "@tanstack/react-router";
+import { useState } from "react";
 
 const partners: Partner[] = [
   { id: 0, name: "Nokia", logo: nokiaLogo },
@@ -13,30 +13,25 @@ const partners: Partner[] = [
   { id: 3, name: "BCR", logo: bcrLogo },
 ];
 
-type PartnersListProps = {
-  isAdminMode?: boolean;
-  isAddMode?: boolean;
-  isEditMode?: boolean;
-  editPartnerId?: number;
-};
+export const PartnersList = () => {
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
 
-export const PartnersList = ({
-  isAdminMode = false,
-  isAddMode = false,
-  isEditMode = false,
-  editPartnerId,
-}: PartnersListProps) => {
-  const navigate = useNavigate();
+  const handleEditClick = (partner: Partner) => {
+    setEditingPartner(partner);
+    setIsModalOpen(true);
+  }
 
-  const partnerToEdit =
-    isEditMode && editPartnerId !== undefined
-      ? partners.find((p) => p.id === editPartnerId)
-      : null;
+  const handleAddClick = () => {
+    setEditingPartner(null);
+    setIsModalOpen(true);
+  }
 
   const handleDeleteClick = (partnerId: number) => {
     // TODO
     console.log("Delete partner clicked for ID:", partnerId);
-  };
+  }
 
   const actionButtonStyle = "mt-6 sm:mt-0 sm:ml-6 w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary transition-all duration-300 hover:bg-primary hover:text-text-primary cursor-pointer active:scale-95 shrink-0";
 
@@ -68,33 +63,37 @@ export const PartnersList = ({
               {...item}
               isEditMode={isAdminMode}
               onDelete={() => handleDeleteClick(item.id)}
+              onEdit={() => handleEditClick(item)}
             />
           </div>
         ))}
       </div>
 
       <div className="flex flex-wrap items-center gap-4">
-        <Link
-          to={isAdminMode ? "/parteneri" : "/parteneri-administrare"}
+        <button
+          onClick={() => setIsAdminMode(!isAdminMode)}
           className={actionButtonStyle}
         >
           {isAdminMode ? "Ieși din Editare" : "Administrează"}
-        </Link>
+        </button>
 
         {isAdminMode && (
-          <Link
-            to="/parteneri-adaugare"
+          <button
+            onClick={handleAddClick}
             className={actionButtonStyle}
           >
             + Adaugă Partener
-          </Link>
+          </button>
         )}
 
-        {(isAddMode || (isEditMode && editPartnerId !== undefined)) && (
+        {isModalOpen && (
           <PartnerPopUp
-            name={partnerToEdit ? partnerToEdit.name : ""}
-            logo={partnerToEdit ? partnerToEdit.logo : ""}
-            onClose={() => navigate({ to: "/parteneri-administrare" })}
+            name={editingPartner ? editingPartner.name : ""}
+            logo={editingPartner ? editingPartner.logo : ""}
+            onClose={() => {
+              setIsModalOpen(false);
+              setEditingPartner(null);
+            }}
           />
         )}
       </div>

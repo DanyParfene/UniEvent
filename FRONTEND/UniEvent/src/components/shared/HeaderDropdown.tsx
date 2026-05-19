@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Props } from "./headerType";
 import { useFaculty } from "../../context/FacultyContext";
+import { Link } from "@tanstack/react-router";
 
 const HeaderDropdown = ({
   title,
@@ -42,7 +43,7 @@ const HeaderDropdown = ({
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex h-16 w-10 md:w-auto items-center transition-all hover:scale-105 cursor-pointer">
-        <Icon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary border" />
+        <Icon className="block size-6 min-w-6 min-h-6 shrink-0 md:hidden fill-text-primary" />
         <h3 className="hidden md:block" onClick={onClick}>
           {title}
         </h3>
@@ -63,17 +64,18 @@ const HeaderDropdown = ({
               className={`grid grid-cols-2 gap-x-10 gap-y-3 ${className || ""}`}
             >
               {items.map((item) => (
-                <li
+                <Link
+                  to="/dashboard"
                   key={item.to}
                   onClick={() => {
                     changeFaculty(item.id);
                     setIsOpen(false);
                   }}
                 >
-                  <div className="block w-full rounded-md px-3 py-2 font-semibold duration-200 hover:text-primary cursor-pointer">
+                  <div className="block w-full rounded-md px-3 py-2 font-bold duration-200 hover:text-primary cursor-pointer">
                     {item.label}
                   </div>
-                </li>
+                </Link>
               ))}
             </ul>
           </div>

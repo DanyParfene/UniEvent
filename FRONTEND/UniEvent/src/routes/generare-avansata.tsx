@@ -142,7 +142,6 @@ const MOCK_EVENTS: Section[][] = [
     }
   ],
 ];
-console.log(MOCK_EVENTS);
 
 function RouteComponent() {
   const [showResults, setShowResults] = useState(false);

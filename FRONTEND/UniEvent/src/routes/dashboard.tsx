@@ -65,7 +65,7 @@ function RouteComponent() {
           </div>
         ) : (
           <>
-            <EventList events={dashboardEvents} />
+            <EventList events={dashboardEvents} isArchived={false} />
 
             <div className="mt-12 md:mt-16">
               <Link

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Form } from "../../config/create-event";
+import type { Form } from "../../config/creare-eveniment";
 import EventCardEditor from "./EventCardEditor";
 import Accordion from "../common/Accordion";
 import SocialMediaCard from "./SocialMediaCard";
@@ -16,7 +16,7 @@ interface EventCardMainProps {
   isArchived?: boolean;
 }
 
-const EventCardMain = ( { isArchived = false } : EventCardMainProps) => {
+const EventCardMain = ({ isArchived = false }: EventCardMainProps) => {
   const editGeneralDataButtonIndex = 0;
   const editSocialMediaButtonIndex = 6;
 
@@ -37,20 +37,21 @@ const EventCardMain = ( { isArchived = false } : EventCardMainProps) => {
       setIsSocialMediaEdit(true);
     } else {
       const socialMediaSection = currentEventData[editSocialMediaButtonIndex];
-    const hasEmptyLinks = socialMediaSection.fields.some(field => 
-      Array.isArray(field.value) && field.value.some((linkObj: any) => linkObj.link.trim() === "")
-    );
+      const hasEmptyLinks = socialMediaSection.fields.some(
+        (field) =>
+          Array.isArray(field.value) &&
+          field.value.some((linkObj: any) => linkObj.link.trim() === ""),
+      );
 
-    if (hasEmptyLinks) {
-      setShowErrors(true); 
-      return; 
+      if (hasEmptyLinks) {
+        setShowErrors(true);
+        return;
+      }
+
+      setIsSocialMediaEdit(false);
+      setShowErrors(false);
+      setBackupData(null);
     }
-
-  
-    setIsSocialMediaEdit(false);
-    setShowErrors(false);
-    setBackupData(null);
-  }
   }
 
   function cancelSocialMediaAction() {
@@ -192,7 +193,9 @@ const EventCardMain = ( { isArchived = false } : EventCardMainProps) => {
                                   engagement={link.engagement}
                                   forcedEditMode={isSocialMediaEdit}
                                   showDelete={isSocialMediaEdit}
-                                  showErrors={showErrors && link.link.trim() === ""}
+                                  showErrors={
+                                    showErrors && link.link.trim() === ""
+                                  }
                                   onDelete={() =>
                                     removeSocialMediaLink(idx, fIdx, linkIdx)
                                   }

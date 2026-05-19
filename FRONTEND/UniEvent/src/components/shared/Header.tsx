@@ -29,7 +29,7 @@ const Header = () => {
   }
 
   return (
-    <header className="sticky top-0 left-0 z-50 w-full bg-linear-to-r from-primary to-secondary text-white shadow-md font-[Source_Sans_Pro]">
+    <header className="sticky top-0 left-0 z-50 w-full bg-linear-to-r from-primary to-secondary text-white shadow-md">
       <div className="relative mx-auto flex h-16 w-full items-center px-6">
         <Link to={"/dashboard"} className="w-6 h-6">
           <img
@@ -40,7 +40,7 @@ const Header = () => {
         </Link>
 
         <nav className="absolute left-1/2 -translate-x-1/2">
-          <ul className="flex items-center gap-10 text-xl font-semibold">
+          <ul className="flex items-center gap-10 text-xl font-bold">
             {userRole === "Super Administrator" && (
               <HeaderDropdown
                 title="Facultăți"

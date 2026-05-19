@@ -1,6 +1,5 @@
 import editIcon from "../../assets/edit_icon.svg";
 import deleteIcon from "../../assets/delete_icon.svg";
-import RedirectButton from "../common/RedirectButton";
 import ActionButton from "../common/ActionButton";
 
 export type Partner = {
@@ -12,6 +11,7 @@ export type Partner = {
 type OptionalType = {
   isEditMode: boolean;
   onDelete: () => void;
+  onEdit: () => void;
   className: string;
   disableHover: boolean;
 };
@@ -24,12 +24,13 @@ export const PartnerCard = ({
   logo,
   isEditMode = false,
   onDelete,
-  className = "", 
+  onEdit,
+  className = "",
   disableHover,
 }: PartnerCardProps) => {
   const baseCardClasses =
     "relative flex flex-col items-center justify-center p-6 bg-white border border-gray-200 shadow-sm rounded-2xl transition-all duration-300";
-  
+
   const hoverCardClasses = disableHover
     ? ""
     : "group hover:shadow-xl hover:shadow-secondary/10 ";
@@ -47,18 +48,19 @@ export const PartnerCard = ({
       {isEditMode && (
         <div className="absolute top-3 right-3 flex gap-2 z-10">
           {/* Edit button */}
-          <RedirectButton
-            to="/parteneri-editare/$partnerId"
-            params={{ partnerId: id.toString() }}
-            className="group/btn p-1.5! bg-white border border-gray-200 rounded-md shadow-sm hover:bg-secondary hover:border-transparent transition-all"
-            title="Edit"
-          >
-            <img
-              src={editIcon}
-              alt="Edit"
-              className="w-4 h-4 group-hover/btn:brightness-0 group-hover/btn:invert"
-            />
-          </RedirectButton>
+          {onEdit && (
+            <ActionButton
+              action={onEdit}
+              className="group/btn p-1.5 bg-white border border-gray-200 rounded-md shadow-sm hover:bg-secondary hover:border-transparent transition-all"
+              title="Edit"
+            >
+              <img
+                src={editIcon}
+                alt="Edit"
+                className="w-4 h-4 group-hover/btn:brightness-0 group-hover/btn:invert"
+              />
+            </ActionButton>
+          )}
 
           {/* Delete button */}
           {onDelete && (

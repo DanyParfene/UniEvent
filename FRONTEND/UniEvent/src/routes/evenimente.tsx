@@ -1,4 +1,8 @@
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useSearch,
+} from "@tanstack/react-router";
 import EventList from "../components/events/EventList";
 import Pagination from "../components/events/Pagination";
 import { Link } from "@tanstack/react-router";
@@ -22,13 +26,104 @@ function RouteComponent() {
   const navigate = useNavigate({ from: "/evenimente" });
 
   const ITEMS_PER_PAGE = 10;
-  
-  const allEvents = [eventData, eventData, eventData, eventData, eventData,eventData,eventData, eventData, eventData,eventData, eventData, eventData, eventData, eventData, eventData, eventData,eventData,eventData,eventData,eventData,eventData,eventData,eventData,eventData,eventData,eventData,eventData,eventData,eventData,eventData,eventData,eventData, eventData, eventData, eventData, eventData,eventData,eventData, eventData, eventData,eventData, eventData, eventData, eventData, eventData, eventData, eventData,eventData,eventData, eventData, eventData,eventData, eventData, eventData, eventData, eventData, eventData, eventData,eventData,eventData, eventData, eventData,eventData, eventData, eventData, eventData, eventData, eventData, eventData,eventData,eventData, eventData, eventData,eventData, eventData, eventData, eventData, eventData, eventData, eventData,eventData,eventData, eventData, eventData,eventData, eventData, eventData];
-  
+
+  const allEvents = [
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+    eventData,
+  ];
+
   const totalEvents = allEvents.length;
   const totalPages = Math.ceil(totalEvents / ITEMS_PER_PAGE);
   const startIndex = (page - 1) * ITEMS_PER_PAGE;
-  const displayedEvents = allEvents.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const displayedEvents = allEvents.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE,
+  );
 
   const handlePageChange = (newPage: number) => {
     navigate({
@@ -48,7 +143,7 @@ function RouteComponent() {
           </div>
 
           <Link
-            to="/create-event"
+            to="/creare-eveniment"
             className="bg-text-primary w-9 h-9 md:w-12 md:h-12 rounded-full border font-semibold border-gray-200 text-primary text-2xl md:text-4xl flex justify-center items-center cursor-pointer hover:bg-primary hover:text-text-primary transition-all shadow-sm"
           >
             <span className="leading-none -translate-y-1">+</span>
@@ -64,7 +159,8 @@ function RouteComponent() {
           </Link>
           <Link
             to="/filtrare-evenimente"
-            className="flex items-center gap-2 px-6 py-3 bg-primary rounded-2xl shadow-md text-sm font-bold text-white transition-all hover:shadow-lg active:scale-95 cursor-pointer">
+            className="flex items-center gap-2 px-6 py-3 bg-primary rounded-2xl shadow-md text-sm font-bold text-white transition-all hover:shadow-lg active:scale-95 cursor-pointer"
+          >
             Filtrare
           </Link>
         </div>
@@ -82,10 +178,10 @@ function RouteComponent() {
 
           {totalEvents > ITEMS_PER_PAGE && (
             <div className="mt-12">
-              <Pagination 
-                currentPage={page} 
-                totalPages={totalPages} 
-                onPageChange={handlePageChange} 
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
               />
             </div>
           )}

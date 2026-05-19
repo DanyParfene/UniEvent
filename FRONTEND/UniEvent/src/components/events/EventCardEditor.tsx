@@ -3,7 +3,7 @@ import {
   formSchema,
   formSteps,
   type Form,
-} from "../../config/create-event";
+} from "../../config/creare-eveniment";
 import { useState } from "react";
 
 type EventCardEditorProps = {
@@ -21,14 +21,15 @@ const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
     },
     onSubmit: ({ value }) => {
       console.log("Datele salvate sunt:", value);
-      
+
       // TO DO
 
-      onCancel(); 
+      onCancel();
     },
   });
 
-  const actionButtonStyle = "w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary transition-all duration-300 hover:bg-primary hover:text-white cursor-pointer active:scale-95 shrink-0 disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-primary disabled:cursor-not-allowed";
+  const actionButtonStyle =
+    "w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary transition-all duration-300 hover:bg-primary hover:text-white cursor-pointer active:scale-95 shrink-0 disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-primary disabled:cursor-not-allowed";
 
   return (
     <div className="flex-1 mt-10 w-full flex justify-center">
@@ -37,15 +38,15 @@ const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
           className="w-full"
           onSubmit={(e) => {
             e.preventDefault();
-            
+
             if (form.state.errors.length > 0) {
-                const errorsList = form.state.errors.flatMap(err => 
-                    Object.values(err).map((errObj: any) => errObj[0].message)
-                );
-                setFormErrors(errorsList);
-                return;
+              const errorsList = form.state.errors.flatMap((err) =>
+                Object.values(err).map((errObj: any) => errObj[0].message),
+              );
+              setFormErrors(errorsList);
+              return;
             }
-            
+
             setFormErrors(null);
             form.handleSubmit();
           }}
@@ -55,7 +56,7 @@ const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
               <h3 className="font-[Sans-Source-Now] text-2xl font-semibold mb-6 border-b border-gray-100 pb-2 text-gray-800">
                 {formStep.name}
               </h3>
-              
+
               <div className="flex flex-col w-full gap-2">
                 {formStep.elements.map((element) => {
                   return (
@@ -107,11 +108,8 @@ const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
             >
               Înapoi
             </button>
-            
-            <button
-              type="submit"
-              className={actionButtonStyle}
-            >
+
+            <button type="submit" className={actionButtonStyle}>
               Salvează
             </button>
           </div>

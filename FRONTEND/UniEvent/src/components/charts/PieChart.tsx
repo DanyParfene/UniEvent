@@ -27,9 +27,9 @@ const renderActiveShape = ({
   const cos = Math.cos(-RADIAN * (midAngle ?? 1));
   const sx = (cx ?? 0) + ((outerRadius ?? 0) + 10) * cos;
   const sy = (cy ?? 0) + ((outerRadius ?? 0) + 10) * sin;
-  const mx = (cx ?? 0) + ((outerRadius ?? 0) + 30) * cos;
-  const my = (cy ?? 0) + ((outerRadius ?? 0) + 30) * sin;
-  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const mx = (cx ?? 0) + ((outerRadius ?? 0) + 20) * cos;
+  const my = (cy ?? 0) + ((outerRadius ?? 0) + 20) * sin;
+  const ex = mx + (cos >= 0 ? 1 : -1) * 12;
   const ey = my;
   const textAnchor = cos >= 0 ? "start" : "end";
 
@@ -67,6 +67,7 @@ const renderActiveShape = ({
         y={ey}
         textAnchor={textAnchor}
         fill="#333"
+        style={{ fontSize: '15px' }}
       >{`Nr. ${value}`}</text>
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
@@ -74,6 +75,7 @@ const renderActiveShape = ({
         dy={18}
         textAnchor={textAnchor}
         fill="#999"
+        style={{ fontSize: '15px' }}
       >
         {`${((percent ?? 1) * 100).toFixed(2)}%`}
       </text>
@@ -91,14 +93,9 @@ export default function CustomActiveShapePieChart({
   defaultIndex?: TooltipIndex;
 }) {
   return (
-    <div className="w-full h-full min-h-[300px]">
+    <div className="flex-1 w-full min-h-0 font-semibold">
       <ResponsiveContainer width="100%" height="100%">
-        <PieChart
-          style={{
-            aspectRatio: 1,
-          }}
-          responsive
-        >
+        <PieChart>
           <defs>
             <linearGradient
               id="unitaryGradient"
@@ -117,8 +114,8 @@ export default function CustomActiveShapePieChart({
             data={chartData}
             cx="50%"
             cy="50%"
-            innerRadius="50%"
-            outerRadius="70%"
+            innerRadius="45%"
+            outerRadius="60%"
             fill="url(#unitaryGradient)"
             dataKey="value"
             isAnimationActive={isAnimationActive}

@@ -69,7 +69,7 @@ const Bento = ({ stats }: { stats: BentoStats }) => {
           </div>
         </div>
 
-        <div className="md:col-span-2 md:row-span-2 bg-white rounded-3xl p-4 shadow-sm border border-gray-200 flex flex-col items-center justify-center h-full">
+        <div className="md:col-span-2 md:row-span-2 bg-white rounded-3xl p-4 shadow-sm border border-gray-200 flex flex-col items-center justify-center h-[350px] md:h-full overflow-hidden">
           <CustomActiveShapePieChart chartData={stats.chartData} />
         </div>
 
