@@ -45,7 +45,7 @@ const FilterCard = ( { title, onSearch } : FilterCardProps ) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 w-[90%] max-w-md mx-auto px-2">
             {partners.map((item, index) => (
               <label key={`${item.id}-${index}`} className="flex flex-row gap-2 items-center cursor-pointer py-1">
-                <input type="checkbox" className="w-4 h-4 shrink-0 rounded border-gray-300 text-primary" />
+                <input type="checkbox" className="w-4 h-4 shrink-0 rounded border-gray-300 text-primary accent-primary" />
                 <span className="text-sm text-gray-700">{item.name}</span>
               </label>
             ))}

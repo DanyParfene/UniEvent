@@ -3,28 +3,23 @@ import type { Element } from "../components/form/config";
 
 export const formSchema = z
   .object({
-    eventName: z
-      .string()
-      .max(200, "The name of the event must be maximum 200 characters"),
-    startEventDate: z.iso.date("The event date meeds to be a valid one"),
-    finishEventDate: z.iso.date("The event date needs to be a valid one"),
-    edition: z.number().min(1, "Minimum edition must be 1"),
-    organizer: z.string(),
-    description: z
-      .string()
-      .max(1000, "The maximum number of characters is 1000"),
-    targetGroup: z.string(),
-    coordinator: z.string(),
-    location: z.string(),
+    // Obligatorii
+    eventName: z.string().min(1, "Denumirea este obligatorie").max(200, "Maximum 200 caractere"),
+    startEventDate: z.string().min(1, "Data de început este obligatorie"),
+    finishEventDate: z.string().min(1, "Data de final este obligatorie"),
+    edition: z.number().min(1, "Ediția minimă este 1"),
+    organizer: z.string().min(1, "Organizatorul este obligatoriu"),
+    description: z.string().min(1, "Descrierea este obligatorie").max(1000, "Max 1000 caractere"),
+    location: z.string().min(1, "Locația este obligatorie"),
+    targetGroup: z.string().min(1, "Grupul țintă este obligatoriu"),
+    coordinator: z.string().min(1, "Coordonatorul este obligatoriu"),
     organizationMode: z.enum(["physical", "hybrid", "online"]),
     livestream: z.enum(["YES", "NO"]),
-    invitations: z.array(z.string()),
-    numberOfParticipants: z
-      .number()
-      .min(1, "Minimum number of participants is 1")
-      .max(10000, "Maximum number of participants is 10000"),
+    numberOfParticipants: z.number().min(1, "Minim 1").max(10000, "Maxim 10000"),
     email: z
-      .email()
+      .string()
+      .min(1, "Email-ul este obligatoriu")
+      .email("Format invalid")
       .refine(
         (val) => /^[a-z]+\.[a-z]+(?:\d{2})@e-uvt\.ro$/.test(val),
         "This is not a valid e-uvt email",
@@ -33,14 +28,15 @@ export const formSchema = z
       .string()
       .min(12, "The phone number is not valid")
       .refine(
-        (val) =>
-          val.substring(0, 3) === "+40" && !isNaN(Number(val.substring(3))),
+        (val) => val.substring(0, 3) === "+40" && !isNaN(Number(val.substring(3))),
         "The phone number is not valid",
       ),
-    otherInformation: z
-      .string()
-      .max(500, "The maximum number of characters is 500"),
-    banner: z.string(),
+
+    // Opționale
+    banner: z.string().optional(),
+    otherInformation: z.string().max(500, "Max 500 caractere").optional(),
+    invitations: z.array(z.string()).optional(),
+    partners: z.array(z.string()).optional(),
   })
   .superRefine((data, ctx) => {
     if (new Date(data.startEventDate) > new Date(data.finishEventDate)) {
@@ -72,6 +68,7 @@ export const defaultFormValues: Form = {
   telephone: "+40",
   otherInformation: "",
   banner: "",
+  partners: [],
 };
 
 export type Step = {
@@ -83,126 +80,49 @@ export const formSteps: Step[] = [
   {
     name: "Date generale",
     elements: [
-      {
-        type: "textInput",
-        label: "Afis",
-        name: "banner",
-      },
-      {
-        type: "textInput",
-        label: "Denumire eveniment",
-        name: "eventName",
-      },
-      {
-        type: "dateInput",
-        label: "Data inceput eveniment",
-        name: "startEventDate",
-      },
-      {
-        type: "dateInput",
-        label: "Data final eveniment",
-        name: "finishEventDate",
-      },
-      {
-        type: "numberInput",
-        label: "Editia",
-        name: "edition",
-      },
-      {
-        type: "textInput",
-        label: "Organizator",
-        name: "organizer",
-      },
+      { type: "textInput", label: "Afis", name: "banner", isRequired: false },
+      { type: "textInput", label: "Denumire eveniment", name: "eventName", isRequired: true },
+      { type: "dateInput", label: "Data inceput eveniment", name: "startEventDate", isRequired: true },
+      { type: "dateInput", label: "Data final eveniment", name: "finishEventDate", isRequired: true },
+      { type: "numberInput", label: "Editia", name: "edition", isRequired: true },
+      { type: "textInput", label: "Organizator", name: "organizer", isRequired: true },
     ],
   },
   {
     name: "Detalii",
     elements: [
-      {
-        type: "textInput",
-        label: "Descriere",
-        name: "description",
-      },
-      {
-        type: "textInput",
-        label: "Locatie",
-        name: "location",
-      },
-      {
-        type: "arrayInput",
-        label: "Invitati",
-        name: "invitations",
-      },
-      {
-        type: "dropdown",
-        label: "Mod organizare",
-        name: "organizationMode",
-        values: [
-          { name: "physical", label: "Fizic" },
-          { name: "hybrid", label: "Hibrid" },
-          { name: "online", label: "Online" },
-        ],
-      },
+      { type: "textInput", label: "Descriere", name: "description", isRequired: true },
+      { type: "textInput", label: "Locatie", name: "location", isRequired: true },
+      { type: "arrayInput", label: "Invitati", name: "invitations", isRequired: false },
+      { type: "dropdown", label: "Mod organizare", name: "organizationMode", isRequired: true, values: [ { name: "physical", label: "Fizic" }, { name: "hybrid", label: "Hibrid" }, { name: "online", label: "Online" } ] },
     ],
   },
   {
     name: "Participare",
     elements: [
-      {
-        type: "numberInput",
-        label: "Numar estimat participanti",
-        name: "numberOfParticipants",
-      },
-      {
-        type: "textInput",
-        label: "Grup Tinta",
-        name: "targetGroup",
-      },
-      {
-        type: "radioGroup",
-        label: "Livestream",
-        name: "livestream",
-        values: [
-          {
-            label: "DA",
-            name: "YES",
-          },
-          {
-            label: "NU",
-            name: "NO",
-          },
-        ],
-      },
+      { type: "numberInput", label: "Numar estimat participanti", name: "numberOfParticipants", isRequired: true },
+      { type: "textInput", label: "Grup Tinta", name: "targetGroup", isRequired: true },
+      { type: "radioGroup", label: "Livestream", name: "livestream", isRequired: true, values: [ { label: "DA", name: "YES" }, { label: "NU", name: "NO" } ] },
     ],
   },
   {
     name: "Contact",
     elements: [
-      {
-        type: "textInput",
-        label: "Coordonator",
-        name: "coordinator",
-      },
-      {
-        type: "textInput",
-        label: "Email",
-        name: "email",
-      },
-      {
-        type: "textInput",
-        label: "Telefon",
-        name: "telephone",
-      },
+      { type: "textInput", label: "Coordonator", name: "coordinator", isRequired: true },
+      { type: "textInput", label: "Email", name: "email", isRequired: true },
+      { type: "textInput", label: "Telefon", name: "telephone", isRequired: true },
+    ],
+  },
+  {
+    name: "Parteneri",
+    elements: [
+      { type: "multiCheckboxInput", label: "Selectează partenerii evenimentului", name: "partners", isRequired: false },
     ],
   },
   {
     name: "Alte informatii",
     elements: [
-      {
-        type: "textAreaInput",
-        label: "Alte Informatii",
-        name: "otherInformation",
-      },
+      { type: "textAreaInput", label: "Alte Informatii", name: "otherInformation", isRequired: false },
     ],
   },
 ];

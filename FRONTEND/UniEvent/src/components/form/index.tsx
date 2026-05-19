@@ -7,6 +7,7 @@ import RadioGroup from "./components/RadioGroup";
 import ArrayInput from "./components/ArrayInput";
 import NumberInput from "./components/NumberInput";
 import TextAreaInput from "./components/TextAreaInput";
+import MultiCheckboxInput from "./components/MultiCheckboxInput";
 
 export const { useAppForm } = createFormHook({
   fieldComponents: {
@@ -17,6 +18,7 @@ export const { useAppForm } = createFormHook({
     ArrayInput,
     NumberInput,
     TextAreaInput,
+    MultiCheckboxInput,
   },
   formComponents: {},
   fieldContext,
