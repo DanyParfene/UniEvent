@@ -72,6 +72,21 @@ const facultyThemeMap: Record<FacultyId, FacultyTheme> = {
   FSGC: { primary: "primary-fsgc", secondary: "secondary-fsgc" },
 };
 
+export const departmentToFacultyId: Record<string, FacultyId> = {
+  "Facultatea de Arte și Design": "ARTE",
+  "Facultatea de Chimie, Biologie, Geografie": "CBG",
+  "Facultatea de Drept": "DREPT",
+  "Facultatea de Economie și de Administrare a Afacerilor": "FEAA",
+  "Facultatea de Educație Fizică și Sport": "FEFS",
+  "Facultatea de Fizică și Matematică": "FFM",
+  "Facultatea de Litere, Istorie, Filosofie și Teologie": "FLIFT",
+  "Facultatea de Informatică": "INFO",
+  "Facultatea de Muzică și Teatru": "FMT",
+  "Facultatea de Psihologie și Științe ale Educației": "FPSE",
+  "Facultatea de Sociologie și Asistență Socială": "FSAS",
+  "Facultatea de Științe ale Guvernării și Comunicării": "FSGC",
+};
+
 interface FacultyState {
   isAdmin: boolean;
   currentFaculty: FacultyId;
@@ -80,19 +95,20 @@ interface FacultyState {
 
 type FacultyAction =
   | { type: "CHANGE_FACULTY"; payload: FacultyId }
-  | { type: "SET_IS_ADMIN" };
+  | { type: "SET_IS_ADMIN" }
+  | { type: "SET_LOGIN_DATA"; payload: { faculty: FacultyId; isAdmin: boolean } };
 
 interface FacultyContextType {
   state: FacultyState;
   changeFaculty: (faculty: FacultyId) => void;
-  // currentLogo: string;
   setIsAdmin: () => void;
+  setLoginData: (faculty: FacultyId, isAdmin: boolean) => void;
 }
 
 const initialState: FacultyState = {
   isAdmin: true,
-  currentFaculty: sessionStorage.getItem("user_faculty") as FacultyId || "UVT",
-  currentLogo: uvtLogo,
+  currentFaculty: (sessionStorage.getItem("user_faculty") as FacultyId) || "UVT",
+  currentLogo: facultyLogoMap[(sessionStorage.getItem("user_faculty") as FacultyId) || "UVT"],
 };
 
 const FacultyReducer = (
@@ -113,6 +129,13 @@ const FacultyReducer = (
       return {
         ...state,
         isAdmin: true,
+      };
+    case "SET_LOGIN_DATA":
+      return {
+        ...state,
+        isAdmin: action.payload.isAdmin,
+        currentFaculty: action.payload.faculty,
+        currentLogo: facultyLogoMap[action.payload.faculty],
       };
     default:
       return state;
@@ -149,13 +172,18 @@ export const FacultyProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-
-
   const setIsAdmin = () => {
     dispatch({ type: "SET_IS_ADMIN" });
   };
 
-  const value = { state, changeFaculty, setIsAdmin };
+  const setLoginData = (faculty: FacultyId, isAdmin: boolean) => {
+    dispatch({
+      type: "SET_LOGIN_DATA",
+      payload: { faculty, isAdmin },
+    });
+  };
+
+  const value = { state, changeFaculty, setIsAdmin, setLoginData };
   return (
     <FacultyContext.Provider value={value}>{children}</FacultyContext.Provider>
   );
@@ -164,7 +192,7 @@ export const FacultyProvider = ({ children }: { children: ReactNode }) => {
 export const useFaculty = () => {
   const context = useContext(FacultyContext);
   if (context === undefined) {
-    throw new Error("useAdmin must be used within an AdminProvider");
+    throw new Error("useFaculty must be used within a FacultyProvider");
   }
   return context;
 };

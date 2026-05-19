@@ -1,14 +1,71 @@
-import Input from "../common/Input";
 import { useState } from "react";
+import Input from "../common/Input";
+
+import { useMutation } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+import { useAuth } from "../../context/AuthContext";
+import { useFaculty, departmentToFacultyId } from "../../context/FacultyContext";
+import { useNavigate } from "@tanstack/react-router";
+
+interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+const useLogin = () => {
+  const { login } = useAuth();
+  const { setLoginData } = useFaculty();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: async (data: LoginPayload) => {
+      const response = await axios.post("http://localhost:8000/api/auth/login", data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      const userData = data.data.user;
+      const token = data.data.token;
+      
+      login(userData, token);
+      
+      const facultyId = departmentToFacultyId[userData.department] || "UVT";
+      const isAdmin = userData.current_role === "admin" || userData.current_role === "coordinator";
+      
+      setLoginData(facultyId, isAdmin);
+      navigate({ to: "/dashboard" });
+    },
+  });
+};
 
 const LoginCard = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const { mutate, error, isError } = useLogin();
+
+  const validate = () => {
+    const errors: Record<string, string> = {};
+    if (!email) errors.email = "Câmp obligatoriu.";
+    if (!password) errors.password = "Câmp obligatoriu.";
+    
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleLogin = () => {
+    if (!validate()) return;
+    
+    mutate({
+      email,
+      password,
+    });
+  };
 
   return (
     <div className="w-full max-w-2xl bg-white border border-gray-200 px-6 py-8 sm:px-10 shadow-xl rounded-2xl flex flex-col h-auto">
       
-      {/* Header */}
       <div className="w-full pl-10 max-w-7xl mb-12 flex items-center flex-col">
         <h1 className="text-3xl md:text-4xl font-bold text-text-secondary tracking-tight">
           Conectare
@@ -16,23 +73,34 @@ const LoginCard = () => {
         <div className="mt-2 h-1 w-20 bg-primary rounded-full" />
       </div>
 
-      {/* Form Fields */}
+      {isError && (
+        <div className="w-[90%] max-w-md mx-auto mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
+          {(error as AxiosError<{message: string}>).response?.data?.message || "Eroare la conectare."}
+        </div>
+      )}
+
       <div className="flex flex-col gap-4 w-[90%] max-w-md mx-auto">
-        <Input
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        
-        {/* Password Field + Forgot Password Link */}
-        <div className="flex flex-col gap-1.5 w-full">
+        <div className="flex flex-col w-full gap-1">
           <Input
-            label="Parolă"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
+          {fieldErrors.email && <span className="text-red-500 text-xs px-1">{fieldErrors.email}</span>}
+        </div>
+        
+        <div className="flex flex-col gap-1.5 w-full">
+          <div className="flex flex-col w-full gap-1">
+            <Input
+              label="Parolă"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {fieldErrors.password && <span className="text-red-500 text-xs px-1">{fieldErrors.password}</span>}
+          </div>
+          
           <div className="flex justify-end w-full">
             <a
               href="/recuperare-parola"
@@ -44,9 +112,11 @@ const LoginCard = () => {
         </div>
       </div>
 
-      {/* Footer / Actions */}
       <div className="mt-auto pt-8 flex justify-center w-full flex-col items-center">
-        <button className="w-full sm:w-auto px-10 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary hover:bg-primary hover:text-white transition-all cursor-pointer active:scale-95">
+        <button 
+          onClick={handleLogin}
+          className="w-full sm:w-auto px-10 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary hover:bg-primary hover:text-white transition-all cursor-pointer active:scale-95"
+        >
           Conectare
         </button>
         <div className="flex pt-4 gap-1 text-sm sm:text-base text-gray-600">
@@ -59,7 +129,6 @@ const LoginCard = () => {
           </a>
         </div>
       </div>
-
     </div>
   );
 };
