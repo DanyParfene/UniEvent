@@ -15,19 +15,19 @@ class EventLifecycleTest extends TestCase
     {
         $coordinator = $this->coordinator([
             'email' => 'owner@e-uvt.ro',
-            'department' => 'Informatică',
+            'department' => 'INFO',
         ]);
 
         $payload = $this->validEventPayload([
-            'coordinator_email' => 'owner@e-uvt.ro',
-            'name' => 'Eveniment Inițial',
+            'email' => 'owner@e-uvt.ro',
+            'event_name' => 'Eveniment Inițial',
         ]);
 
         $create = $this->actingAsApi($coordinator)
             ->postJson('/api/event', $payload);
 
         $create->assertCreated()
-            ->assertJsonPath('data.name', 'Eveniment Inițial');
+            ->assertJsonPath('data.eventName', 'Eveniment Inițial');
 
         $eventId = $create->json('data.id');
 
@@ -38,20 +38,20 @@ class EventLifecycleTest extends TestCase
 
         $this->actingAsApi($coordinator)
             ->putJson("/api/event/{$eventId}", [
-                'name' => 'Eveniment Actualizat',
+                'event_name' => 'Eveniment Actualizat',
                 'description' => 'Descriere actualizată.',
             ])
             ->assertOk()
-            ->assertJsonPath('data.name', 'Eveniment Actualizat');
+            ->assertJsonPath('data.eventName', 'Eveniment Actualizat');
     }
 
     public function test_metrics_update_upserts_by_category(): void
     {
-        $coordinator = $this->coordinator(['email' => 'metrics@e-uvt.ro', 'department' => 'Informatică']);
+        $coordinator = $this->coordinator(['email' => 'metrics@e-uvt.ro', 'department' => 'INFO']);
 
         $eventId = $this->actingAsApi($coordinator)
             ->postJson('/api/event', $this->validEventPayload([
-                'coordinator_email' => 'metrics@e-uvt.ro',
+                'email' => 'metrics@e-uvt.ro',
             ]))
             ->json('data.id');
 
@@ -81,11 +81,11 @@ class EventLifecycleTest extends TestCase
 
     public function test_archive_marks_event_as_archived(): void
     {
-        $coordinator = $this->coordinator(['email' => 'archive@e-uvt.ro', 'department' => 'Informatică']);
+        $coordinator = $this->coordinator(['email' => 'archive@e-uvt.ro', 'department' => 'INFO']);
 
         $eventId = $this->actingAsApi($coordinator)
             ->postJson('/api/event', $this->validEventPayload([
-                'coordinator_email' => 'archive@e-uvt.ro',
+                'email' => 'archive@e-uvt.ro',
             ]))
             ->json('data.id');
 
@@ -100,7 +100,7 @@ class EventLifecycleTest extends TestCase
         $owner = $this->coordinator(['email' => 'owner.only@e-uvt.ro']);
         $intruder = $this->coordinator(['email' => 'other.coord@e-uvt.ro']);
 
-        $event = Event::factory()->forCoordinator('owner.only@e-uvt.ro', 'Informatică')->create();
+        $event = Event::factory()->forCoordinator('owner.only@e-uvt.ro', 'INFO')->create();
 
         $this->actingAsApi($intruder)
             ->getJson("/api/event/{$event->id}")

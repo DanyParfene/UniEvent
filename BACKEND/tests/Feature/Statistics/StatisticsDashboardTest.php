@@ -13,7 +13,7 @@ class StatisticsDashboardTest extends TestCase
 {
     public function test_statistics_endpoint_returns_expected_fields(): void
     {
-        $coordinator = $this->coordinator(['email' => 'stats@e-uvt.ro', 'department' => 'Informatică']);
+        $coordinator = $this->coordinator(['email' => 'stats@e-uvt.ro', 'department' => 'INFO']);
 
         $response = $this->actingAsApi($coordinator)->getJson('/api/statistics');
 
@@ -32,11 +32,11 @@ class StatisticsDashboardTest extends TestCase
 
     public function test_press_appearances_count_is_scoped_to_visible_events(): void
     {
-        $coordinator = $this->coordinator(['email' => 'press@e-uvt.ro', 'department' => 'Informatică']);
+        $coordinator = $this->coordinator(['email' => 'press@e-uvt.ro', 'department' => 'INFO']);
 
-        $visible = Event::factory()->forCoordinator('press@e-uvt.ro', 'Informatică')->create([
-            'start_date' => now()->subMonths(2)->toDateString(),
-            'estimated_participants' => 80,
+        $visible = Event::factory()->forCoordinator('press@e-uvt.ro', 'INFO')->create([
+            'start_event_date' => now()->subMonths(2)->toDateString(),
+            'number_of_participants' => 80,
         ]);
         EventMetric::query()->create([
             'event_id' => $visible->id,
@@ -46,8 +46,8 @@ class StatisticsDashboardTest extends TestCase
             'engagement' => 0,
         ]);
 
-        $hidden = Event::factory()->forCoordinator('other.press@e-uvt.ro', 'Informatică')->create([
-            'start_date' => now()->subMonths(2)->toDateString(),
+        $hidden = Event::factory()->forCoordinator('other.press@e-uvt.ro', 'INFO')->create([
+            'start_event_date' => now()->subMonths(2)->toDateString(),
         ]);
         EventMetric::query()->create([
             'event_id' => $hidden->id,
@@ -66,15 +66,15 @@ class StatisticsDashboardTest extends TestCase
 
     public function test_most_participants_reflects_scoped_events_in_past_year(): void
     {
-        $coordinator = $this->coordinator(['email' => 'participants@e-uvt.ro', 'department' => 'Informatică']);
+        $coordinator = $this->coordinator(['email' => 'participants@e-uvt.ro', 'department' => 'INFO']);
 
-        Event::factory()->forCoordinator('participants@e-uvt.ro', 'Informatică')->create([
-            'start_date' => now()->subMonth()->toDateString(),
-            'estimated_participants' => 150,
+        Event::factory()->forCoordinator('participants@e-uvt.ro', 'INFO')->create([
+            'start_event_date' => now()->subMonth()->toDateString(),
+            'number_of_participants' => 150,
         ]);
-        Event::factory()->forCoordinator('other.participants@e-uvt.ro', 'Informatică')->create([
-            'start_date' => now()->subMonth()->toDateString(),
-            'estimated_participants' => 900,
+        Event::factory()->forCoordinator('other.participants@e-uvt.ro', 'INFO')->create([
+            'start_event_date' => now()->subMonth()->toDateString(),
+            'number_of_participants' => 900,
         ]);
 
         $most = $this->actingAsApi($coordinator)

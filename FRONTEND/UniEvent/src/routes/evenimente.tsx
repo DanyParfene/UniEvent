@@ -2,133 +2,71 @@ import {
   createFileRoute,
   useNavigate,
   useSearch,
+  Link,
 } from "@tanstack/react-router";
+import { requireAuth } from "../lib/require-auth";
 import EventList from "../components/events/EventList";
 import Pagination from "../components/events/Pagination";
-import { Link } from "@tanstack/react-router";
-import { eventData } from "../components/events/eventMainType";
+import QueryBoundary from "../components/common/QueryBoundary";
+import { useEvents } from "../api/events";
+import { useScopedDepartmentParam } from "../api/helpers";
+import { eventDtoToSections } from "../components/events/eventMainType";
 
 type EventSearch = {
   page: number;
+  name?: string;
+  start_date?: string;
+  end_date?: string;
+  partners?: string[];
+  sort_by?: "date" | "name";
+  sort_direction?: "asc" | "desc";
 };
 
 export const Route = createFileRoute("/evenimente")({
+  beforeLoad: () => requireAuth(),
   validateSearch: (search: Record<string, unknown>): EventSearch => {
     return {
       page: Number(search?.page) || 1,
+      name: search?.name as string | undefined,
+      start_date: search?.start_date as string | undefined,
+      end_date: search?.end_date as string | undefined,
+      partners: Array.isArray(search?.partners)
+        ? (search.partners as string[])
+        : search?.partners
+          ? [String(search.partners)]
+          : undefined,
+      sort_by: (search?.sort_by as "date" | "name") || undefined,
+      sort_direction: (search?.sort_direction as "asc" | "desc") || undefined,
     };
   },
   component: RouteComponent,
 });
 
-function RouteComponent() {
-  const { page } = useSearch({ from: "/evenimente" });
+function EventenimenteContent() {
+  const search = useSearch({ from: "/evenimente" });
   const navigate = useNavigate({ from: "/evenimente" });
+  const department = useScopedDepartmentParam();
 
-  const ITEMS_PER_PAGE = 10;
+  const { data: eventsPage } = useEvents({
+    page: search.page,
+    name: search.name,
+    start_date: search.start_date,
+    end_date: search.end_date,
+    partners: search.partners,
+    sort_by: search.sort_by,
+    sort_direction: search.sort_direction,
+    ...(department ? { department } : {}),
+  });
 
-  const allEvents = [
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-    eventData,
-  ];
+  const events = (eventsPage.data ?? []).map((dto) => ({
+    sections: eventDtoToSections(dto),
+    id: dto.id,
+  }));
 
-  const totalEvents = allEvents.length;
-  const totalPages = Math.ceil(totalEvents / ITEMS_PER_PAGE);
-  const startIndex = (page - 1) * ITEMS_PER_PAGE;
-  const displayedEvents = allEvents.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE,
-  );
+  const totalPages = eventsPage.meta?.last_page ?? 1;
 
   const handlePageChange = (newPage: number) => {
-    navigate({
-      search: (prev) => ({ ...prev, page: newPage }),
-    });
+    navigate({ search: (prev) => ({ ...prev, page: newPage }) });
   };
 
   return (
@@ -166,7 +104,7 @@ function RouteComponent() {
         </div>
       </div>
 
-      {totalEvents === 0 ? (
+      {events.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 bg-white border border-dashed border-gray-200 rounded-3xl">
           <p className="text-lg font-bold text-gray-400">
             Nu exista evenimente disponibile!
@@ -174,12 +112,12 @@ function RouteComponent() {
         </div>
       ) : (
         <>
-          <EventList events={displayedEvents} isArchived={false} />
+          <EventList events={events} isArchived={false} />
 
-          {totalEvents > ITEMS_PER_PAGE && (
+          {totalPages > 1 && (
             <div className="mt-12">
               <Pagination
-                currentPage={page}
+                currentPage={search.page}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
               />
@@ -188,5 +126,13 @@ function RouteComponent() {
         </>
       )}
     </div>
+  );
+}
+
+function RouteComponent() {
+  return (
+    <QueryBoundary>
+      <EventenimenteContent />
+    </QueryBoundary>
   );
 }

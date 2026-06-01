@@ -5,6 +5,7 @@ interface EventCardProps {
   data: Section[];
   isArchived?: boolean;
   showButton?: boolean;
+  eventId?: string;
 }
 
 const getEventField = (data: Section[], label: string): string => {
@@ -27,7 +28,10 @@ const EventCard = ({
   data,
   isArchived = false,
   showButton = true,
+  eventId,
 }: EventCardProps) => {
+  const detailPath = !isArchived ? "/eveniment" : "/eveniment-arhivat";
+
   return (
     <div
       className="group max-w-7xl w-full mx-auto 
@@ -59,7 +63,8 @@ const EventCard = ({
 
       {showButton && (
         <Link
-          to={!isArchived ? "/eveniment" : "/eveniment-arhivat"}
+          to={detailPath}
+          search={eventId ? { id: eventId } : undefined}
           className="mt-6 sm:mt-0 sm:ml-6 w-full sm:w-auto px-8 py-3 
                         bg-white border border-gray-200 rounded-2xl shadow-sm 
                         text-sm font-black text-primary 

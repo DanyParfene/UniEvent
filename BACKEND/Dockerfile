@@ -1,4 +1,4 @@
-FROM php:8.3-cli-bookworm
+FROM php:8.3-fpm-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -11,6 +11,7 @@ RUN apt-get update \
         zip \
         default-mysql-client \
         curl \
+        nginx \
         libzip-dev \
         libpng-dev \
         libjpeg-dev \
@@ -48,6 +49,9 @@ RUN if [ -f composer.json ]; then \
     && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R ug+rwx storage bootstrap/cache
+
+COPY docker/nginx/default.conf /etc/nginx/sites-available/default
+COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 8000
 

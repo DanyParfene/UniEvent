@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { requireGuest } from "../lib/require-auth";
 import LoginCard from "../components/account/LoginCard";
 
 export const Route = createFileRoute("/conectare")({
+  beforeLoad: () => requireGuest(),
   component: RouteComponent,
 });
 

@@ -11,7 +11,7 @@ final class ReferenceDataCacheInvalidator
 {
     public function forgetPartnersList(): void
     {
-        Cache::forget(CacheKeys::PARTNERS_LIST);
+        Cache::tags([CacheKeys::PARTNERS_LIST_TAG])->flush();
     }
 
     public function forgetStatisticsDashboards(): void

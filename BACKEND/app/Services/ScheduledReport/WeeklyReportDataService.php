@@ -50,9 +50,9 @@ final class WeeklyReportDataService
     {
         $query = $this->scopedBase($user);
 
-        $query->whereDate('start_date', '>=', $start->toDateString())
-            ->whereDate('start_date', '<=', $end->toDateString())
-            ->orderBy('start_date');
+        $query->whereDate('start_event_date', '>=', $start->toDateString())
+            ->whereDate('start_event_date', '<=', $end->toDateString())
+            ->orderBy('start_event_date');
 
         return $query;
     }
@@ -64,11 +64,11 @@ final class WeeklyReportDataService
     {
         $query = $this->scopedBase($user);
 
-        $query->whereDate('finish_date', '<', $reference->toDateString())
+        $query->whereDate('finish_event_date', '<', $reference->toDateString())
             ->whereDoesntHave('metrics', function (Builder $metricQuery): void {
                 $metricQuery->whereIn('category', SocialMetricCategories::values());
             })
-            ->orderBy('finish_date', 'desc');
+            ->orderBy('finish_event_date', 'desc');
 
         return $query;
     }

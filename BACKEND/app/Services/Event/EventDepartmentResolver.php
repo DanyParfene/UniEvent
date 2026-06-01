@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Services\Event;
 
 use App\Models\Event;
-use App\Models\User;
+use App\Support\Contracts\AuthenticatedUser;
 use App\Support\RoleName;
 use Illuminate\Validation\ValidationException;
 
 final class EventDepartmentResolver
 {
-    public function resolveForCreate(User $user, ?string $requestedDepartment): string
+    public function resolveForCreate(AuthenticatedUser $user, ?string $requestedDepartment): string
     {
         if ($user->hasRole(RoleName::SUPER_ADMINISTRATOR)) {
             if ($requestedDepartment === null || $requestedDepartment === '') {
@@ -32,7 +32,7 @@ final class EventDepartmentResolver
         return $user->department;
     }
 
-    public function resolveForUpdate(User $user, Event $event, ?string $requestedDepartment): string
+    public function resolveForUpdate(AuthenticatedUser $user, Event $event, ?string $requestedDepartment): string
     {
         if ($user->hasRole(RoleName::SUPER_ADMINISTRATOR)) {
             if ($requestedDepartment !== null && $requestedDepartment !== '') {

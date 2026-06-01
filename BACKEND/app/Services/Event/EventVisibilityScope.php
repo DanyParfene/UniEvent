@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Event;
 
-use App\Models\User;
+use App\Support\Contracts\AuthenticatedUser;
 use App\Support\RoleName;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -16,7 +16,7 @@ final class EventVisibilityScope
     /**
      * @param  Builder<\App\Models\Event>  $query
      */
-    public function apply(Builder $query, User $user, ?string $requestedDepartment = null): void
+    public function apply(Builder $query, AuthenticatedUser $user, ?string $requestedDepartment = null): void
     {
         if ($user->hasRole(RoleName::SUPER_ADMINISTRATOR)) {
             if ($requestedDepartment !== null && $requestedDepartment !== '') {
@@ -34,7 +34,7 @@ final class EventVisibilityScope
 
         if ($user->hasRole(RoleName::COORDINATOR)) {
             $query->whereRaw(
-                'LOWER(coordinator_email) = ?',
+                'LOWER(email) = ?',
                 [strtolower((string) $user->email)],
             );
         }

@@ -1,11 +1,12 @@
 import editIcon from "../../assets/edit_icon.svg";
 import deleteIcon from "../../assets/delete_icon.svg";
 import ActionButton from "../common/ActionButton";
+import { getGoogleDriveDirectLink } from "../common/DriveImage";
 
 export type Partner = {
-  id: number;
+  id: string | number;
   name: string;
-  logo: string;
+  logo: string | null;
 };
 
 type OptionalType = {
@@ -19,7 +20,6 @@ type OptionalType = {
 type PartnerCardProps = Partner & Partial<OptionalType>;
 
 export const PartnerCard = ({
-  id,
   name,
   logo,
   isEditMode = false,
@@ -44,10 +44,8 @@ export const PartnerCard = ({
 
   return (
     <div className={`${baseCardClasses} ${hoverCardClasses} ${className}`}>
-      {/* Edit/delete buttons when Edit Mode is active */}
       {isEditMode && (
         <div className="absolute top-3 right-3 flex gap-2 z-10">
-          {/* Edit button */}
           {onEdit && (
             <ActionButton
               action={onEdit}
@@ -62,7 +60,6 @@ export const PartnerCard = ({
             </ActionButton>
           )}
 
-          {/* Delete button */}
           {onDelete && (
             <ActionButton
               action={onDelete}
@@ -80,11 +77,13 @@ export const PartnerCard = ({
       )}
 
       <div className="h-16 w-full flex items-center justify-center mb-4">
-        <img
-          src={logo}
-          alt={`${name} logo`}
-          className={`${baseImageClasses}`}
-        />
+        {logo ? (
+          <img src={getGoogleDriveDirectLink(logo)} alt={`${name} logo`} className={baseImageClasses} />
+        ) : (
+          <span className="text-2xl font-black text-primary">
+            {name.charAt(0)}
+          </span>
+        )}
       </div>
 
       <p className={`${baseTextClasses} ${hoverTextClasses}`}>{name}</p>

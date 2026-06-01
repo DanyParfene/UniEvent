@@ -47,7 +47,7 @@ final class EventReminderDispatcherService
     private function dispatch(EventReminderType $type, Collection $events): void
     {
         foreach ($events as $event) {
-            Mail::to($event->coordinator_email)->send(new EventReminderMail($type, $event));
+            Mail::to($event->email)->send(new EventReminderMail($type, $event));
         }
     }
 }

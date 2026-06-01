@@ -7,23 +7,24 @@ import DriveImage from "../common/DriveImage";
 import ActionButton from "../common/ActionButton";
 import {
   bannerLabel,
-  eventData, // mock data din eventMainType
   eventDataToFormValues,
   type Section,
 } from "./eventMainType";
 
 interface EventCardMainProps {
+  initialSections: Section[];
+  eventId?: string;
   isArchived?: boolean;
 }
 
-const EventCardMain = ({ isArchived = false }: EventCardMainProps) => {
+const EventCardMain = ({ initialSections, eventId, isArchived = false }: EventCardMainProps) => {
   const editGeneralDataButtonIndex = 0;
   const editSocialMediaButtonIndex = 6;
 
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isSocialMediaEdit, setIsSocialMediaEdit] = useState<boolean>(false);
   const [currentEventData, setCurrentEventData] =
-    useState<Section[]>(eventData);
+    useState<Section[]>(initialSections);
   const [backupData, setBackupData] = useState<Section[] | null>(null);
   const [showErrors, setShowErrors] = useState<boolean>(false);
 
@@ -164,19 +165,16 @@ const EventCardMain = ({ isArchived = false }: EventCardMainProps) => {
                         </div>
                       </div>
                     ) : Array.isArray(f.value) ? (
-                      // AICI E REZOLVAREA: Verificăm dacă primul element e string (ex: Invitați)
                       typeof f.value[0] === "string" ? (
                         <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
                           <span className="min-w-[120px] text-sm font-semibold text-slate-500">
                             {f.label}
                           </span>
                           <span className="text-slate-800 font-medium">
-                            {/* Le unim frumos cu virgulă și spațiu */}
                             {f.value.join(", ")}
                           </span>
                         </div>
                       ) : (
-                        // Dacă e array de obiecte, îl punem în Acordeon (Social Media)
                         <div className="ml-4">
                           <Accordion
                             title={
@@ -223,7 +221,6 @@ const EventCardMain = ({ isArchived = false }: EventCardMainProps) => {
                         </div>
                       )
                     ) : (
-                      // Dacă e valoare simplă (string/număr)
                       <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
                         <span className="min-w-[120px] text-sm font-semibold text-slate-500">
                           {f.label}
@@ -243,6 +240,7 @@ const EventCardMain = ({ isArchived = false }: EventCardMainProps) => {
         <div>
           <EventCardEditor
             eventData={eventDataToFormValues(currentEventData) as Partial<Form>}
+            eventId={eventId}
             onCancel={() => setIsEditMode(false)}
           />
         </div>

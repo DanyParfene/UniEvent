@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Actions\Report;
 
 use App\Jobs\GenerateReportJob;
-use App\Models\User;
 use App\Services\Report\ReportDatasetResolver;
+use App\Support\Contracts\AuthenticatedUser;
 use App\Support\Report\ReportGenerationInput;
 use Illuminate\Validation\ValidationException;
 
@@ -19,7 +19,7 @@ final class RequestReportGenerationAction
     /**
      * @return array{queued: true, report_type: string}
      */
-    public function execute(User $user, ReportGenerationInput $input): array
+    public function execute(AuthenticatedUser $user, ReportGenerationInput $input): array
     {
         $dataset = $this->datasetResolver->resolve($user, $input);
 

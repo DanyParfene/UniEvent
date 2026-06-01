@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Report;
 
+use App\Enums\Department;
 use App\Models\Event;
 use App\Support\Report\ReportGenerationInput;
 use App\Support\RoleName;
@@ -44,7 +45,7 @@ class GenerateReportRequest extends FormRequest
         ];
 
         if ($this->user()?->hasRole(RoleName::SUPER_ADMINISTRATOR)) {
-            $rules['filter_params.department'] = ['sometimes', 'nullable', 'string', 'max:255'];
+            $rules['filter_params.department'] = ['sometimes', 'nullable', Rule::in(Department::all())];
         }
 
         return $rules;

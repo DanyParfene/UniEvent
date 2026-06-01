@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Report;
 
 use App\Models\Partner;
-use App\Models\User;
+use App\Support\Contracts\AuthenticatedUser;
 use App\Support\Report\ReportDataset;
 use App\Support\Report\ReportGenerationInput;
 use App\Support\Report\ReportPartnerSection;
@@ -20,7 +20,7 @@ final class ReportDatasetResolver
         private readonly ReportEventOrderer $orderer,
     ) {}
 
-    public function resolve(User $user, ReportGenerationInput $input): ReportDataset
+    public function resolve(AuthenticatedUser $user, ReportGenerationInput $input): ReportDataset
     {
         $filterParams = $this->scopedFilterParams($user, $input->filterParams);
 
@@ -35,7 +35,7 @@ final class ReportDatasetResolver
      * @param  array<string, mixed>  $filterParams
      */
     private function resolvePartnerReport(
-        User $user,
+        AuthenticatedUser $user,
         ReportGenerationInput $input,
         array $filterParams,
     ): ReportDataset {
@@ -72,7 +72,7 @@ final class ReportDatasetResolver
      * @param  array<string, mixed>  $filterParams
      */
     private function resolveNormalReport(
-        User $user,
+        AuthenticatedUser $user,
         ReportGenerationInput $input,
         array $filterParams,
     ): ReportDataset {
@@ -98,7 +98,7 @@ final class ReportDatasetResolver
         ]);
     }
 
-    private function resolveFromEventIds(User $user, ReportGenerationInput $input): ReportDataset
+    private function resolveFromEventIds(AuthenticatedUser $user, ReportGenerationInput $input): ReportDataset
     {
         $fetched = $this->scopeQuery
             ->forEventIds($user, $input->eventIds)
@@ -125,7 +125,7 @@ final class ReportDatasetResolver
      * @param  array<string, mixed>  $filterParams
      * @return array<string, mixed>
      */
-    private function scopedFilterParams(User $user, array $filterParams): array
+    private function scopedFilterParams(AuthenticatedUser $user, array $filterParams): array
     {
         if ($user->hasRole(RoleName::SUPER_ADMINISTRATOR)) {
             return $filterParams;

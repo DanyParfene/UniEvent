@@ -20,6 +20,7 @@ class Partner extends Model
     protected $fillable = [
         'name',
         'logo_path',
+        'department',
     ];
 
     /**

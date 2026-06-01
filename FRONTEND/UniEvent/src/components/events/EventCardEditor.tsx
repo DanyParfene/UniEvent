@@ -5,25 +5,32 @@ import {
   type Form,
 } from "../../config/creare-eveniment";
 import { useState } from "react";
+import { useUpdateEvent } from "../../api/events";
 
 type EventCardEditorProps = {
   eventData: Partial<Form>;
+  eventId?: string;
   onCancel: () => void;
 };
 
-const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
+const EventCardEditor = ({ eventData, eventId, onCancel }: EventCardEditorProps) => {
   const [formErrors, setFormErrors] = useState<string[] | null>(null);
+  const updateEvent = eventId ? useUpdateEvent(eventId) : null;
 
   const form = useAppForm({
     defaultValues: eventData,
     validators: {
       onChange: formSchema,
     },
-    onSubmit: ({ value }) => {
-      console.log("Datele salvate sunt:", value);
-      
-      // TO DO: Aici vei face request-ul PUT/PATCH către backend
-
+    onSubmit: async ({ value }) => {
+      if (updateEvent) {
+        try {
+          await updateEvent.mutateAsync(value as Record<string, unknown>);
+        } catch {
+          setFormErrors(["A apărut o eroare la salvare. Încearcă din nou."]);
+          return;
+        }
+      }
       onCancel();
     },
   });
@@ -39,29 +46,23 @@ const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
           onSubmit={(e) => {
             e.preventDefault();
             
-            // 1. Validăm strict tot formularul folosind schema Zod
             const currentValues = form.state.values;
             const validationResult = formSchema.safeParse(currentValues);
 
             if (!validationResult.success) {
-              // 2. Dacă sunt erori (ex: a șters un câmp obligatoriu), le extragem și le afișăm
               const zodIssues = validationResult.error.issues;
-              // Folosim Set pentru a nu afișa aceeași eroare de 2 ori
               const errorMessages = Array.from(new Set(zodIssues.map((err: any) => err.message as string)));
               
               setFormErrors(errorMessages);
-              return; // Blocăm trimiterea formularului!
+              return;
             }
             
-            // 3. Dacă totul e valid, ștergem erorile și facem submit
             setFormErrors(null);
             form.handleSubmit();
           }}
         >
           {formSteps.map((formStep, index) => (
             <div key={index} className="w-full mb-10">
-              
-              {/* Styling actualizat pentru titlu, identic cu cel din create-event */}
               <div className="w-full flex flex-col items-center mb-8 mt-4">
                 <h3 className="text-2xl font-bold text-gray-800 tracking-tight text-center">
                   {formStep.name}
@@ -97,9 +98,7 @@ const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
                         } else if (element.type === "textAreaInput") {
                           const { name, type, ...props } = element;
                           return <field.TextAreaInput {...props} />;
-                        } 
-                        // AM ADĂUGAT AICI MULTI-CHECKBOX-UL PENTRU PARTENERI:
-                        else if (element.type === "multiCheckboxInput") {
+                        } else if (element.type === "multiCheckboxInput") {
                           const { name, type, ...props } = element;
                           return <field.MultiCheckboxInput {...props} />;
                         }
@@ -112,7 +111,6 @@ const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
             </div>
           ))}
 
-          {/* Afișarea erorilor generale de submit */}
           {formErrors && (
             <div className="w-full mt-8 text-red-600 bg-red-50 border border-red-100 p-3 rounded-lg text-sm font-medium text-center">
               {formErrors.join("; ")}
@@ -128,8 +126,12 @@ const EventCardEditor = ({ eventData, onCancel }: EventCardEditorProps) => {
               Înapoi
             </button>
 
-            <button type="submit" className={actionButtonStyle}>
-              Salvează
+            <button
+              type="submit"
+              className={actionButtonStyle}
+              disabled={updateEvent?.isPending}
+            >
+              {updateEvent?.isPending ? "Se salvează..." : "Salvează"}
             </button>
           </div>
         </form>

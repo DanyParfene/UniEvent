@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Statistics;
 
+use App\Enums\Department;
 use App\Models\Event;
 use App\Support\RoleName;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StatisticsIndexRequest extends FormRequest
 {
@@ -23,7 +25,7 @@ class StatisticsIndexRequest extends FormRequest
         $rules = [];
 
         if ($this->user()?->hasRole(RoleName::SUPER_ADMINISTRATOR)) {
-            $rules['department'] = ['sometimes', 'nullable', 'string', 'max:255'];
+            $rules['department'] = ['sometimes', 'nullable', Rule::in(Department::all())];
         }
 
         return $rules;

@@ -16,22 +16,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RoleSeeder::class);
 
-        $coordinator = User::query()->updateOrCreate(
-            ['email' => 'test.user@e-uvt.ro'],
-            [
-                'name' => 'Test User',
-                'department' => 'Demo Department',
-                'password' => Hash::make('password'),
-            ],
-        );
-
-        $coordinator->syncRoles([RoleName::COORDINATOR]);
-
         $superAdmin = User::query()->updateOrCreate(
             ['email' => 'admin.user@e-uvt.ro'],
             [
                 'name' => 'Demo Super Admin',
-                'department' => 'Platform Administration',
+                'department' => 'INFO',
                 'password' => Hash::make('password'),
             ],
         );

@@ -32,12 +32,12 @@ class CacheInvalidationTest extends TestCase
     {
         $coordinator = $this->coordinator([
             'email' => 'stats.cache@e-uvt.ro',
-            'department' => 'Informatică',
+            'department' => 'INFO',
         ]);
 
-        Event::factory()->forCoordinator('stats.cache@e-uvt.ro', 'Informatică')->create([
-            'start_date' => now()->subMonths(2)->toDateString(),
-            'estimated_participants' => 100,
+        Event::factory()->forCoordinator('stats.cache@e-uvt.ro', 'INFO')->create([
+            'start_event_date' => now()->subMonths(2)->toDateString(),
+            'number_of_participants' => 100,
         ]);
 
         $before = $this->actingAsApi($coordinator)
@@ -46,10 +46,10 @@ class CacheInvalidationTest extends TestCase
             ->json('data.most_participants');
 
         $payload = $this->validEventPayload([
-            'coordinator_email' => 'stats.cache@e-uvt.ro',
-            'start_date' => now()->subMonths(2)->toDateString(),
-            'finish_date' => now()->subMonths(2)->addWeek()->toDateString(),
-            'estimated_participants' => 500,
+            'email' => 'stats.cache@e-uvt.ro',
+            'start_event_date' => now()->subMonths(2)->toDateString(),
+            'finish_event_date' => now()->subMonths(2)->addWeek()->toDateString(),
+            'number_of_participants' => 500,
         ]);
 
         $this->actingAsApi($coordinator)->postJson('/api/event', $payload)->assertCreated();

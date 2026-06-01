@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Event;
 
+use App\Enums\Department;
 use App\Http\Requests\Event\Concerns\ValidatesEventCoreFields;
 use App\Models\Event;
 use App\Support\EventUpdatePayloadDetector;
 use App\Support\EventUpdatePayloadType;
 use App\Support\RoleName;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class UpdateEventRequest extends FormRequest
@@ -57,12 +59,12 @@ class UpdateEventRequest extends FormRequest
                 return;
             }
 
-            if ($user->hasRole(RoleName::COORDINATOR) && $this->exists('coordinator_email')) {
-                $email = strtolower((string) $this->input('coordinator_email'));
+            if ($user->hasRole(RoleName::COORDINATOR) && $this->exists('email')) {
+                $email = strtolower((string) $this->input('email'));
                 if ($email !== strtolower((string) $user->email)) {
                     $validator->errors()->add(
-                        'coordinator_email',
-                        'Coordinators cannot assign a different coordinator_email.',
+                        'email',
+                        'Coordinators cannot assign a different coordinator email.',
                     );
                 }
             }
@@ -87,7 +89,7 @@ class UpdateEventRequest extends FormRequest
 
         $user = $this->user();
         if ($user?->hasRole(RoleName::SUPER_ADMINISTRATOR)) {
-            $rules['department'] = ['sometimes', 'string', 'max:255'];
+            $rules['department'] = ['sometimes', Rule::in(Department::all())];
         } else {
             unset($rules['department']);
         }

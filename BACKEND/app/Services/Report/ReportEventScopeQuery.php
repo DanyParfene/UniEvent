@@ -6,8 +6,8 @@ namespace App\Services\Report;
 
 use App\Enums\EventStatus;
 use App\Models\Event;
-use App\Models\User;
 use App\Services\Event\EventVisibilityScope;
+use App\Support\Contracts\AuthenticatedUser;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -31,7 +31,7 @@ final class ReportEventScopeQuery
      * @param  array<string, mixed>  $filterParams
      * @return Builder<Event>
      */
-    public function baseQuery(User $user, array $filterParams): Builder
+    public function baseQuery(AuthenticatedUser $user, array $filterParams): Builder
     {
         $query = Event::query()->with(['metrics', 'partners']);
 
@@ -60,15 +60,15 @@ final class ReportEventScopeQuery
     {
         if (isset($filterParams['name']) && is_string($filterParams['name']) && $filterParams['name'] !== '') {
             $escaped = str_replace(['%', '_'], ['\\%', '\\_'], $filterParams['name']);
-            $query->where('name', 'like', '%'.$escaped.'%');
+            $query->where('event_name', 'like', '%'.$escaped.'%');
         }
 
         if (isset($filterParams['start_date'])) {
-            $query->whereDate('start_date', '>=', $filterParams['start_date']);
+            $query->whereDate('start_event_date', '>=', $filterParams['start_date']);
         }
 
         if (isset($filterParams['end_date'])) {
-            $query->whereDate('start_date', '<=', $filterParams['end_date']);
+            $query->whereDate('start_event_date', '<=', $filterParams['end_date']);
         }
     }
 
@@ -85,7 +85,7 @@ final class ReportEventScopeQuery
             ? $sortDirection
             : self::DEFAULT_SORT_DIRECTION;
 
-        $column = $sortBy === 'name' ? 'name' : 'start_date';
+        $column = $sortBy === 'name' ? 'event_name' : 'start_event_date';
 
         $query->orderBy($column, $sortDirection);
     }
@@ -94,7 +94,7 @@ final class ReportEventScopeQuery
      * @param  list<string>  $partnerIds
      * @param  array<string, mixed>  $filterParams
      */
-    public function forPartner(User $user, string $partnerId, array $filterParams): Builder
+    public function forPartner(AuthenticatedUser $user, string $partnerId, array $filterParams): Builder
     {
         $query = $this->baseQuery($user, $filterParams);
 
@@ -109,7 +109,7 @@ final class ReportEventScopeQuery
      * @param  list<string>  $eventIds
      * @return Builder<Event>
      */
-    public function forEventIds(User $user, array $eventIds): Builder
+    public function forEventIds(AuthenticatedUser $user, array $eventIds): Builder
     {
         $query = Event::query()->with(['metrics', 'partners']);
 

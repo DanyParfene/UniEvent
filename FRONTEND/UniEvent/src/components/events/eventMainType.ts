@@ -1,3 +1,5 @@
+import type { EventDto, MetricCategory } from '../../api/api-types';
+
 export type SocialMediaLink = {
   link: string;
   reach: number;
@@ -139,6 +141,89 @@ export const eventData: Section[] = [
     ],
   },
 ];
+
+export const categoryKeyToLabel: Record<MetricCategory, string> = {
+  album_foto: 'Album foto',
+  facebook: 'Facebook UVT',
+  instagram: 'Instagram',
+  tiktok: 'TikTok',
+  comunicat_presa: 'Comunicat de presă',
+  aparitii_presa: 'Apariții în presă',
+  statistici: 'Statistici',
+  podcast: 'Link Podcast',
+};
+
+export const categoryLabelToKey: Record<string, MetricCategory> = Object.fromEntries(
+  Object.entries(categoryKeyToLabel).map(([k, v]) => [v, k as MetricCategory]),
+);
+
+export function eventDtoToSections(dto: EventDto): Section[] {
+  const socialMediaFields: Field[] = dto.metrics.map((m) => ({
+    label: categoryKeyToLabel[m.category] ?? m.category,
+    value: [{ link: m.link, reach: m.reach, engagement: m.engagement }],
+  }));
+
+  const allSocialLabels = Object.values(categoryKeyToLabel);
+  const presentLabels = new Set(socialMediaFields.map((f) => f.label));
+  for (const label of allSocialLabels) {
+    if (!presentLabels.has(label)) {
+      socialMediaFields.push({ label, value: [] });
+    }
+  }
+  socialMediaFields.sort(
+    (a, b) => allSocialLabels.indexOf(a.label) - allSocialLabels.indexOf(b.label),
+  );
+
+  const partnerNames = dto.partners.map((p) => p.name).join(', ');
+
+  return [
+    {
+      sectionTitle: 'Date generale',
+      fields: [
+        { label: 'Denumire eveniment', value: dto.eventName },
+        { label: bannerLabel, value: dto.banner ?? '' },
+        { label: 'Dată eveniment', value: dto.startEventDate },
+        { label: 'Dată final eveniment', value: dto.finishEventDate },
+        { label: 'Ediție', value: dto.edition },
+        { label: 'Organizator', value: dto.organizer },
+      ],
+    },
+    {
+      sectionTitle: 'Detalii',
+      fields: [
+        { label: 'Descriere', value: dto.description },
+        { label: 'Locație', value: dto.location },
+        { label: 'Invitați', value: dto.invitations },
+        { label: 'Mod organizare', value: dto.organizationMode },
+      ],
+    },
+    {
+      sectionTitle: 'Participare',
+      fields: [
+        { label: 'Număr estimat participanți', value: dto.numberOfParticipants },
+        { label: 'Grup țintă', value: dto.targetGroup },
+        { label: 'Livestream', value: dto.livestream },
+      ],
+    },
+    {
+      sectionTitle: 'Contact',
+      fields: [
+        { label: 'Coordonator', value: dto.coordinator },
+        { label: 'Email', value: dto.email },
+        { label: 'Telefon', value: dto.telephone },
+      ],
+    },
+    {
+      sectionTitle: 'Parteneri eveniment',
+      fields: [{ label: 'Parteneri', value: partnerNames }],
+    },
+    {
+      sectionTitle: 'Alte informații',
+      fields: [{ label: 'Informații suplimentare', value: dto.otherInformation ?? '' }],
+    },
+    { sectionTitle: 'Social Media', fields: socialMediaFields },
+  ];
+}
 
 export const eventDataToFormValues = (data: Section[], defaultBaseValues: any = {}) => {
   const formValues: Record<string, any> = { ...defaultBaseValues };

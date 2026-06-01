@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Auth;
 
+use App\Enums\Department;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterAuthRequest extends FormRequest
@@ -23,7 +25,7 @@ class RegisterAuthRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users', 'regex:/^.+@e-uvt\.ro$/i'],
             'password' => ['required', 'string', Password::defaults()],
-            'department' => ['required', 'string', 'max:255'],
+            'department' => ['required', Rule::in(Department::all())],
         ];
     }
 }

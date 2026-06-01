@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Actions\Event;
 
-use App\Models\User;
 use App\Services\Event\EventListingQueryBuilder;
+use App\Support\Contracts\AuthenticatedUser;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 final class ListEventsAction
@@ -17,7 +17,7 @@ final class ListEventsAction
     /**
      * @param  array<string, mixed>  $filters
      */
-    public function execute(User $user, array $filters): LengthAwarePaginator
+    public function execute(AuthenticatedUser $user, array $filters): LengthAwarePaginator
     {
         return $this->listingQuery->paginate($user, $filters);
     }

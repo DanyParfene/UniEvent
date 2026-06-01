@@ -2,71 +2,57 @@ import Input from "../common/Input";
 import { useState } from "react";
 import UsersList from "./UsersList";
 import Accordion from "../common/Accordion";
+import { useAuth } from "../../context/AuthContext";
+import { axiosInstance } from "../../lib/axios";
+import { AxiosError } from "axios";
+import { useNavigate } from "@tanstack/react-router";
 
-interface UserCardProps {
-  currentUserRole?:
-    | "Coordonator"
-    | "Administrator de Departament"
-    | "Super Administrator";
-}
+const UserCard = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-const UserCard = ({
-  currentUserRole = "Super Administrator",
-}: UserCardProps) => {
-  // --- Name State ---
-  const [originalName, setOriginalName] = useState("Popescu Ion"); // Reprezintă numele actual (din DB)
-  const [name, setName] = useState(originalName); // Reprezintă ce tastează utilizatorul
+  const isSuperAdmin = user?.current_role === "super_administrator";
+
+  const [originalName, setOriginalName] = useState(user?.name ?? "");
+  const [name, setName] = useState(user?.name ?? "");
   const [nameSuccess, setNameSuccess] = useState("");
   const [nameError, setNameError] = useState("");
 
-  // --- Password State ---
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  // --- Status State ---
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [isPasswordLoading, setIsPasswordLoading] = useState(false);
 
-  // Reusable button styling to exactly match the LoginCard
   const buttonClass =
     "w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary hover:bg-primary hover:text-white transition-all cursor-pointer active:scale-95";
 
-  // --- Handlers ---
   const handleNameSubmit = () => {
-    // Resetăm mesajele anterioare
     setNameError("");
     setNameSuccess("");
 
     const trimmedName = name.trim();
 
-    // 1. Validare: Numele nu poate fi gol
     if (!trimmedName) {
       setNameError("Numele nu poate fi lăsat gol.");
       return;
     }
 
-    // 2. Validare: Numele trebuie să fie diferit de cel vechi
     if (trimmedName === originalName) {
       setNameError("Nu a fost introdus un nume diferit.");
       return;
     }
 
-    // 3. Simulare apel backend
-    // TODO: Send new name to database here
-
-    // 4. Succes: Actualizăm originalName cu noua valoare salvată
     setOriginalName(trimmedName);
     setNameSuccess("Numele a fost salvat!");
-    setTimeout(() => setNameSuccess(""), 3000); // Ascunde mesajul după 3 secunde
+    setTimeout(() => setNameSuccess(""), 3000);
   };
 
-  const handlePasswordSubmit = () => {
-    // Reset previous messages
+  const handlePasswordSubmit = async () => {
     setPasswordError("");
     setPasswordSuccess("");
 
-    // 1. Frontend Validation: Check if new passwords match
     if (newPassword !== confirmPassword) {
       setPasswordError("Parolele noi nu coincid.");
       return;
@@ -77,24 +63,43 @@ const UserCard = ({
       return;
     }
 
-    // 2. Backend Validation Simulation
-    const MOCK_DATABASE_PASSWORD = "parolaveche123";
-
-    if (oldPassword !== MOCK_DATABASE_PASSWORD) {
-      setPasswordError("Parola veche este incorectă.");
-      return;
+    setIsPasswordLoading(true);
+    try {
+      await axiosInstance.post("/auth/change-password", {
+        old_password: oldPassword,
+        new_password: newPassword,
+      });
+      setPasswordSuccess("Parola a fost actualizată cu succes!");
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err) {
+      const axiosErr = err as AxiosError<{
+        message: string;
+        errors?: { old_password?: string[]; new_password?: string[] };
+      }>;
+      const errors = axiosErr.response?.data?.errors;
+      if (errors?.old_password) {
+        setPasswordError(errors.old_password[0]);
+      } else if (errors?.new_password) {
+        setPasswordError(errors.new_password[0]);
+      } else {
+        setPasswordError(
+          axiosErr.response?.data?.message || "A apărut o eroare.",
+        );
+      }
+    } finally {
+      setIsPasswordLoading(false);
     }
+  };
 
-    // 3. Success state
-    setPasswordSuccess("Parola a fost actualizată cu succes!");
-    setOldPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+  const handleLogout = async () => {
+    await logout();
+    navigate({ to: "/conectare" });
   };
 
   return (
     <div className="w-full max-w-2xl bg-white border border-gray-200 px-6 py-8 sm:px-10 shadow-xl rounded-2xl flex flex-col h-auto">
-      {/* Header */}
       <div className="w-full pl-10 max-w-7xl mb-12 flex items-center flex-col">
         <h1 className="text-3xl md:text-4xl font-bold text-text-secondary tracking-tight">
           Setări Cont
@@ -103,7 +108,6 @@ const UserCard = ({
       </div>
 
       <div className="flex flex-col gap-10 w-[90%] max-w-md mx-auto">
-        {/* --- NAME SECTION --- */}
         <div className="flex flex-col gap-4">
           <h2 className="text-lg font-bold text-text-secondary mb-2">
             Schimbă Numele
@@ -126,7 +130,6 @@ const UserCard = ({
             </div>
           </div>
 
-          {/* Error & Success Messages pentru Nume */}
           {nameError && (
             <p className="text-red-500 text-sm font-medium">{nameError}</p>
           )}
@@ -135,10 +138,8 @@ const UserCard = ({
           )}
         </div>
 
-        {/* Divider */}
         <div className="w-full h-px bg-gray-200"></div>
 
-        {/* --- PASSWORD SECTION --- */}
         <Accordion title="Schimbare parolă">
           <div className="flex flex-col gap-4">
             <Input
@@ -160,7 +161,6 @@ const UserCard = ({
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
 
-            {/* Error & Success Messages pentru Parolă */}
             {passwordError && (
               <p className="text-red-500 text-sm font-medium mt-1">
                 {passwordError}
@@ -173,19 +173,34 @@ const UserCard = ({
             )}
 
             <div className="mt-4 flex justify-center w-full">
-              <button onClick={handlePasswordSubmit} className={buttonClass}>
-                Salvează parola
+              <button
+                onClick={handlePasswordSubmit}
+                className={buttonClass}
+                disabled={isPasswordLoading}
+              >
+                {isPasswordLoading ? "Se salvează..." : "Salvează parola"}
               </button>
             </div>
           </div>
         </Accordion>
 
-        {currentUserRole === "Super Administrator" && (
+        {isSuperAdmin && (
           <>
             <div className="w-full h-px bg-gray-200"></div>
             <UsersList />
           </>
         )}
+
+        <div className="w-full h-px bg-gray-200"></div>
+
+        <div className="flex justify-center">
+          <button
+            onClick={handleLogout}
+            className="w-full sm:w-auto px-8 py-3 bg-white border border-red-200 rounded-2xl shadow-sm text-sm font-black text-red-500 hover:bg-red-500 hover:text-white transition-all cursor-pointer active:scale-95"
+          >
+            Deconectare
+          </button>
+        </div>
       </div>
     </div>
   );

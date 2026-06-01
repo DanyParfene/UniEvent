@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Actions\Statistics;
 
-use App\Models\User;
 use App\Services\Statistics\StatisticsDashboardService;
+use App\Support\Contracts\AuthenticatedUser;
 use App\Support\CacheKeys;
 use Illuminate\Support\Facades\Cache;
 
@@ -20,7 +20,7 @@ final class GetStatisticsDashboardAction
     /**
      * @return array<string, mixed>
      */
-    public function execute(User $user, ?string $department = null): array
+    public function execute(AuthenticatedUser $user, ?string $department = null): array
     {
         $cacheKey = CacheKeys::statisticsDashboard((string) $user->id, $department);
 

@@ -10,15 +10,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('partners', function (Blueprint $table) {
-            $table->softDeletes();
+        Schema::table('partners', function (Blueprint $table): void {
+            $table->string('department')->nullable()->after('logo_path');
         });
     }
 
     public function down(): void
     {
-        Schema::table('partners', function (Blueprint $table) {
-            $table->dropSoftDeletes();
+        Schema::table('partners', function (Blueprint $table): void {
+            $table->dropColumn('department');
         });
     }
 };

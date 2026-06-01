@@ -21,23 +21,23 @@ class Event extends Model
 
     protected $fillable = [
         'department',
-        'name',
-        'banner_url',
-        'start_date',
-        'finish_date',
+        'event_name',
+        'banner',
+        'start_event_date',
+        'finish_event_date',
         'edition',
         'organizer',
         'description',
         'location',
-        'guests',
-        'mode',
-        'estimated_participants',
+        'invitations',
+        'organization_mode',
+        'number_of_participants',
         'target_group',
-        'has_livestream',
-        'coordinator_name',
-        'coordinator_email',
-        'coordinator_phone',
-        'additional_info',
+        'livestream',
+        'coordinator',
+        'email',
+        'telephone',
+        'other_information',
         'status',
     ];
 
@@ -47,13 +47,13 @@ class Event extends Model
     protected function casts(): array
     {
         return [
-            'start_date' => 'date',
-            'finish_date' => 'date',
-            'guests' => 'array',
-            'mode' => EventMode::class,
-            'has_livestream' => EventHasLivestream::class,
+            'start_event_date' => 'date',
+            'finish_event_date' => 'date',
+            'invitations' => 'array',
+            'organization_mode' => EventMode::class,
+            'livestream' => EventHasLivestream::class,
             'status' => EventStatus::class,
-            'estimated_participants' => 'integer',
+            'number_of_participants' => 'integer',
             'edition' => 'integer',
         ];
     }

@@ -1,28 +1,15 @@
-import { PartnerCard, type Partner } from "../partners/PartnerCard";
-import nokiaLogo from "../../assets/nokia_logo.png";
-import continentalLogo from "../../assets/continental_logo.png";
-import atosLogo from "../../assets/atos_logo.png";
-import bcrLogo from "../../assets/bcr_logo.png";
 import ArrowForwardIcon from "../../assets/arrow-forward.svg?react";
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-
-const partners: Partner[] = [
-  { id: 0, name: "Nokia", logo: nokiaLogo },
-  { id: 1, name: "Continental", logo: continentalLogo },
-  { id: 2, name: "Atos", logo: atosLogo },
-  { id: 3, name: "BCR", logo: bcrLogo },
-  { id: 4, name: "Nokia", logo: nokiaLogo },
-  { id: 5, name: "Continental", logo: continentalLogo },
-  { id: 6, name: "Atos", logo: atosLogo },
-  { id: 7, name: "BCR", logo: bcrLogo },
-];
+import { usePartners } from "../../api/partners";
+import { getGoogleDriveDirectLink } from "../common/DriveImage";
 
 const Carousel = () => {
+  const { data: partners } = usePartners();
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [visibleItems, setVisibleItems] = useState<number>(0);
 
-  const maxIndex = partners.length - visibleItems;
+  const maxIndex = Math.max(0, partners.length - visibleItems);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
@@ -35,26 +22,18 @@ const Carousel = () => {
   useEffect(() => {
     const updateVisibleItems = () => {
       const width = window.innerWidth;
-
-      if (width < 640) {
-        setVisibleItems(1);
-      } else if (width < 768) {
-        setVisibleItems(2);
-      } else if (width < 1024) {
-        setVisibleItems(3);
-      } else {
-        setVisibleItems(4);
-      }
+      if (width < 640) setVisibleItems(1);
+      else if (width < 768) setVisibleItems(2);
+      else if (width < 1024) setVisibleItems(3);
+      else setVisibleItems(4);
     };
 
     updateVisibleItems();
-
     window.addEventListener("resize", updateVisibleItems);
-
-    return () => {
-      window.removeEventListener("resize", updateVisibleItems);
-    };
+    return () => window.removeEventListener("resize", updateVisibleItems);
   }, []);
+
+  if (partners.length === 0) return null;
 
   return (
     <div className="relative w-full max-w-7xl mx-auto px-4 md:px-12 py-10">
@@ -79,12 +58,24 @@ const Carousel = () => {
                 className="shrink-0 px-2"
                 style={{ flex: `0 0 ${100 / visibleItems}%` }}
               >
-                <PartnerCard
-                  id={partner.id}
-                  name={partner.name}
-                  logo={partner.logo}
-                  disableHover={true}
-                />
+                <div className="relative flex flex-col items-center justify-center p-6 bg-white border border-gray-200 shadow-sm rounded-2xl">
+                  {partner.logo_path ? (
+                    <div className="h-16 w-full flex items-center justify-center mb-4">
+                      <img
+                        src={getGoogleDriveDirectLink(partner.logo_path)}
+                        alt={`${partner.name} logo`}
+                        className="max-h-full max-w-35 object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-16 w-full flex items-center justify-center mb-4">
+                      <span className="text-2xl font-black text-primary">
+                        {partner.name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                  <p className="text-sm font-semibold text-gray-500">{partner.name}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -106,7 +97,7 @@ const Carousel = () => {
           <ArrowForwardIcon className="fill-primary" />
         </button>
       </div>
-      
+
       <div className="mt-12 md:mt-16 flex justify-center w-full">
         <Link
           to="/parteneri"

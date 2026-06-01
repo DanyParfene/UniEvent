@@ -29,7 +29,7 @@
     <h2>Impact social (săptămâna trecută)</h2>
     @forelse($dataset->socialImpact as $row)
         <div class="event">
-            <h3>{{ $row['event']->name }}</h3>
+            <h3>{{ $row['event']->event_name }}</h3>
             <p><strong>Reach total (social):</strong> {{ $row['total_reach'] }}</p>
         </div>
     @empty

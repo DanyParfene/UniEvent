@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\Actions\Auth;
 
-use App\Models\User;
+use App\Services\Auth\JwtTokenService;
+use App\Support\Contracts\AuthenticatedUser;
 
 final class LogoutUserAction
 {
-    public function execute(User $user): void
+    public function __construct(
+        private readonly JwtTokenService $tokenService,
+    ) {}
+
+    public function execute(AuthenticatedUser $user): void
     {
-        $user->currentAccessToken()?->delete();
+        $this->tokenService->deleteRefreshJti($user->getAuthIdentifier());
     }
 }

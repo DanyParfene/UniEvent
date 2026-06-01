@@ -1,12 +1,17 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { PartnersList } from '../components/partners/PartnersList'
+import { createFileRoute } from "@tanstack/react-router";
+import { requireAuth } from "../lib/require-auth";
+import { PartnersList } from "../components/partners/PartnersList";
+import QueryBoundary from "../components/common/QueryBoundary";
 
-export const Route = createFileRoute('/parteneri')({
+export const Route = createFileRoute("/parteneri")({
+  beforeLoad: () => requireAuth(),
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  return <>
-    <PartnersList/>
-  </>
+  return (
+    <QueryBoundary>
+      <PartnersList />
+    </QueryBoundary>
+  );
 }

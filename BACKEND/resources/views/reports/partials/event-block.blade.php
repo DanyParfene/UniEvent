@@ -1,13 +1,13 @@
 @php /** @var \App\Models\Event $event */ @endphp
 <div class="event">
-    <h3>{{ $event->name }}</h3>
+    <h3>{{ $event->event_name }}</h3>
     <p>
-        <strong>Perioadă:</strong> {{ $event->start_date?->format('d.m.Y') }} – {{ $event->finish_date?->format('d.m.Y') }}<br>
+        <strong>Perioadă:</strong> {{ $event->start_event_date?->format('d.m.Y') }} – {{ $event->finish_event_date?->format('d.m.Y') }}<br>
         <strong>Organizator:</strong> {{ $event->organizer }}<br>
         <strong>Locație:</strong> {{ $event->location }}<br>
         <strong>Departament:</strong> {{ $event->department }}<br>
         <strong>Status:</strong> {{ $event->status->value }}<br>
-        <strong>Participanți estimați:</strong> {{ $event->estimated_participants }}
+        <strong>Participanți estimați:</strong> {{ $event->number_of_participants }}
     </p>
     @if($event->description)
         <p><strong>Descriere:</strong> {{ \Illuminate\Support\Str::limit($event->description, 500) }}</p>

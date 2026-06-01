@@ -6,6 +6,7 @@ namespace App\Actions\User;
 
 use App\Models\User;
 use App\Services\User\LastSuperAdminGuard;
+use App\Support\Contracts\AuthenticatedUser;
 use Illuminate\Support\Facades\DB;
 
 final class UpdateUserRoleAction
@@ -14,7 +15,7 @@ final class UpdateUserRoleAction
         private readonly LastSuperAdminGuard $lastSuperAdminGuard,
     ) {}
 
-    public function execute(User $target, string $roleName, User $actor): User
+    public function execute(User $target, string $roleName, AuthenticatedUser $actor): User
     {
         $this->lastSuperAdminGuard->ensureCanChangeRole($target, $roleName, $actor);
 

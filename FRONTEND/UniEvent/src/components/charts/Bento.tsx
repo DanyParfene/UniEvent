@@ -2,10 +2,16 @@ import CustomActiveShapePieChart from "./PieChart";
 import PressIcon from "../../assets/press.svg?react";
 import { Link } from "@tanstack/react-router";
 import { useFaculty } from "../../context/FacultyContext";
+import { getGoogleDriveDirectLink } from "../common/DriveImage";
 
+
+interface UpcomingEvent {
+  id: string;
+  name: string;
+}
 
 interface BentoStats {
-  upcomingEvents: string[];
+  upcomingEvents: UpcomingEvent[] | string[];
   userName: string;
   topOrganiser: string;
   topSponsorLogo: string;
@@ -27,18 +33,24 @@ const Bento = ({ stats }: { stats: BentoStats }) => {
           </h3>
           <ul className="w-full">
             {stats.upcomingEvents.length > 0 ? (
-              stats.upcomingEvents.map((eventName, index) => (
-                <li
-                  key={index}
-                >
-                  <Link to={"/eveniment"} className="flex items-center gap-3 p-3 rounded-xl transition-all duration-300 hover:bg-secondary/10 group cursor-pointer">
-                    <span className="w-2 h-2 rounded-full bg-secondary shrink-0 transition-transform duration-300 group-hover:scale-150"></span>
-                    <span className="font-medium text-text-secondary italic group-hover:text-primary transition-colors duration-300">
-                      {eventName}
-                    </span>
-                  </Link>
-                </li>
-              ))
+              stats.upcomingEvents.map((item, index) => {
+                const id = typeof item === 'string' ? undefined : item.id;
+                const name = typeof item === 'string' ? item : item.name;
+                return (
+                  <li key={index}>
+                    <Link
+                      to="/eveniment"
+                      search={id ? { id } : undefined}
+                      className="flex items-center gap-3 p-3 rounded-xl transition-all duration-300 hover:bg-secondary/10 group cursor-pointer"
+                    >
+                      <span className="w-2 h-2 rounded-full bg-secondary shrink-0 transition-transform duration-300 group-hover:scale-150"></span>
+                      <span className="font-medium text-text-secondary italic group-hover:text-primary transition-colors duration-300">
+                        {name}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })
             ) : (
               <p className="text-sm text-gray-400 text-center">
                 Niciun eveniment viitor.
@@ -65,7 +77,7 @@ const Bento = ({ stats }: { stats: BentoStats }) => {
             Cel mai implicat sponsor
           </p>
           <div>
-            <img src={stats.topSponsorLogo} alt="logo" className="p-6" />
+            <img src={getGoogleDriveDirectLink(stats.topSponsorLogo)} alt="logo" className="p-6" />
           </div>
         </div>
 

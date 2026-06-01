@@ -8,22 +8,20 @@ import HeaderDropdown from "./HeaderDropdown";
 import { faculties } from "./headerType";
 import { Link } from "@tanstack/react-router";
 import { useFaculty } from "../../context/FacultyContext";
+import { useAuth } from "../../context/AuthContext";
 
 const Header = () => {
   const { state } = useFaculty();
   const { currentFaculty } = state;
+  const { user } = useAuth();
 
-  const userRole = "Super Administrator"; // role-ul asta trebuie schimbat cumva din context
+  const isSuperAdmin = user?.current_role === "super_administrator";
 
   let filteredFaculties = faculties.filter((f) => f.id !== currentFaculty);
 
   if (currentFaculty !== "UVT") {
     filteredFaculties = [
       { id: "UVT", label: "UVT", to: "/dashboard" },
-      ...filteredFaculties,
-    ];
-  } else {
-    filteredFaculties = [
       ...filteredFaculties,
     ];
   }
@@ -41,7 +39,7 @@ const Header = () => {
 
         <nav className="absolute left-1/2 -translate-x-1/2">
           <ul className="flex items-center gap-10 text-xl font-bold">
-            {userRole === "Super Administrator" && (
+            {isSuperAdmin && (
               <HeaderDropdown
                 title="Facultăți"
                 description="Alege facultatea asupra căreia dorești să efectuezi acțiuni."

@@ -3,22 +3,24 @@ import {
   useContext,
   useEffect,
   useReducer,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 
-import uvtLogo from "../assets/uvt-long.png"
-import arteLogo from "../assets/ARTE-logo.png"
-import cbgLogo from "../assets/CBG-logo.png"
-import dreptLogo from "../assets/DREPT-logo.png"
-import feeaLogo from "../assets/FEAA-logo.png"
-import fefsLogo from "../assets/FEFS-logo.png"
-import ffmLogo from "../assets/FFM-logo.png"
-import infoLogo from "../assets/INFO-logo.png"
-import fliftLogo from "../assets/FLIFT-logo.png"
-import fmtLogo from "../assets/FMT-logo.png"
-import fpseLogo from "../assets/FPSExDPPD-logo.png"
-import fsasLogo from "../assets/FSAS-logo.png"
-import fsgcLogo from "../assets/FSGC-logo.png"
+import uvtLogo from "../assets/uvt-long.png";
+import arteLogo from "../assets/ARTE-logo.png";
+import cbgLogo from "../assets/CBG-logo.png";
+import dreptLogo from "../assets/DREPT-logo.png";
+import feeaLogo from "../assets/FEAA-logo.png";
+import fefsLogo from "../assets/FEFS-logo.png";
+import ffmLogo from "../assets/FFM-logo.png";
+import infoLogo from "../assets/INFO-logo.png";
+import fliftLogo from "../assets/FLIFT-logo.png";
+import fmtLogo from "../assets/FMT-logo.png";
+import fpseLogo from "../assets/FPSExDPPD-logo.png";
+import fsasLogo from "../assets/FSAS-logo.png";
+import fsgcLogo from "../assets/FSGC-logo.png";
+import { subscribe, getSnapshot } from "../lib/auth-store";
 
 export type FacultyId =
   | "UVT"
@@ -95,20 +97,19 @@ interface FacultyState {
 
 type FacultyAction =
   | { type: "CHANGE_FACULTY"; payload: FacultyId }
-  | { type: "SET_IS_ADMIN" }
-  | { type: "SET_LOGIN_DATA"; payload: { faculty: FacultyId; isAdmin: boolean } };
+  | { type: "SET_LOGIN_DATA"; payload: { faculty: FacultyId; isAdmin: boolean } }
+  | { type: "RESET" };
 
 interface FacultyContextType {
   state: FacultyState;
   changeFaculty: (faculty: FacultyId) => void;
-  setIsAdmin: () => void;
   setLoginData: (faculty: FacultyId, isAdmin: boolean) => void;
 }
 
 const initialState: FacultyState = {
-  isAdmin: true,
-  currentFaculty: (sessionStorage.getItem("user_faculty") as FacultyId) || "UVT",
-  currentLogo: facultyLogoMap[(sessionStorage.getItem("user_faculty") as FacultyId) || "UVT"],
+  isAdmin: false,
+  currentFaculty: "UVT",
+  currentLogo: facultyLogoMap["UVT"],
 };
 
 const FacultyReducer = (
@@ -125,11 +126,6 @@ const FacultyReducer = (
         currentFaculty: action.payload,
         currentLogo: facultyLogoMap[action.payload],
       };
-    case "SET_IS_ADMIN":
-      return {
-        ...state,
-        isAdmin: true,
-      };
     case "SET_LOGIN_DATA":
       return {
         ...state,
@@ -137,6 +133,8 @@ const FacultyReducer = (
         currentFaculty: action.payload.faculty,
         currentLogo: facultyLogoMap[action.payload.faculty],
       };
+    case "RESET":
+      return initialState;
     default:
       return state;
   }
@@ -146,6 +144,7 @@ const FacultyContext = createContext<FacultyContextType | undefined>(undefined);
 
 export const FacultyProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(FacultyReducer, initialState);
+  const { user } = useSyncExternalStore(subscribe, getSnapshot);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -161,29 +160,40 @@ export const FacultyProvider = ({ children }: { children: ReactNode }) => {
         `var(--color-${currentTheme.secondary})`,
       );
     }
-    
-    sessionStorage.setItem("user_faculty", state.currentFaculty);
   }, [state.currentFaculty]);
 
-  const changeFaculty = (faculty: FacultyId) => {
-    dispatch({
-      type: "CHANGE_FACULTY",
-      payload: faculty,
-    });
-  };
+  useEffect(() => {
+    if (user) {
+      const isSuperAdmin = user.current_role === "super_administrator";
+      const isAdmin =
+        isSuperAdmin || user.current_role === "department_administrator";
 
-  const setIsAdmin = () => {
-    dispatch({ type: "SET_IS_ADMIN" });
+      let faculty: FacultyId;
+      if (isSuperAdmin) {
+        faculty = "UVT";
+      } else {
+        const dept = user.department as FacultyId;
+        faculty =
+          dept in facultyLogoMap
+            ? dept
+            : (departmentToFacultyId[user.department] ?? "UVT");
+      }
+
+      dispatch({ type: "SET_LOGIN_DATA", payload: { faculty, isAdmin } });
+    } else {
+      dispatch({ type: "RESET" });
+    }
+  }, [user]);
+
+  const changeFaculty = (faculty: FacultyId) => {
+    dispatch({ type: "CHANGE_FACULTY", payload: faculty });
   };
 
   const setLoginData = (faculty: FacultyId, isAdmin: boolean) => {
-    dispatch({
-      type: "SET_LOGIN_DATA",
-      payload: { faculty, isAdmin },
-    });
+    dispatch({ type: "SET_LOGIN_DATA", payload: { faculty, isAdmin } });
   };
 
-  const value = { state, changeFaculty, setIsAdmin, setLoginData };
+  const value = { state, changeFaculty, setLoginData };
   return (
     <FacultyContext.Provider value={value}>{children}</FacultyContext.Provider>
   );

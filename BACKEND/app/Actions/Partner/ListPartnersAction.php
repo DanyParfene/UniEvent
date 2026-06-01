@@ -17,8 +17,8 @@ final class ListPartnersAction
     /**
      * @return Collection<int, Partner>
      */
-    public function execute(): Collection
+    public function execute(?string $department): Collection
     {
-        return $this->partnerList->allOrderedByName();
+        return $this->partnerList->forDepartment($department);
     }
 }

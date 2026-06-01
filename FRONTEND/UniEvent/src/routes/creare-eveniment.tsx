@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { requireAuth } from "../lib/require-auth";
 import { useAppForm } from "../components/form";
 import {
   defaultFormValues,
@@ -6,22 +7,52 @@ import {
   formSteps,
 } from "../config/creare-eveniment";
 import { Activity, useState } from "react";
+import { useCreateEvent } from "../api/events";
+
 export const Route = createFileRoute("/creare-eveniment")({
+  beforeLoad: () => requireAuth(),
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [formErrors, setFormErrors] = useState<string[] | null>(null);
+  const createEvent = useCreateEvent();
+  const navigate = useNavigate();
 
   const form = useAppForm({
     defaultValues: defaultFormValues,
     validators: {
       onChange: formSchema,
     },
-    onSubmit: ({ value }) => {
-      console.log("Formular salvat cu succes!");
-      console.log(value);
+    onSubmit: async ({ value }) => {
+      try {
+        const payload: Record<string, unknown> = {
+          event_name: value.eventName,
+          banner: value.banner,
+          start_event_date: value.startEventDate,
+          finish_event_date: value.finishEventDate,
+          edition: value.edition,
+          organizer: value.organizer,
+          description: value.description,
+          location: value.location,
+          invitations: value.invitations,
+          organization_mode: value.organizationMode,
+          number_of_participants: value.numberOfParticipants,
+          target_group: value.targetGroup,
+          livestream: value.livestream,
+          coordinator: value.coordinator,
+          email: value.email,
+          telephone: value.telephone,
+          other_information: value.otherInformation,
+          partner_ids: value.partners,
+          status: "draft",
+        };
+        await createEvent.mutateAsync(payload);
+        navigate({ to: "/evenimente", search: { page: 1 } });
+      } catch {
+        setFormErrors(["A apărut o eroare la salvare. Încearcă din nou."]);
+      }
     },
   });
 
@@ -99,7 +130,7 @@ function RouteComponent() {
             </div>
           )}
 
-          <div className="flex flex-wrap justify-center gap-4 mt-auto pt-4  w-full">
+          <div className="flex flex-wrap justify-center gap-4 mt-auto pt-4 w-full">
             <button
               type="button"
               disabled={currentStep < 1}
@@ -145,10 +176,10 @@ function RouteComponent() {
 
             <button
               type="submit"
-              disabled={currentStep !== formSteps.length - 1}
+              disabled={currentStep !== formSteps.length - 1 || createEvent.isPending}
               className={buttonStyle}
             >
-              Salvează
+              {createEvent.isPending ? "Se salvează..." : "Salvează"}
             </button>
           </div>
         </form>

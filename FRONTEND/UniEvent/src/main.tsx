@@ -6,6 +6,18 @@ import { routeTree } from "./routeTree.gen.ts";
 import "./index.css";
 import { FacultyProvider } from "./context/FacultyContext.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
+import { axiosInstance } from "./lib/axios.ts";
+import { setAuth, clearAuth } from "./lib/auth-store.ts";
+
+axiosInstance
+  .post("/auth/refresh")
+  .then((res) => {
+    const { user, access_token } = res.data.data;
+    setAuth(user, access_token);
+  })
+  .catch(() => {
+    clearAuth();
+  });
 
 const queryClient = new QueryClient();
 

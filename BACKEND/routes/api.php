@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\PartnerController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,17 +15,16 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-|
-| Top-level placeholders for the UVT Events platform. Concrete endpoint
-| logic is added in later steps (auth, events, statistics, reports,
-| users). Keep controllers thin — validation lives in FormRequests,
-| JSON shaping in API Resources, and heavy logic in actions/services.
-|
 */
 
 Route::get('/health', fn () => response()->json(['status' => 'ok']));
 
-Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $request->user());
+// Returns fresh user data from DB (JWT claims may be up to 5 min stale)
+Route::middleware('auth.jwt')->get('/user', function (Request $request) {
+    $user = User::with('roles')->findOrFail($request->user()->getAuthIdentifier());
+
+    return new UserResource($user);
+});
 
 Route::prefix('auth')->group(function (): void {
     Route::post('register', [AuthController::class, 'register']);
@@ -31,13 +32,16 @@ Route::prefix('auth')->group(function (): void {
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
 
-    Route::middleware('auth:sanctum')->group(function (): void {
+    // No auth middleware — only needs the HttpOnly refresh_token cookie
+    Route::post('refresh', [AuthController::class, 'refresh']);
+
+    Route::middleware('auth.jwt')->group(function (): void {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::post('change-password', [AuthController::class, 'changePassword']);
     });
 });
 
-Route::middleware('auth:sanctum')->group(function (): void {
+Route::middleware('auth.jwt')->group(function (): void {
     Route::get('partners', [PartnerController::class, 'index']);
 
     Route::middleware('role:super_administrator|department_administrator')->group(function (): void {

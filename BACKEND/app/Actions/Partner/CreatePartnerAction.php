@@ -14,13 +14,14 @@ final class CreatePartnerAction
     ) {}
 
     /**
-     * @param  array{name: string, logo_path?: string|null}  $data
+     * @param  array{name: string, logo_path?: string|null, department?: string|null}  $data
      */
     public function execute(array $data): Partner
     {
         $partner = Partner::query()->create([
-            'name' => $data['name'],
-            'logo_path' => $data['logo_path'] ?? null,
+            'name'       => $data['name'],
+            'logo_path'  => $data['logo_path'] ?? null,
+            'department' => $data['department'] ?? null,
         ]);
 
         $this->cacheInvalidator->forgetAll();

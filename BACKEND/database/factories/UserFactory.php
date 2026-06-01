@@ -28,7 +28,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->userName().'@e-uvt.ro',
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
-            'department' => fake()->company(),
+            'department' => fake()->randomElement(\App\Enums\Department::all()),
             'remember_token' => Str::random(10),
         ];
     }

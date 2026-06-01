@@ -2,9 +2,9 @@ import { useState } from "react";
 import Input from "../common/Input";
 
 import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import { axiosInstance } from "../../lib/axios";
 import { useAuth } from "../../context/AuthContext";
-import { useFaculty, departmentToFacultyId } from "../../context/FacultyContext";
 import { useNavigate } from "@tanstack/react-router";
 
 interface RegisterPayload {
@@ -16,25 +16,18 @@ interface RegisterPayload {
 
 const useRegister = () => {
   const { login } = useAuth();
-  const { setLoginData } = useFaculty();
   const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async (data: RegisterPayload) => {
-      const response = await axios.post("http://localhost:8000/api/auth/register", data);
+      const response = await axiosInstance.post("/auth/register", data);
       return response.data;
     },
     onSuccess: (data) => {
-      console.log(data);
       const userData = data.data.user;
-      const token = data.data.token;
-      
-      login(userData, token);
-      
-      const facultyId = departmentToFacultyId[userData.department] || "UVT";
-      const isAdmin = userData.current_role === "admin" || userData.current_role === "coordinator";
-      
-      setLoginData(facultyId, isAdmin);
+      const accessToken = data.data.access_token;
+
+      login(userData, accessToken);
       navigate({ to: "/dashboard" });
     },
   });
@@ -42,18 +35,18 @@ const useRegister = () => {
 
 const RegisterCard = () => {
   const faculties = [
-    "Facultatea de Arte și Design",
-    "Facultatea de Chimie, Biologie, Geografie",
-    "Facultatea de Drept",
-    "Facultatea de Economie și de Administrare a Afacerilor",
-    "Facultatea de Educație Fizică și Sport",
-    "Facultatea de Fizică și Matematică",
-    "Facultatea de Litere, Istorie, Filosofie și Teologie",
-    "Facultatea de Informatică",
-    "Facultatea de Muzică și Teatru",
-    "Facultatea de Psihologie și Științe ale Educației",
-    "Facultatea de Sociologie și Asistență Socială",
-    "Facultatea de Științe ale Guvernării și Comunicării",
+    { value: "ARTE", label: "Facultatea de Arte și Design" },
+    { value: "CBG", label: "Facultatea de Chimie, Biologie, Geografie" },
+    { value: "DREPT", label: "Facultatea de Drept" },
+    { value: "FEAA", label: "Facultatea de Economie și de Administrare a Afacerilor" },
+    { value: "FEFS", label: "Facultatea de Educație Fizică și Sport" },
+    { value: "FFM", label: "Facultatea de Fizică și Matematică" },
+    { value: "FLIFT", label: "Facultatea de Litere, Istorie, Filosofie și Teologie" },
+    { value: "INFO", label: "Facultatea de Informatică" },
+    { value: "FMT", label: "Facultatea de Muzică și Teatru" },
+    { value: "FPSE", label: "Facultatea de Psihologie și Științe ale Educației" },
+    { value: "FSAS", label: "Facultatea de Sociologie și Asistență Socială" },
+    { value: "FSGC", label: "Facultatea de Științe ale Guvernării și Comunicării" },
   ];
 
   const [selectedFaculty, setSelectedFaculty] = useState("");
@@ -66,16 +59,20 @@ const RegisterCard = () => {
 
   const validate = () => {
     const errors: Record<string, string> = {};
-    
+
     if (!name) errors.name = "Câmp obligatoriu.";
-    else if (name.length > 255) errors.name = "Numele nu poate depăși 255 de caractere.";
+    else if (name.length > 255)
+      errors.name = "Numele nu poate depăși 255 de caractere.";
 
     if (!email) errors.email = "Câmp obligatoriu.";
-    else if (email.length > 255) errors.email = "Email-ul nu poate depăși 255 de caractere.";
-    else if (!/.+@e-uvt\.ro$/i.test(email)) errors.email = "Email-ul trebuie să aparțină domeniului @e-uvt.ro.";
+    else if (email.length > 255)
+      errors.email = "Email-ul nu poate depăși 255 de caractere.";
+    else if (!/.+@e-uvt\.ro$/i.test(email))
+      errors.email = "Email-ul trebuie să aparțină domeniului @e-uvt.ro.";
 
     if (!password) errors.password = "Câmp obligatoriu.";
-    if (!selectedFaculty) errors.selectedFaculty = "Vă rugăm să selectați o facultate.";
+    if (!selectedFaculty)
+      errors.selectedFaculty = "Vă rugăm să selectați o facultate.";
 
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
@@ -83,7 +80,7 @@ const RegisterCard = () => {
 
   const handleRegister = () => {
     if (!validate()) return;
-    
+
     mutate({
       name,
       email,
@@ -103,24 +100,52 @@ const RegisterCard = () => {
 
       {isError && (
         <div className="w-[90%] max-w-md mx-auto mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
-          {(error as AxiosError<{message: string}>).response?.data?.message || "Eroare la înregistrare."}
+          {(error as AxiosError<{ message: string }>).response?.data?.message ||
+            "Eroare la înregistrare."}
         </div>
       )}
 
       <div className="flex flex-col gap-4 w-[90%] max-w-md mx-auto">
         <div className="flex flex-col w-full gap-1">
-          <Input label="Nume" type="text" value={name} onChange={(e) => setName(e.target.value)} />
-          {fieldErrors.name && <span className="text-red-500 text-xs px-1">{fieldErrors.name}</span>}
+          <Input
+            label="Nume"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          {fieldErrors.name && (
+            <span className="text-red-500 text-xs px-1">
+              {fieldErrors.name}
+            </span>
+          )}
         </div>
 
         <div className="flex flex-col w-full gap-1">
-          <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          {fieldErrors.email && <span className="text-red-500 text-xs px-1">{fieldErrors.email}</span>}
+          <Input
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          {fieldErrors.email && (
+            <span className="text-red-500 text-xs px-1">
+              {fieldErrors.email}
+            </span>
+          )}
         </div>
 
         <div className="flex flex-col w-full gap-1">
-          <Input label="Parolă" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          {fieldErrors.password && <span className="text-red-500 text-xs px-1">{fieldErrors.password}</span>}
+          <Input
+            label="Parolă"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {fieldErrors.password && (
+            <span className="text-red-500 text-xs px-1">
+              {fieldErrors.password}
+            </span>
+          )}
         </div>
 
         <div className="flex flex-col w-full gap-1">
@@ -136,13 +161,17 @@ const RegisterCard = () => {
               </option>
 
               {faculties.map((faculty) => (
-                <option key={faculty} value={faculty}>
-                  {faculty}
+                <option key={faculty.value} value={faculty.value}>
+                  {faculty.label}
                 </option>
               ))}
             </select>
           </label>
-          {fieldErrors.selectedFaculty && <span className="text-red-500 text-xs px-1">{fieldErrors.selectedFaculty}</span>}
+          {fieldErrors.selectedFaculty && (
+            <span className="text-red-500 text-xs px-1">
+              {fieldErrors.selectedFaculty}
+            </span>
+          )}
         </div>
       </div>
 

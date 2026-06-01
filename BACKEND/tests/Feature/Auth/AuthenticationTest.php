@@ -20,7 +20,7 @@ class AuthenticationTest extends TestCase
             'name' => 'Test User',
             'email' => 'user@gmail.com',
             'password' => 'Password1!',
-            'department' => 'Informatică',
+            'department' => 'INFO',
         ]);
 
         $response->assertUnprocessable()
@@ -33,12 +33,12 @@ class AuthenticationTest extends TestCase
             'name' => 'Coordonator Nou',
             'email' => 'nou.coord@e-uvt.ro',
             'password' => 'Password1!',
-            'department' => 'Informatică',
+            'department' => 'INFO',
         ]);
 
         $response->assertCreated()
             ->assertJsonPath('data.user.current_role', RoleName::COORDINATOR)
-            ->assertJsonStructure(['data' => ['token', 'user' => ['id', 'email', 'department']]]);
+            ->assertJsonStructure(['data' => ['access_token', 'user' => ['id', 'email', 'department']]]);
 
         $this->assertDatabaseHas('users', ['email' => 'nou.coord@e-uvt.ro']);
         $this->assertTrue(
@@ -57,15 +57,13 @@ class AuthenticationTest extends TestCase
 
         $login->assertOk()
             ->assertJsonPath('data.user.email', 'login.flow@e-uvt.ro')
-            ->assertJsonStructure(['data' => ['token']]);
+            ->assertJsonStructure(['data' => ['access_token']]);
 
-        $token = $login->json('data.token');
+        $token = $login->json('data.access_token');
 
         $this->withToken($token)
             ->postJson('/api/auth/logout')
             ->assertNoContent();
-
-        $this->assertDatabaseCount('personal_access_tokens', 0);
     }
 
     public function test_forgot_password_sends_reset_notification(): void

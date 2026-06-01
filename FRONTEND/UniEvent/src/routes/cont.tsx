@@ -1,17 +1,19 @@
-import { createFileRoute } from '@tanstack/react-router'
-import UserCard from '../components/account/UserCard';
+import { createFileRoute } from "@tanstack/react-router";
+import { requireAuth } from "../lib/require-auth";
+import UserCard from "../components/account/UserCard";
+import QueryBoundary from "../components/common/QueryBoundary";
 
-export const Route = createFileRoute('/cont')({
+export const Route = createFileRoute("/cont")({
+  beforeLoad: () => requireAuth(),
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  // aici trebuie extras rolul utilizatorului dintr-un context sau ceva 
-  const userRole = "Super Administrator"; 
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 w-full">
-      <UserCard currentUserRole={userRole} />
+      <QueryBoundary>
+        <UserCard />
+      </QueryBoundary>
     </div>
-  )
+  );
 }

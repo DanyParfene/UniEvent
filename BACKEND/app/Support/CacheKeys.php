@@ -8,7 +8,14 @@ final class CacheKeys
 {
     public const PARTNERS_LIST = 'reference.partners.list';
 
+    public const PARTNERS_LIST_TAG = 'partners-list';
+
     public const STATISTICS_PREFIX = 'statistics.dashboard.';
+
+    public static function partnersList(?string $department): string
+    {
+        return self::PARTNERS_LIST . '.' . ($department ?? 'all');
+    }
 
     public static function statisticsDashboard(string $userId, ?string $department): string
     {

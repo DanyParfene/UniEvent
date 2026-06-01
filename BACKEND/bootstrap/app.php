@@ -9,6 +9,8 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -21,22 +23,40 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->statefulApi();
-
         $middleware->api(prepend: [
+            \App\Http\Middleware\RequestTimingMiddleware::class,
             \App\Http\Middleware\ThrottleApiGetPut::class,
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         ]);
 
         $middleware->alias([
-            'role' => Spatie\Permission\Middleware\RoleMiddleware::class,
-            'permission' => Spatie\Permission\Middleware\PermissionMiddleware::class,
-            'role_or_permission' => Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'auth.jwt'   => \App\Http\Middleware\JwtAuthMiddleware::class,
+            'role'       => \App\Http\Middleware\RoleAuthMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request, Throwable $e): bool => $request->is('api/*') || $request->expectsJson()
         );
+
+        $exceptions->render(function (TokenExpiredException $e, Request $request) {
+            if (! $request->is('api/*') && ! $request->expectsJson()) {
+                return null;
+            }
+
+            return ApiResponse::error('Token expired.', Response::HTTP_UNAUTHORIZED);
+        });
+
+        $exceptions->render(function (JWTException $e, Request $request) {
+            if (! $request->is('api/*') && ! $request->expectsJson()) {
+                return null;
+            }
+
+            return ApiResponse::error('Invalid token.', Response::HTTP_UNAUTHORIZED);
+        });
 
         $exceptions->render(function (ThrottleRequestsException $e, Request $request) {
             if (! $request->is('api/*') && ! $request->expectsJson()) {

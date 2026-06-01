@@ -21,30 +21,30 @@ trait ValidatesEventCoreFields
 
         $finishDateRules = [$required, 'date', 'date_format:Y-m-d'];
         if (! $partial) {
-            $finishDateRules[] = 'after:start_date';
+            $finishDateRules[] = 'after:start_event_date';
         } else {
             $finishDateRules[] = $this->finishDateAfterStartRule();
         }
 
         return [
-            'name' => [$required, 'string', 'max:255'],
-            'banner_url' => [$required, 'string', 'max:2048'],
-            'start_date' => [$required, 'date', 'date_format:Y-m-d'],
-            'finish_date' => $finishDateRules,
+            'event_name' => [$required, 'string', 'max:255'],
+            'banner' => [$required, 'string', 'max:2048'],
+            'start_event_date' => [$required, 'date', 'date_format:Y-m-d'],
+            'finish_event_date' => $finishDateRules,
             'edition' => [$required, 'integer', 'min:1'],
             'organizer' => [$required, 'string', 'max:255'],
             'description' => [$required, 'string'],
             'location' => [$required, 'string', 'max:255'],
-            'guests' => ['nullable', 'array'],
-            'guests.*' => ['string', 'max:255'],
-            'mode' => [$required, Rule::enum(EventMode::class)],
-            'estimated_participants' => [$required, 'integer', 'min:1'],
+            'invitations' => ['nullable', 'array'],
+            'invitations.*' => ['string', 'max:255'],
+            'organization_mode' => [$required, Rule::enum(EventMode::class)],
+            'number_of_participants' => [$required, 'integer', 'min:1'],
             'target_group' => [$required, 'string', 'max:255'],
-            'has_livestream' => [$required, Rule::enum(EventHasLivestream::class)],
-            'coordinator_name' => [$required, 'string', 'max:255'],
-            'coordinator_email' => [$required, 'string', 'email', 'max:255'],
-            'coordinator_phone' => [$required, 'string', 'max:50'],
-            'additional_info' => ['nullable', 'string'],
+            'livestream' => [$required, Rule::enum(EventHasLivestream::class)],
+            'coordinator' => [$required, 'string', 'max:255'],
+            'email' => [$required, 'string', 'email', 'max:255'],
+            'telephone' => [$required, 'string', 'max:50'],
+            'other_information' => ['nullable', 'string'],
             'status' => [$required, Rule::enum(EventStatus::class)],
             'partner_ids' => ['nullable', 'array'],
             'partner_ids.*' => ['uuid', PartnerValidation::activePartnerIdExists()],
@@ -82,10 +82,10 @@ trait ValidatesEventCoreFields
     private function finishDateAfterStartRule(): \Closure
     {
         return function (string $attribute, mixed $value, \Closure $fail): void {
-            $start = $this->input('start_date');
+            $start = $this->input('start_event_date');
             if ($start === null && method_exists($this, 'route')) {
                 $event = $this->route('event');
-                $start = $event?->start_date?->format('Y-m-d');
+                $start = $event?->start_event_date?->format('Y-m-d');
             }
 
             if ($start !== null && $value !== null && $value <= $start) {

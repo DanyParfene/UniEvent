@@ -6,8 +6,8 @@ namespace App\Services\Statistics;
 
 use App\Enums\EventStatus;
 use App\Models\Event;
-use App\Models\User;
 use App\Services\Event\EventVisibilityScope;
+use App\Support\Contracts\AuthenticatedUser;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -22,7 +22,7 @@ final class StatisticsScopedEventQuery
     /**
      * @return Builder<Event>
      */
-    public function forUser(User $user, ?string $requestedDepartment = null): Builder
+    public function forUser(AuthenticatedUser $user, ?string $requestedDepartment = null): Builder
     {
         $query = Event::query();
 

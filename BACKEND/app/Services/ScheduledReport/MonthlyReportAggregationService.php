@@ -29,8 +29,8 @@ final class MonthlyReportAggregationService
 
         $scopedEventIds = Event::query()
             ->where('status', '!=', EventStatus::Archived)
-            ->whereDate('start_date', '>=', $monthStart->toDateString())
-            ->whereDate('start_date', '<=', $monthEnd->toDateString())
+            ->whereDate('start_event_date', '>=', $monthStart->toDateString())
+            ->whereDate('start_event_date', '<=', $monthEnd->toDateString())
             ->tap(fn ($query) => $this->visibilityScope->apply($query, $user, null))
             ->pluck('id');
 
@@ -62,16 +62,16 @@ final class MonthlyReportAggregationService
         }
 
         return EventMetric::query()
-            ->select('events.name', DB::raw('SUM(event_metrics.reach) as total_reach'))
+            ->select('events.event_name', DB::raw('SUM(event_metrics.reach) as total_reach'))
             ->join('events', 'events.id', '=', 'event_metrics.event_id')
             ->whereIn('event_metrics.event_id', $scopedEventIds)
             ->whereIn('event_metrics.category', SocialMetricCategories::values())
-            ->groupBy('events.id', 'events.name')
+            ->groupBy('events.id', 'events.event_name')
             ->orderByDesc('total_reach')
             ->limit(5)
             ->get()
             ->map(static fn ($row): array => [
-                'name' => (string) $row->name,
+                'name' => (string) $row->event_name,
                 'reach' => (int) $row->total_reach,
             ])
             ->all();

@@ -3,34 +3,57 @@ import { useForm } from "@tanstack/react-form";
 import imageIcon from "../../assets/image_icon.svg";
 import TextInput from "../form/components/TextInput";
 import { fieldContext } from "../form/context";
+import { useCreatePartner, useUpdatePartner } from "../../api/partners";
+import { getGoogleDriveDirectLink } from "../common/DriveImage";
+import { useFaculty } from "../../context/FacultyContext";
+import { useAuth } from "../../context/AuthContext";
 
 type Props = {
+  partnerId?: string;
   name: string;
-  logo: string;
+  logo: string | null;
   onClose: () => void;
 };
 
-const PartnerPopUp = ({ name, logo, onClose }: Props) => {
-  const [previewUrl, setPreviewUrl] = useState<string>(logo);
+const PartnerPopUp = ({ partnerId, name, logo, onClose }: Props) => {
+  const [previewUrl, setPreviewUrl] = useState<string>(logo ?? "");
   const [isMounted, setIsMounted] = useState<boolean>(false);
+
+  const createPartner = useCreatePartner();
+  const updatePartner = useUpdatePartner();
+  const { state: facultyState } = useFaculty();
+  const { user } = useAuth();
+
+  // For super admins: use the faculty selected in the header (null when "UVT" = UVT-wide).
+  // For dept admins: backend derives the department from their JWT; we send undefined.
+  const departmentForCreate =
+    user?.current_role === "super_administrator"
+      ? (facultyState.currentFaculty === "UVT" ? null : facultyState.currentFaculty)
+      : undefined;
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // TanStack Form
   const form = useForm({
     defaultValues: {
       name: name,
-      logoFile: null as File | null,
+      logoUrl: logo ?? "",
     },
     onSubmit: async ({ value }) => {
-      console.log("Testing Save Data:", {
+      const payload = {
         name: value.name,
-        fileToUpload: value.logoFile,
-      });
+        logo_path: value.logoUrl || undefined,
+      };
 
-      // TODO:API call
+      if (partnerId) {
+        await updatePartner.mutateAsync({ id: partnerId, ...payload });
+      } else {
+        await createPartner.mutateAsync({
+          ...payload,
+          department: departmentForCreate,
+        });
+      }
 
       onClose();
     },
@@ -58,7 +81,6 @@ const PartnerPopUp = ({ name, logo, onClose }: Props) => {
               form.handleSubmit();
             }}
           >
-            {/* Field Nume */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Nume
@@ -78,86 +100,65 @@ const PartnerPopUp = ({ name, logo, onClose }: Props) => {
               </div>
             </div>
 
-            {/* Field Logo */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Logo
+                Logo URL
               </label>
-
               <form.Field
-                name="logoFile"
+                name="logoUrl"
                 children={(field) => (
-                  <div
-                    className={`relative mt-1 flex justify-center border-2 border-gray-300 border-dashed rounded-lg hover:border-primary transition-colors group cursor-pointer overflow-hidden ${
-                      previewUrl ? "p-2" : "px-6 pt-5 pb-6"
-                    }`}
-                  >
+                  <div className="flex flex-col gap-2">
                     <input
-                      type="file"
-                      accept="image/*"
+                      type="url"
+                      placeholder="https://..."
+                      value={field.state.value}
                       onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          field.handleChange(file);
-                          setPreviewUrl(URL.createObjectURL(file));
-                        }
+                        field.handleChange(e.target.value);
+                        setPreviewUrl(e.target.value);
                       }}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                      title=""
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary"
                     />
-
-                    <div className="text-center flex flex-col items-center w-full">
-                      {previewUrl ? (
+                    {previewUrl ? (
+                      <div className="flex justify-center border-2 border-dashed border-gray-200 rounded-lg p-2">
                         <img
-                          src={previewUrl}
+                          src={getGoogleDriveDirectLink(previewUrl)}
                           alt="Preview"
-                          className="w-full h-40 object-contain mb-2 rounded"
+                          className="h-24 object-contain"
+                          onError={() => setPreviewUrl("")}
                         />
-                      ) : (
+                      </div>
+                    ) : (
+                      <div className="flex justify-center border-2 border-dashed border-gray-200 rounded-lg px-6 py-6">
                         <img
                           src={imageIcon}
-                          alt="Image"
-                          className="mx-auto h-12 w-12 opacity-50 group-hover:opacity-100 transition-all mb-2"
+                          alt="Placeholder"
+                          className="h-10 w-10 opacity-30"
                         />
-                      )}
-
-                      <div className="flex text-sm text-gray-600 justify-center">
-                        <span className="relative rounded-md font-medium text-primary group-hover:text-primary">
-                          {previewUrl
-                            ? "Schimbă imaginea"
-                            : "Alege un fișier din calculator"}
-                        </span>
                       </div>
-                      {!previewUrl && (
-                        <p className="text-xs text-gray-500 mt-1 text-center">
-                          PNG, JPG, JPEG, SVG
-                        </p>
-                      )}
-                    </div>
+                    )}
                   </div>
                 )}
               />
             </div>
 
-            {/* Butoane */}
             <div className="flex justify-end gap-3 mt-4 border-t border-gray-100 pt-4">
               <button
                 className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium cursor-pointer"
                 type="button"
                 onClick={onClose}
               >
-                Cancel
+                Anulează
               </button>
 
               <form.Subscribe
                 selector={(state) => [state.canSubmit, state.isSubmitting]}
                 children={([canSubmit, isSubmitting]) => (
                   <button
-                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary transition-colors font-medium shadow-sm cursor-pointer disabled:opacity-50"
+                    className="px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90 transition-opacity font-medium shadow-sm cursor-pointer disabled:opacity-50"
                     type="submit"
                     disabled={!canSubmit || isSubmitting}
                   >
-                    {isSubmitting ? "Saving..." : "Save"}
+                    {isSubmitting ? "Se salvează..." : "Salvează"}
                   </button>
                 )}
               />

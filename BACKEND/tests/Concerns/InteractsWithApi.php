@@ -7,7 +7,7 @@ namespace Tests\Concerns;
 use App\Models\User;
 use App\Support\RoleName;
 use Database\Seeders\RoleSeeder;
-use Laravel\Sanctum\Sanctum;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 trait InteractsWithApi
 {
@@ -29,7 +29,8 @@ trait InteractsWithApi
 
     protected function actingAsApi(User $user): static
     {
-        Sanctum::actingAs($user, ['*']);
+        $token = JWTAuth::fromUser($user);
+        $this->withToken($token);
 
         return $this;
     }

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Actions\Event;
 
 use App\Models\Event;
-use App\Models\User;
 use App\Services\Cache\ReferenceDataCacheInvalidator;
+use App\Support\Contracts\AuthenticatedUser;
 use App\Services\Event\EventDepartmentResolver;
 use App\Services\Event\SyncEventPartnersService;
 use Illuminate\Support\Arr;
@@ -22,7 +22,7 @@ final class CreateEventAction
     /**
      * @param  array<string, mixed>  $data
      */
-    public function execute(User $user, array $data): Event
+    public function execute(AuthenticatedUser $user, array $data): Event
     {
         $department = $this->departmentResolver->resolveForCreate(
             $user,

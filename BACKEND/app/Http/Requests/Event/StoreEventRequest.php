@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Event;
 
+use App\Enums\Department;
 use App\Http\Requests\Event\Concerns\ValidatesEventCoreFields;
 use App\Models\Event;
 use App\Support\RoleName;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class StoreEventRequest extends FormRequest
@@ -28,7 +30,7 @@ class StoreEventRequest extends FormRequest
 
         $user = $this->user();
         if ($user?->hasRole(RoleName::SUPER_ADMINISTRATOR)) {
-            $rules['department'] = ['required', 'string', 'max:255'];
+            $rules['department'] = ['required', Rule::in(Department::all())];
         } else {
             unset($rules['department']);
         }
@@ -45,11 +47,11 @@ class StoreEventRequest extends FormRequest
             }
 
             if ($user->hasRole(RoleName::COORDINATOR)) {
-                $email = strtolower((string) $this->input('coordinator_email'));
+                $email = strtolower((string) $this->input('email'));
                 if ($email !== strtolower((string) $user->email)) {
                     $validator->errors()->add(
-                        'coordinator_email',
-                        'Coordinators must use their own email as coordinator_email.',
+                        'email',
+                        'Coordinators must use their own email as coordinator email.',
                     );
                 }
             }

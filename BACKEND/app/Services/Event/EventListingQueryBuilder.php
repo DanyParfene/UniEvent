@@ -6,7 +6,7 @@ namespace App\Services\Event;
 
 use App\Enums\EventStatus;
 use App\Models\Event;
-use App\Models\User;
+use App\Support\Contracts\AuthenticatedUser;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
@@ -28,7 +28,7 @@ final class EventListingQueryBuilder
     /**
      * @param  array<string, mixed>  $filters
      */
-    public function paginate(User $user, array $filters, int $perPage = 15): LengthAwarePaginator
+    public function paginate(AuthenticatedUser $user, array $filters, int $perPage = 15): LengthAwarePaginator
     {
         $query = Event::query()->with(['metrics', 'partners']);
 
@@ -73,15 +73,15 @@ final class EventListingQueryBuilder
     {
         if (isset($filters['name']) && is_string($filters['name']) && $filters['name'] !== '') {
             $escaped = str_replace(['%', '_'], ['\\%', '\\_'], $filters['name']);
-            $query->where('name', 'like', '%'.$escaped.'%');
+            $query->where('event_name', 'like', '%'.$escaped.'%');
         }
 
         if (isset($filters['start_date'])) {
-            $query->whereDate('start_date', '>=', $filters['start_date']);
+            $query->whereDate('start_event_date', '>=', $filters['start_date']);
         }
 
         if (isset($filters['end_date'])) {
-            $query->whereDate('start_date', '<=', $filters['end_date']);
+            $query->whereDate('start_event_date', '<=', $filters['end_date']);
         }
 
         $partnerIds = Arr::wrap($filters['partners'] ?? []);
@@ -107,7 +107,7 @@ final class EventListingQueryBuilder
             ? $sortDirection
             : self::DEFAULT_SORT_DIRECTION;
 
-        $column = $sortBy === 'name' ? 'name' : 'start_date';
+        $column = $sortBy === 'name' ? 'event_name' : 'start_event_date';
 
         $query->orderBy($column, $sortDirection);
     }

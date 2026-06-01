@@ -21,6 +21,24 @@ services:
       retries: 6
     restart: unless-stopped
 
+  phpmyadmin:
+    image: 'phpmyadmin:5'
+    container_name: uvt_events_phpmyadmin
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      PMA_USER: admin
+      PMA_PASSWORD: change-me
+      UPLOAD_LIMIT: 64M
+    ports:
+      - '${FORWARD_PHPMYADMIN_PORT:-8080}:80'
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks:
+      - uvt_network
+    restart: unless-stopped
+
   redis:
     image: 'redis:alpine'
     container_name: uvt_events_redis
@@ -43,9 +61,16 @@ services:
       dockerfile: Dockerfile
     container_name: uvt_events_app
     working_dir: /var/www/html
-    command: php artisan serve --host=0.0.0.0 --port=8000
+    command: >
+      sh -c "mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions storage/logs &&
+             chmod -R 775 storage bootstrap/cache &&
+             composer install --no-interaction --prefer-dist --optimize-autoloader -q &&
+             php artisan migrate --force --no-interaction &&
+             php artisan db:seed --force --no-interaction &&
+             /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"
     volumes:
       - './:/var/www/html'
+      - 'vendor_data:/var/www/html/vendor'
     ports:
       - '${APP_PORT:-8000}:8000'
     env_file:
@@ -68,6 +93,7 @@ services:
     command: php artisan queue:work redis --verbose --tries=3 --timeout=90
     volumes:
       - './:/var/www/html'
+      - 'vendor_data:/var/www/html/vendor'
     env_file:
       - .env
     depends_on:
@@ -88,6 +114,7 @@ services:
     command: php artisan schedule:work
     volumes:
       - './:/var/www/html'
+      - 'vendor_data:/var/www/html/vendor'
     env_file:
       - .env
     depends_on:
@@ -103,6 +130,8 @@ volumes:
   mariadb_data:
     driver: local
   redis_data:
+    driver: local
+  vendor_data:
     driver: local
 
 networks:

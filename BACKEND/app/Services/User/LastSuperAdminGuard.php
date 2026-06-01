@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\User;
 
 use App\Models\User;
+use App\Support\Contracts\AuthenticatedUser;
 use App\Support\RoleName;
 use Illuminate\Validation\ValidationException;
 
@@ -15,13 +16,13 @@ final class LastSuperAdminGuard
      *
      * @throws ValidationException
      */
-    public function ensureCanChangeRole(User $target, string $newRoleName, User $actor): void
+    public function ensureCanChangeRole(User $target, string $newRoleName, AuthenticatedUser $actor): void
     {
         if ($newRoleName === RoleName::SUPER_ADMINISTRATOR) {
             return;
         }
 
-        if ($actor->id !== $target->id) {
+        if ($actor->getAuthIdentifier() !== $target->id) {
             return;
         }
 

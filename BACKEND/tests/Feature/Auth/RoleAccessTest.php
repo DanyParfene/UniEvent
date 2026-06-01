@@ -25,7 +25,7 @@ class RoleAccessTest extends TestCase
 
     public function test_department_administrator_can_manage_partners(): void
     {
-        $admin = $this->departmentAdmin(['department' => 'Informatică']);
+        $admin = $this->departmentAdmin(['department' => 'INFO']);
 
         $this->actingAsApi($admin)
             ->postJson('/api/partners', ['name' => 'Partner UVT'])

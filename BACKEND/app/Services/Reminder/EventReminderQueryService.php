@@ -21,9 +21,9 @@ final class EventReminderQueryService
         $targetDate = $today->copy()->addDays(7)->toDateString();
 
         return $this->baseQuery()
-            ->whereDate('start_date', $targetDate)
-            ->whereNotNull('coordinator_email')
-            ->where('coordinator_email', '!=', '')
+            ->whereDate('start_event_date', $targetDate)
+            ->whereNotNull('email')
+            ->where('email', '!=', '')
             ->get();
     }
 
@@ -53,9 +53,9 @@ final class EventReminderQueryService
     private function eventsEndedWithoutSocialMetrics(string $finishDate): Collection
     {
         return $this->baseQuery()
-            ->whereDate('finish_date', $finishDate)
-            ->whereNotNull('coordinator_email')
-            ->where('coordinator_email', '!=', '')
+            ->whereDate('finish_event_date', $finishDate)
+            ->whereNotNull('email')
+            ->where('email', '!=', '')
             ->whereDoesntHave('metrics', function (Builder $query): void {
                 $query->whereIn('category', SocialMetricCategories::values());
             })
