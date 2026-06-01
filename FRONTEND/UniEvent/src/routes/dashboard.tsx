@@ -86,7 +86,7 @@ function DashboardContent() {
         )}
       </div>
       <QueryBoundary>
-        <Carousel />
+        <Carousel department={department} />
       </QueryBoundary>
     </>
   );

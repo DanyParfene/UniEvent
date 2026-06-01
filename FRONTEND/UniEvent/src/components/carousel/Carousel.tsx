@@ -4,8 +4,12 @@ import { Link } from "@tanstack/react-router";
 import { usePartners } from "../../api/partners";
 import { getGoogleDriveDirectLink } from "../common/DriveImage";
 
-const Carousel = () => {
-  const { data: partners } = usePartners();
+interface CarouselProps {
+  department?: string;
+}
+
+const Carousel = ({ department }: CarouselProps) => {
+  const { data: partners } = usePartners(department);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [visibleItems, setVisibleItems] = useState<number>(0);
 
