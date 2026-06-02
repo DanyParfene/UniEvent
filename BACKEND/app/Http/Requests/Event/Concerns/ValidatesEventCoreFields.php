@@ -28,7 +28,7 @@ trait ValidatesEventCoreFields
 
         return [
             'event_name' => [$required, 'string', 'max:255'],
-            'banner' => [$required, 'string', 'max:2048'],
+            'banner' => ['nullable', 'string', 'max:2048'],
             'start_event_date' => [$required, 'date', 'date_format:Y-m-d'],
             'finish_event_date' => $finishDateRules,
             'edition' => [$required, 'integer', 'min:1'],
