@@ -59,6 +59,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: uvt_events_php
     container_name: uvt_events_app
     working_dir: /var/www/html
     environment:
@@ -87,9 +88,7 @@ services:
     restart: unless-stopped
 
   php-worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: uvt_events_php
     container_name: uvt_events_worker
     working_dir: /var/www/html
     environment:
@@ -112,9 +111,7 @@ services:
     restart: unless-stopped
 
   scheduler:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: uvt_events_php
     container_name: uvt_events_scheduler
     working_dir: /var/www/html
     environment:
