@@ -93,8 +93,8 @@ export default function CustomActiveShapePieChart({
   defaultIndex?: TooltipIndex;
 }) {
   return (
-    <div className="flex-1 w-full min-h-0 font-semibold">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="flex-1 w-full min-h-[250px] font-semibold">
+      <ResponsiveContainer width="100%" height="100%" minHeight={250}>
         <PieChart>
           <defs>
             <linearGradient

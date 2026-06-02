@@ -21,7 +21,7 @@ trait ValidatesEventCoreFields
 
         $finishDateRules = [$required, 'date', 'date_format:Y-m-d'];
         if (! $partial) {
-            $finishDateRules[] = 'after:start_event_date';
+            $finishDateRules[] = 'after_or_equal:start_event_date';
         } else {
             $finishDateRules[] = $this->finishDateAfterStartRule();
         }
@@ -88,8 +88,8 @@ trait ValidatesEventCoreFields
                 $start = $event?->start_event_date?->format('Y-m-d');
             }
 
-            if ($start !== null && $value !== null && $value <= $start) {
-                $fail('The finish date must be after the start date.');
+            if ($start !== null && $value !== null && $value < $start) {
+                $fail('The finish date must be on or after the start date.');
             }
         };
     }

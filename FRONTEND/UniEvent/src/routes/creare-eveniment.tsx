@@ -6,7 +6,8 @@ import {
   formSchema,
   formSteps,
 } from "../config/creare-eveniment";
-import { Activity, useState } from "react";
+import { Activity } from "react";
+import { useState } from "react";
 import { useCreateEvent } from "../api/events";
 
 export const Route = createFileRoute("/creare-eveniment")({
@@ -16,7 +17,6 @@ export const Route = createFileRoute("/creare-eveniment")({
 
 function RouteComponent() {
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [formErrors, setFormErrors] = useState<string[] | null>(null);
   const createEvent = useCreateEvent();
   const navigate = useNavigate();
 
@@ -51,7 +51,7 @@ function RouteComponent() {
         await createEvent.mutateAsync(payload);
         navigate({ to: "/evenimente", search: { page: 1 } });
       } catch {
-        setFormErrors(["A apărut o eroare la salvare. Încearcă din nou."]);
+        // handled by createEvent.isError
       }
     },
   });
@@ -124,12 +124,6 @@ function RouteComponent() {
             </Activity>
           ))}
 
-          {formErrors && (
-            <div className="w-[90%] max-w-md mx-auto mt-8 text-red-600 bg-red-50 border border-red-100 p-3 rounded-lg mb-2 text-sm font-medium text-center">
-              {formErrors.join("; ")}
-            </div>
-          )}
-
           <div className="flex flex-wrap justify-center gap-4 mt-auto pt-4 w-full">
             <button
               type="button"
@@ -143,32 +137,7 @@ function RouteComponent() {
             <button
               type="button"
               disabled={currentStep === formSteps.length - 1}
-              onClick={() => {
-                const currentValues = form.state.values;
-
-                const validationResult = formSchema.safeParse(currentValues);
-
-                if (!validationResult.success) {
-                  const zodIssues = validationResult.error.issues;
-                  const currentStepFieldNames = formSteps[
-                    currentStep
-                  ].elements.map((el) => el.name as string);
-
-                  const errorsForThisStep = zodIssues.filter((err: any) =>
-                    currentStepFieldNames.includes(String(err.path[0])),
-                  );
-
-                  if (errorsForThisStep.length > 0) {
-                    setFormErrors(
-                      errorsForThisStep.map((e: any) => e.message as string),
-                    );
-                    return;
-                  }
-                }
-
-                setFormErrors(null);
-                setCurrentStep((prev) => prev + 1);
-              }}
+              onClick={() => setCurrentStep((prev) => prev + 1)}
               className={buttonStyle}
             >
               Continuă

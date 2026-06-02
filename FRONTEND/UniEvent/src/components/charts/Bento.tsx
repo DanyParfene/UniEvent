@@ -77,7 +77,11 @@ const Bento = ({ stats }: { stats: BentoStats }) => {
             Cel mai implicat sponsor
           </p>
           <div>
-            <img src={getGoogleDriveDirectLink(stats.topSponsorLogo)} alt="logo" className="p-6" />
+            {getGoogleDriveDirectLink(stats.topSponsorLogo) ? (
+              <img src={getGoogleDriveDirectLink(stats.topSponsorLogo)!} alt="logo" className="p-6" />
+            ) : (
+              <span className="text-gray-300 text-sm italic">Niciun sponsor</span>
+            )}
           </div>
         </div>
 

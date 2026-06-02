@@ -14,8 +14,8 @@ const extractFileId = (url: string): string | null => {
   return null;
 };
 
-export const getGoogleDriveDirectLink = (url: string, size = "w400"): string => {
-  if (!url) return url;
+export const getGoogleDriveDirectLink = (url: string, size = "w400"): string | null => {
+  if (!url) return null;
 
   const fileId = extractFileId(url);
   if (fileId) {
@@ -31,7 +31,9 @@ type DriveImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
 };
 
 const DriveImage = ({ link, size, ...rest }: DriveImageProps) => {
-  return <img src={getGoogleDriveDirectLink(link, size)} {...rest} />;
+  const src = getGoogleDriveDirectLink(link, size);
+  if (!src) return null;
+  return <img src={src} {...rest} />;
 };
 
 export default DriveImage;
