@@ -9,6 +9,8 @@ import {
 import { Activity } from "react";
 import { useState } from "react";
 import { useCreateEvent } from "../api/events";
+import { useAuth } from "../context/AuthContext";
+import { useFaculty } from "../context/FacultyContext";
 
 export const Route = createFileRoute("/creare-eveniment")({
   beforeLoad: () => requireAuth(),
@@ -19,6 +21,13 @@ function RouteComponent() {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const createEvent = useCreateEvent();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { state: facultyState } = useFaculty();
+
+  const departmentForCreate =
+    user?.current_role === "super_administrator"
+      ? (facultyState.currentFaculty === "UVT" ? null : facultyState.currentFaculty)
+      : undefined;
 
   const form = useAppForm({
     defaultValues: defaultFormValues,
@@ -47,6 +56,7 @@ function RouteComponent() {
           other_information: value.otherInformation,
           partner_ids: value.partners,
           status: "draft",
+          ...(departmentForCreate !== undefined && { department: departmentForCreate }),
         };
         await createEvent.mutateAsync(payload);
         navigate({ to: "/evenimente", search: { page: 1 } });
