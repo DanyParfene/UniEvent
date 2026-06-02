@@ -137,7 +137,31 @@ function RouteComponent() {
             <button
               type="button"
               disabled={currentStep === formSteps.length - 1}
-              onClick={() => setCurrentStep((prev) => prev + 1)}
+              onClick={() => {
+                const currentFieldNames = formSteps[currentStep].elements.map(
+                  (el) => el.name as string,
+                );
+
+                for (const name of currentFieldNames) {
+                  const field = form.getFieldMeta(name as any);
+                  if (!field?.isTouched) {
+                    form.setFieldMeta(name as any, (prev) => ({
+                      ...prev,
+                      isTouched: true,
+                    }));
+                  }
+                  form.validateField(name as any, "change");
+                }
+
+                const hasErrors = currentFieldNames.some((name) => {
+                  const field = form.getFieldMeta(name as any);
+                  return field && field.errors.length > 0;
+                });
+
+                if (!hasErrors) {
+                  setCurrentStep((prev) => prev + 1);
+                }
+              }}
               className={buttonStyle}
             >
               Continuă

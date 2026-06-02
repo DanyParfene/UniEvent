@@ -81,7 +81,7 @@ const LoginCard = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           {fieldErrors.email && (
-            <span className="text-red-500 text-xs px-1">
+            <span className="mt-2 font-[Sans-Source-Now] text-primary">
               {fieldErrors.email}
             </span>
           )}
@@ -96,7 +96,7 @@ const LoginCard = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
             {fieldErrors.password && (
-              <span className="text-red-500 text-xs px-1">
+              <span className="mt-2 font-[Sans-Source-Now] text-primary">
                 {fieldErrors.password}
               </span>
             )}
