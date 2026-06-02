@@ -61,13 +61,9 @@ services:
       dockerfile: Dockerfile
     container_name: uvt_events_app
     working_dir: /var/www/html
-    command: >
-      sh -c "mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions storage/logs &&
-             chmod -R 775 storage bootstrap/cache &&
-             composer install --no-interaction --prefer-dist --optimize-autoloader -q &&
-             php artisan migrate --force --no-interaction &&
-             php artisan db:seed --force --no-interaction &&
-             /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"
+    environment:
+      CONTAINER_ROLE: app
+    command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
     volumes:
       - './:/var/www/html'
       - 'vendor_data:/var/www/html/vendor'
@@ -80,6 +76,12 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/app-ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 180s
     networks:
       - uvt_network
     restart: unless-stopped
@@ -90,6 +92,8 @@ services:
       dockerfile: Dockerfile
     container_name: uvt_events_worker
     working_dir: /var/www/html
+    environment:
+      CONTAINER_ROLE: worker
     command: php artisan queue:work redis --verbose --tries=3 --timeout=90
     volumes:
       - './:/var/www/html'
@@ -101,6 +105,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      app:
+        condition: service_healthy
     networks:
       - uvt_network
     restart: unless-stopped
@@ -111,6 +117,8 @@ services:
       dockerfile: Dockerfile
     container_name: uvt_events_scheduler
     working_dir: /var/www/html
+    environment:
+      CONTAINER_ROLE: scheduler
     command: php artisan schedule:work
     volumes:
       - './:/var/www/html'
@@ -121,6 +129,8 @@ services:
       mariadb:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      app:
         condition: service_healthy
     networks:
       - uvt_network

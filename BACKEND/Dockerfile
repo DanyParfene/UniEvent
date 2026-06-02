@@ -43,16 +43,23 @@ WORKDIR /var/www/html
 
 COPY . /var/www/html
 
-RUN if [ -f composer.json ]; then \
-        composer install --no-dev --no-progress --prefer-dist --optimize-autoloader || true; \
-    fi \
-    && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
+# Dependencies are intentionally NOT installed at build time. They are installed
+# at first run by the entrypoint (composer install) so every container always
+# boots against freshly resolved dependencies and the latest application code.
+RUN mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R ug+rwx storage bootstrap/cache
 
 COPY docker/nginx/default.conf /etc/nginx/sites-available/default
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Normalize line endings (Windows hosts) and make the entrypoint executable.
+RUN sed -i 's/\r$//' /var/www/html/docker/entrypoint.sh \
+    && cp /var/www/html/docker/entrypoint.sh /usr/local/bin/entrypoint.sh \
+    && chmod +x /usr/local/bin/entrypoint.sh
+
 EXPOSE 8000
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD ["php", "artisan", "queue:work", "redis", "--verbose", "--tries=3", "--timeout=90"]
