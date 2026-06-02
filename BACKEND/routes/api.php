@@ -38,6 +38,7 @@ Route::prefix('auth')->group(function (): void {
     Route::middleware('auth.jwt')->group(function (): void {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::post('change-password', [AuthController::class, 'changePassword']);
+        Route::post('change-name', [AuthController::class, 'changeName']);
     });
 });
 

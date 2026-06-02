@@ -1,5 +1,5 @@
 import { createContext, useContext, useSyncExternalStore, type ReactNode } from "react";
-import { subscribe, getSnapshot, setAuth, clearAuth } from "../lib/auth-store";
+import { subscribe, getSnapshot, setAuth, clearAuth, updateUser } from "../lib/auth-store";
 import { axiosInstance } from "../lib/axios";
 import type { User } from "../lib/auth-store";
 
@@ -11,6 +11,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (user: User, token: string) => void;
   logout: () => Promise<void>;
+  updateUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,7 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

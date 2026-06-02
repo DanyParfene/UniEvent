@@ -11,13 +11,11 @@ use Illuminate\Validation\ValidationException;
 
 final class EventDepartmentResolver
 {
-    public function resolveForCreate(AuthenticatedUser $user, ?string $requestedDepartment): string
+    public function resolveForCreate(AuthenticatedUser $user, ?string $requestedDepartment): ?string
     {
         if ($user->hasRole(RoleName::SUPER_ADMINISTRATOR)) {
             if ($requestedDepartment === null || $requestedDepartment === '') {
-                throw ValidationException::withMessages([
-                    'department' => ['The department field is required for super administrators.'],
-                ]);
+                return null;
             }
 
             return $requestedDepartment;

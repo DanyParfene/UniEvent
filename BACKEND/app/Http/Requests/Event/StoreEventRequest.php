@@ -30,7 +30,7 @@ class StoreEventRequest extends FormRequest
 
         $user = $this->user();
         if ($user?->hasRole(RoleName::SUPER_ADMINISTRATOR)) {
-            $rules['department'] = ['required', Rule::in(Department::all())];
+            $rules['department'] = ['nullable', Rule::in(Department::all())];
         } else {
             unset($rules['department']);
         }

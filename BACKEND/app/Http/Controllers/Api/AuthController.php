@@ -12,6 +12,7 @@ use App\Actions\Auth\RegisterUserAction;
 use App\Actions\Auth\ResetPasswordAction;
 use App\Actions\Auth\SendPasswordResetLinkAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ChangeNameRequest;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginAuthRequest;
@@ -146,5 +147,17 @@ class AuthController extends Controller
         $action->execute($user, $validated['old_password'], $validated['new_password']);
 
         return ApiResponse::success(null, 'Password updated successfully.');
+    }
+
+    public function changeName(ChangeNameRequest $request): JsonResponse
+    {
+        $user = User::findOrFail($request->user()->getAuthIdentifier());
+        $user->name = $request->validated('name');
+        $user->save();
+
+        return ApiResponse::success(
+            (new UserResource($user->load('roles')))->toArray($request),
+            'Name updated successfully.',
+        );
     }
 }

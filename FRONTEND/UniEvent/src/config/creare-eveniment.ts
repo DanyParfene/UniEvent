@@ -21,7 +21,7 @@ export const formSchema = z
       .min(1, "Email-ul este obligatoriu")
       .email("Format invalid")
       .refine(
-        (val) => /^[a-z]+\.[a-z]+(?:\d{2})@e-uvt\.ro$/.test(val),
+        (val) => /^[a-z]+\.[a-z]+(?:\d{2})?@e-uvt\.ro$/.test(val),
         "This is not a valid e-uvt email",
       ),
     telephone: z

@@ -46,7 +46,7 @@ class EventPolicy
         }
 
         if ($user->hasRole(RoleName::DEPARTMENT_ADMINISTRATOR)) {
-            return $event->department === $user->department;
+            return $event->department === null || $event->department === $user->department;
         }
 
         if ($user->hasRole(RoleName::COORDINATOR)) {

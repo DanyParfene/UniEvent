@@ -48,7 +48,7 @@ trait ValidatesEventCoreFields
             'status' => [$required, Rule::enum(EventStatus::class)],
             'partner_ids' => ['nullable', 'array'],
             'partner_ids.*' => ['uuid', PartnerValidation::activePartnerIdExists()],
-            'department' => ['sometimes', 'string', 'max:255'],
+            'department' => ['sometimes', 'nullable', 'string', 'max:255'],
         ];
     }
 

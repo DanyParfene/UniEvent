@@ -52,6 +52,13 @@ export function setAuth(user: User, accessToken: string): void {
   notify();
 }
 
+export function updateUser(updatedUser: User): void {
+  if (state.user) {
+    state = { ...state, user: updatedUser };
+    notify();
+  }
+}
+
 export function clearAuth(): void {
   clearLegacyLocalStorage();
   state = { user: null, accessToken: null, isAuthenticated: false, isLoading: false };

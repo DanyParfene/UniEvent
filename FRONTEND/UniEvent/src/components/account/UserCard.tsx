@@ -8,7 +8,7 @@ import { AxiosError } from "axios";
 import { useNavigate } from "@tanstack/react-router";
 
 const UserCard = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
 
   const isSuperAdmin = user?.current_role === "super_administrator";
@@ -17,6 +17,7 @@ const UserCard = () => {
   const [name, setName] = useState(user?.name ?? "");
   const [nameSuccess, setNameSuccess] = useState("");
   const [nameError, setNameError] = useState("");
+  const [isNameLoading, setIsNameLoading] = useState(false);
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -28,7 +29,7 @@ const UserCard = () => {
   const buttonClass =
     "w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary hover:bg-primary hover:text-white transition-all cursor-pointer active:scale-95";
 
-  const handleNameSubmit = () => {
+  const handleNameSubmit = async () => {
     setNameError("");
     setNameSuccess("");
 
@@ -44,9 +45,33 @@ const UserCard = () => {
       return;
     }
 
-    setOriginalName(trimmedName);
-    setNameSuccess("Numele a fost salvat!");
-    setTimeout(() => setNameSuccess(""), 3000);
+    setIsNameLoading(true);
+    try {
+      const res = await axiosInstance.post<{ data: { name: string } }>("/auth/change-name", {
+        name: trimmedName,
+      });
+      const updatedName = res.data.data.name;
+      setOriginalName(updatedName);
+      setName(updatedName);
+      if (user) {
+        updateUser({ ...user, name: updatedName });
+      }
+      setNameSuccess("Numele a fost salvat!");
+      setTimeout(() => setNameSuccess(""), 3000);
+    } catch (err) {
+      const axiosErr = err as AxiosError<{
+        message: string;
+        errors?: { name?: string[] };
+      }>;
+      const errors = axiosErr.response?.data?.errors;
+      if (errors?.name) {
+        setNameError(errors.name[0]);
+      } else {
+        setNameError(axiosErr.response?.data?.message || "A apărut o eroare.");
+      }
+    } finally {
+      setIsNameLoading(false);
+    }
   };
 
   const handlePasswordSubmit = async () => {
@@ -124,8 +149,8 @@ const UserCard = () => {
             </div>
 
             <div className="flex gap-2">
-              <button onClick={handleNameSubmit} className={buttonClass}>
-                Salvează numele
+              <button onClick={handleNameSubmit} className={buttonClass} disabled={isNameLoading}>
+                {isNameLoading ? "Se salvează..." : "Salvează numele"}
               </button>
             </div>
           </div>

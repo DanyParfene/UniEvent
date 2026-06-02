@@ -20,14 +20,20 @@ final class EventVisibilityScope
     {
         if ($user->hasRole(RoleName::SUPER_ADMINISTRATOR)) {
             if ($requestedDepartment !== null && $requestedDepartment !== '') {
-                $query->where('department', $requestedDepartment);
+                $query->where(function (Builder $q) use ($requestedDepartment): void {
+                    $q->where('department', $requestedDepartment)
+                      ->orWhereNull('department');
+                });
             }
 
             return;
         }
 
         if ($user->hasRole(RoleName::DEPARTMENT_ADMINISTRATOR)) {
-            $query->where('department', $user->department);
+            $query->where(function (Builder $q) use ($user): void {
+                $q->where('department', $user->department)
+                  ->orWhereNull('department');
+            });
 
             return;
         }
