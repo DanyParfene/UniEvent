@@ -1,10 +1,11 @@
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { axiosInstance } from '../lib/axios';
 import type { PartnerDto } from './api-types';
 
 export const partnerKeys = {
   all: () => ['partners'] as const,
   list: (department?: string) => ['partners', 'list', department ?? 'all'] as const,
+  top: () => ['partners', 'top'] as const,
 };
 
 async function fetchPartners(department?: string): Promise<PartnerDto[]> {
@@ -18,6 +19,18 @@ export function usePartners(department?: string) {
   return useSuspenseQuery({
     queryKey: partnerKeys.list(department),
     queryFn: () => fetchPartners(department),
+  });
+}
+
+async function fetchTopPartners(): Promise<PartnerDto[]> {
+  const res = await axiosInstance.get<{ data: PartnerDto[] }>('/statistics/top-partners');
+  return res.data.data;
+}
+
+export function useTopPartners() {
+  return useQuery({
+    queryKey: partnerKeys.top(),
+    queryFn: fetchTopPartners,
   });
 }
 

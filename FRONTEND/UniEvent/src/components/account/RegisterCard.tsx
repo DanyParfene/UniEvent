@@ -42,7 +42,7 @@ const RegisterCard = () => {
   const form = useAppForm({
     defaultValues: defaultRegisterValues,
     validators: {
-      onChange: registerSchema,
+      onSubmit: registerSchema,
     },
     onSubmit: ({ value }) => {
       register.mutate(value);

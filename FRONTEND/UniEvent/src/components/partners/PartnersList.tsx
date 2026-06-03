@@ -4,11 +4,14 @@ import { useState } from "react";
 import { usePartners, useDeletePartner } from "../../api/partners";
 import type { PartnerDto } from "../../api/api-types";
 import { useFaculty } from "../../context/FacultyContext";
+import { useAuth } from "../../context/AuthContext";
 
 export const PartnersList = () => {
   const { state: facultyState } = useFaculty();
   const { data: partners } = usePartners(facultyState.currentFaculty);
   const deletePartner = useDeletePartner();
+  const { user } = useAuth();
+  const canAdmin = user?.current_role === "super_administrator" || user?.current_role === "department_administrator";
 
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -71,12 +74,14 @@ export const PartnersList = () => {
       </div>
 
       <div className="flex flex-wrap items-center gap-4">
-        <button
-          onClick={() => setIsAdminMode(!isAdminMode)}
-          className={actionButtonStyle}
-        >
-          {isAdminMode ? "Ieși din Editare" : "Administrează"}
-        </button>
+        {canAdmin && (
+          <button
+            onClick={() => setIsAdminMode(!isAdminMode)}
+            className={actionButtonStyle}
+          >
+            {isAdminMode ? "Ieși din Editare" : "Administrează"}
+          </button>
+        )}
 
         {isAdminMode && (
           <button onClick={handleAddClick} className={actionButtonStyle}>

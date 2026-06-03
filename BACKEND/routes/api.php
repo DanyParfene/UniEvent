@@ -58,6 +58,7 @@ Route::middleware('auth.jwt')->group(function (): void {
     Route::get('events', [EventController::class, 'index']);
 
     Route::get('statistics', [StatisticsController::class, 'index']);
+    Route::get('statistics/top-partners', [StatisticsController::class, 'topPartners']);
 
     Route::post('generate-report', [ReportController::class, 'store'])
         ->middleware('throttle:report');

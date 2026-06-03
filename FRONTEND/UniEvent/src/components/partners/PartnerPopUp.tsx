@@ -15,9 +15,15 @@ type Props = {
   onClose: () => void;
 };
 
+const isValidGoogleDriveUrl = (url: string): boolean => {
+  if (!url) return false;
+  return /drive\.google\.com|docs\.google\.com|lh[2-6]\.googleusercontent\.com/.test(url);
+};
+
 const PartnerPopUp = ({ partnerId, name, logo, onClose }: Props) => {
   const [previewUrl, setPreviewUrl] = useState<string>(logo ?? "");
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [logoError, setLogoError] = useState<string>("");
 
   const createPartner = useCreatePartner();
   const updatePartner = useUpdatePartner();
@@ -41,6 +47,12 @@ const PartnerPopUp = ({ partnerId, name, logo, onClose }: Props) => {
       logoUrl: logo ?? "",
     },
     onSubmit: async ({ value }) => {
+      if (!isValidGoogleDriveUrl(value.logoUrl)) {
+        setLogoError("Link-ul trebuie să fie un URL valid de Google Drive.");
+        return;
+      }
+      setLogoError("");
+
       const payload = {
         name: value.name,
         logo_path: value.logoUrl || undefined,
@@ -118,6 +130,9 @@ const PartnerPopUp = ({ partnerId, name, logo, onClose }: Props) => {
                       }}
                       className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary"
                     />
+                    {logoError && (
+                      <p className="text-red-500 text-sm font-medium">{logoError}</p>
+                    )}
                     {previewUrl ? (
                       <div className="flex justify-center border-2 border-dashed border-gray-200 rounded-lg p-2">
                         <img

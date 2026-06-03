@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordTokenNotification;
 use App\Support\Contracts\AuthenticatedUser;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -51,6 +52,11 @@ class User extends Authenticatable implements JWTSubject, AuthenticatedUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordTokenNotification($token));
     }
 
     // Explicit override required: Illuminate\Auth\Authenticatable::getAuthIdentifier() has no

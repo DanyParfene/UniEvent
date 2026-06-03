@@ -1,11 +1,10 @@
 import Input from "../common/Input";
 import { useState } from "react";
-import UsersList from "./UsersList";
 import Accordion from "../common/Accordion";
 import { useAuth } from "../../context/AuthContext";
 import { axiosInstance } from "../../lib/axios";
 import { AxiosError } from "axios";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 const UserCard = () => {
   const { user, logout, updateUser } = useAuth();
@@ -212,7 +211,14 @@ const UserCard = () => {
         {isSuperAdmin && (
           <>
             <div className="w-full h-px bg-gray-200"></div>
-            <UsersList />
+            <div className="flex justify-center">
+              <Link
+                to="/administrare-utilizatori"
+                className="w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm font-black text-primary hover:bg-primary hover:text-white transition-all cursor-pointer active:scale-95 text-center"
+              >
+                Administrare Utilizatori
+              </Link>
+            </div>
           </>
         )}
 

@@ -4,15 +4,17 @@ import FieldErrors from "./FieldErrors";
 
 type Props = {
   label: string;
+  isRequired?: boolean;
 } & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-const TextAreaInput = ({ label, ...props }: Props) => {
+const TextAreaInput = ({ label, isRequired, ...props }: Props) => {
   const field = useFieldContext<string>();
 
   return (
     <div className="flex flex-col gap-1.5 w-full mb-4">
       <label className="text-sm font-bold text-gray-700" htmlFor={field.name}>
         {label}
+        {isRequired && <span className="text-red-500 ml-1">*</span>}
       </label>
       <textarea
         id={field.name}

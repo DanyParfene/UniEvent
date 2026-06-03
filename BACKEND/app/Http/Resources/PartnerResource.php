@@ -22,6 +22,7 @@ class PartnerResource extends JsonResource
             'name' => $this->name,
             'logo_path' => $this->logo_path,
             'department' => $this->department,
+            'events_count' => $this->whenCounted('events'),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

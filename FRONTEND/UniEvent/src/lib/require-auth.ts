@@ -14,3 +14,11 @@ export async function requireGuest(): Promise<void> {
     throw redirect({ to: "/dashboard" });
   }
 }
+
+export async function requireRole(roles: string[]): Promise<void> {
+  await waitForReady();
+  const snap = getSnapshot();
+  if (!snap.user || !roles.includes(snap.user.current_role)) {
+    throw redirect({ to: "/dashboard" });
+  }
+}

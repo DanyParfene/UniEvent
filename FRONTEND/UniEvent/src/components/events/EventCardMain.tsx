@@ -7,9 +7,13 @@ import DriveImage from "../common/DriveImage";
 import ActionButton from "../common/ActionButton";
 import {
   bannerLabel,
+  categoryLabelToKey,
   eventDataToFormValues,
   type Section,
+  type SocialMediaLink,
 } from "./eventMainType";
+import { useUpdateEvent } from "../../api/events";
+import { useNavigate } from "@tanstack/react-router";
 
 interface EventCardMainProps {
   initialSections: Section[];
@@ -27,14 +31,19 @@ const EventCardMain = ({ initialSections, eventId, isArchived = false }: EventCa
     useState<Section[]>(initialSections);
   const [backupData, setBackupData] = useState<Section[] | null>(null);
   const [showErrors, setShowErrors] = useState<boolean>(false);
+  const [saveError, setSaveError] = useState<string>("");
+
+  const updateEvent = eventId ? useUpdateEvent(eventId) : null;
+  const navigate = useNavigate();
 
   function editDataAction() {
     setIsEditMode(true);
   }
 
-  function editSocialMediaAction() {
+  async function editSocialMediaAction() {
     if (!isSocialMediaEdit) {
       setBackupData(JSON.parse(JSON.stringify(currentEventData)));
+      setSaveError("");
       setIsSocialMediaEdit(true);
     } else {
       const socialMediaSection = currentEventData[editSocialMediaButtonIndex];
@@ -49,9 +58,49 @@ const EventCardMain = ({ initialSections, eventId, isArchived = false }: EventCa
         return;
       }
 
+      if (updateEvent && eventId) {
+        const metrics: { category: string; link: string; reach: number; engagement: number }[] = [];
+        for (const field of socialMediaSection.fields) {
+          const category = categoryLabelToKey[field.label];
+          if (!category || !Array.isArray(field.value)) continue;
+          for (const item of field.value as SocialMediaLink[]) {
+            if (item.link.trim()) {
+              metrics.push({
+                category,
+                link: item.link,
+                reach: item.reach,
+                engagement: item.engagement,
+              });
+            }
+          }
+        }
+
+        if (metrics.length > 0) {
+          try {
+            await updateEvent.mutateAsync({ metrics });
+            setSaveError("");
+          } catch {
+            setSaveError("Eroare la salvarea link-urilor. Încearcă din nou.");
+            return;
+          }
+        }
+      }
+
       setIsSocialMediaEdit(false);
       setShowErrors(false);
       setBackupData(null);
+    }
+  }
+
+  async function archiveEventAction() {
+    if (!updateEvent || !eventId) return;
+    if (!window.confirm("Sigur dorești să arhivezi acest eveniment?")) return;
+
+    try {
+      await updateEvent.mutateAsync({ archive: true });
+      navigate({ to: "/evenimente-arhivate", search: { page: 1 } });
+    } catch {
+      setSaveError("Eroare la arhivarea evenimentului.");
     }
   }
 
@@ -160,12 +209,19 @@ const EventCardMain = ({ initialSections, eventId, isArchived = false }: EventCa
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
                           {f.label}
                         </span>
-                        <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
-                          <DriveImage link={f.value.toString()} />
+                        <div className="rounded-2xl overflow-hidden shadow-sm">
+                          <DriveImage link={f.value.toString()} className="w-full object-cover" />
                         </div>
                       </div>
                     ) : Array.isArray(f.value) ? (
-                      typeof f.value[0] === "string" ? (
+                      f.value.length === 0 ? (
+                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
+                          <span className="min-w-[120px] text-sm font-semibold text-slate-500">
+                            {f.label}
+                          </span>
+                          <span className="text-slate-400 italic">-</span>
+                        </div>
+                      ) : typeof f.value[0] === "string" ? (
                         <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
                           <span className="min-w-[120px] text-sm font-semibold text-slate-500">
                             {f.label}
@@ -235,6 +291,24 @@ const EventCardMain = ({ initialSections, eventId, isArchived = false }: EventCa
               </div>
             </div>
           ))}
+
+          {saveError && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg text-center">
+              {saveError}
+            </div>
+          )}
+
+          {!isArchived && eventId && (
+            <div className="flex justify-center mt-8 pt-6 border-t border-slate-100">
+              <button
+                onClick={archiveEventAction}
+                disabled={updateEvent?.isPending}
+                className="px-8 py-3 bg-white border border-red-200 rounded-2xl shadow-sm text-sm font-black text-red-500 hover:bg-red-500 hover:text-white transition-all cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {updateEvent?.isPending ? "Se arhivează..." : "Arhivează evenimentul"}
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         <div>

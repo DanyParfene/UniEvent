@@ -7,6 +7,30 @@ import {
 import { useState } from "react";
 import { useUpdateEvent } from "../../api/events";
 
+function formValuesToApiPayload(value: Record<string, unknown>): Record<string, unknown> {
+  return {
+    event_name: value.eventName,
+    banner: value.banner,
+    start_event_date: value.startEventDate,
+    finish_event_date: value.finishEventDate,
+    edition: value.edition,
+    organizer: value.organizer,
+    description: value.description,
+    location: value.location,
+    invitations: value.invitations,
+    organization_mode: value.organizationMode,
+    number_of_participants: value.numberOfParticipants,
+    target_group: value.targetGroup,
+    livestream: value.livestream,
+    coordinator: value.coordinator,
+    email: value.email,
+    telephone: value.telephone,
+    other_information: value.otherInformation,
+    partner_ids: value.partners,
+    status: value.status ?? "draft",
+  };
+}
+
 type EventCardEditorProps = {
   eventData: Partial<Form>;
   eventId?: string;
@@ -25,7 +49,8 @@ const EventCardEditor = ({ eventData, eventId, onCancel }: EventCardEditorProps)
     onSubmit: async ({ value }) => {
       if (updateEvent) {
         try {
-          await updateEvent.mutateAsync(value as Record<string, unknown>);
+          const payload = formValuesToApiPayload(value as Record<string, unknown>);
+          await updateEvent.mutateAsync(payload);
         } catch {
           setFormErrors(["A apărut o eroare la salvare. Încearcă din nou."]);
           return;

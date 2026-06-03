@@ -6,9 +6,10 @@ import Chip from "../../filter/Chip";
 
 type Props = {
   label: string;
+  isRequired?: boolean;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-const ArrayInput = ({ label, ...props }: Props) => {
+const ArrayInput = ({ label, isRequired, ...props }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const field = useFieldContext<string[]>();
 
@@ -17,6 +18,7 @@ const ArrayInput = ({ label, ...props }: Props) => {
       
       <label className="text-sm font-bold text-gray-700" htmlFor={field.name}>
         {label}
+        {isRequired && <span className="text-red-500 ml-1">*</span>}
       </label>
       
       <div className="flex flex-col gap-4">

@@ -47,8 +47,10 @@ axiosInstance.interceptors.response.use(
     }
 
     const isRefreshUrl = originalRequest.url?.includes("/auth/refresh");
+    const isAuthEndpoint = originalRequest.url?.includes("/auth/login")
+      || originalRequest.url?.includes("/auth/register");
 
-    if (originalRequest._isRetry || isRefreshUrl) {
+    if (originalRequest._isRetry || isRefreshUrl || isAuthEndpoint) {
       clearAuth();
       if (isAuthReady() && !isRefreshUrl) {
         window.location.href = "/conectare";

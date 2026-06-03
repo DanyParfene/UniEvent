@@ -11,6 +11,7 @@ import QueryBoundary from "../components/common/QueryBoundary";
 import { useEvents } from "../api/events";
 import { useScopedDepartmentParam } from "../api/helpers";
 import { eventDtoToSections } from "../components/events/eventMainType";
+import { useAuth } from "../context/AuthContext";
 
 type EventSearch = {
   page: number;
@@ -47,6 +48,9 @@ function EventenimenteContent() {
   const navigate = useNavigate({ from: "/evenimente" });
   const department = useScopedDepartmentParam();
 
+  const { user } = useAuth();
+  const canCreateEvent = user?.current_role !== "coordinator";
+
   const { data: eventsPage } = useEvents({
     page: search.page,
     name: search.name,
@@ -80,12 +84,14 @@ function EventenimenteContent() {
             <div className="mt-2 h-1 w-20 bg-primary rounded-full"></div>
           </div>
 
-          <Link
-            to="/creare-eveniment"
-            className="bg-text-primary w-9 h-9 md:w-12 md:h-12 rounded-full border font-semibold border-gray-200 text-primary text-2xl md:text-4xl flex justify-center items-center cursor-pointer hover:bg-primary hover:text-text-primary transition-all shadow-sm"
-          >
-            <span className="leading-none -translate-y-1">+</span>
-          </Link>
+          {canCreateEvent && (
+            <Link
+              to="/creare-eveniment"
+              className="bg-text-primary w-9 h-9 md:w-12 md:h-12 rounded-full border font-semibold border-gray-200 text-primary text-2xl md:text-4xl flex justify-center items-center cursor-pointer hover:bg-primary hover:text-text-primary transition-all shadow-sm"
+            >
+              <span className="leading-none -translate-y-1">+</span>
+            </Link>
+          )}
         </div>
 
         <div className="flex items-center gap-3">

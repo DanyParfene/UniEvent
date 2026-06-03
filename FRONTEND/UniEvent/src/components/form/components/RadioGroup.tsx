@@ -3,18 +3,22 @@ import FieldErrors from "./FieldErrors";
 
 type Props = {
   label: string;
+  isRequired?: boolean;
   values: {
     name: string;
     label: string;
   }[];
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-const RadioGroup = ({ label, values, ...props }: Props) => {
+const RadioGroup = ({ label, isRequired, values, ...props }: Props) => {
   const field = useFieldContext<string>();
 
   return (
     <>
-      <label className="text-sm font-bold text-gray-700" htmlFor={field.name}>{label}</label>
+      <label className="text-sm font-bold text-gray-700" htmlFor={field.name}>
+        {label}
+        {isRequired && <span className="text-red-500 ml-1">*</span>}
+      </label>
       <div id={field.name}>
         {values.map((value) => (
           <div className="flex items-center" key={value.name}>

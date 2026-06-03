@@ -24,6 +24,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CreareEvenimentRouteImport } from './routes/creare-eveniment'
 import { Route as ContRouteImport } from './routes/cont'
 import { Route as ConectareRouteImport } from './routes/conectare'
+import { Route as AdministrareUtilizatoriRouteImport } from './routes/administrare-utilizatori'
 import { Route as IndexRouteImport } from './routes/index'
 
 const RecuperareParolaRoute = RecuperareParolaRouteImport.update({
@@ -101,6 +102,11 @@ const ConectareRoute = ConectareRouteImport.update({
   path: '/conectare',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdministrareUtilizatoriRoute = AdministrareUtilizatoriRouteImport.update({
+  id: '/administrare-utilizatori',
+  path: '/administrare-utilizatori',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -109,6 +115,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/administrare-utilizatori': typeof AdministrareUtilizatoriRoute
   '/conectare': typeof ConectareRoute
   '/cont': typeof ContRoute
   '/creare-eveniment': typeof CreareEvenimentRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/administrare-utilizatori': typeof AdministrareUtilizatoriRoute
   '/conectare': typeof ConectareRoute
   '/cont': typeof ContRoute
   '/creare-eveniment': typeof CreareEvenimentRoute
@@ -146,6 +154,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/administrare-utilizatori': typeof AdministrareUtilizatoriRoute
   '/conectare': typeof ConectareRoute
   '/cont': typeof ContRoute
   '/creare-eveniment': typeof CreareEvenimentRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/administrare-utilizatori'
     | '/conectare'
     | '/cont'
     | '/creare-eveniment'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/administrare-utilizatori'
     | '/conectare'
     | '/cont'
     | '/creare-eveniment'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/administrare-utilizatori'
     | '/conectare'
     | '/cont'
     | '/creare-eveniment'
@@ -221,6 +233,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdministrareUtilizatoriRoute: typeof AdministrareUtilizatoriRoute
   ConectareRoute: typeof ConectareRoute
   ContRoute: typeof ContRoute
   CreareEvenimentRoute: typeof CreareEvenimentRoute
@@ -345,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConectareRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/administrare-utilizatori': {
+      id: '/administrare-utilizatori'
+      path: '/administrare-utilizatori'
+      fullPath: '/administrare-utilizatori'
+      preLoaderRoute: typeof AdministrareUtilizatoriRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -357,6 +377,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdministrareUtilizatoriRoute: AdministrareUtilizatoriRoute,
   ConectareRoute: ConectareRoute,
   ContRoute: ContRoute,
   CreareEvenimentRoute: CreareEvenimentRoute,

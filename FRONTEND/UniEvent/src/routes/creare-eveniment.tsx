@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { requireAuth } from "../lib/require-auth";
+import { requireAuth, requireRole } from "../lib/require-auth";
 import { useAppForm } from "../components/form";
 import {
   defaultFormValues,
@@ -13,7 +13,10 @@ import { useAuth } from "../context/AuthContext";
 import { useFaculty } from "../context/FacultyContext";
 
 export const Route = createFileRoute("/creare-eveniment")({
-  beforeLoad: () => requireAuth(),
+  beforeLoad: async () => {
+    await requireAuth();
+    await requireRole(["super_administrator", "department_administrator"]);
+  },
   component: RouteComponent,
 });
 

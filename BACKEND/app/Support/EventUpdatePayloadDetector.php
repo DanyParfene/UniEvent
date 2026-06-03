@@ -33,10 +33,10 @@ final class EventUpdatePayloadDetector
     private function hasCoreFields(Request $request): bool
     {
         $coreKeys = [
-            'name', 'banner_url', 'start_date', 'finish_date', 'edition', 'organizer',
-            'description', 'location', 'guests', 'mode', 'estimated_participants',
-            'target_group', 'has_livestream', 'coordinator_name', 'coordinator_email',
-            'coordinator_phone', 'additional_info', 'status', 'partner_ids', 'department',
+            'event_name', 'banner', 'start_event_date', 'finish_event_date', 'edition',
+            'organizer', 'description', 'location', 'invitations', 'organization_mode',
+            'number_of_participants', 'target_group', 'livestream', 'coordinator',
+            'email', 'telephone', 'other_information', 'status', 'partner_ids', 'department',
         ];
 
         foreach ($coreKeys as $key) {
