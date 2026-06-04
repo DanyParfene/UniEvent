@@ -16,24 +16,23 @@ final class UpdateEventMetricsAction
     ) {}
 
     /**
-     * Upserts metrics by (event_id, category) to avoid duplicate rows.
+     * Replaces all metrics for the event with the incoming set.
+     * Allows multiple rows per category (e.g. several aparitii_presa links).
      *
      * @param  list<array{category: string, link: string, reach: int, engagement: int}>  $metrics
      */
     public function execute(Event $event, array $metrics): Event
     {
         DB::transaction(function () use ($event, $metrics): void {
-            foreach ($metrics as $row) {
-                $category = EventMetricCategory::from($row['category']);
+            $event->metrics()->delete();
 
-                $event->metrics()->updateOrCreate(
-                    ['category' => $category],
-                    [
-                        'link' => $row['link'],
-                        'reach' => (int) $row['reach'],
-                        'engagement' => (int) $row['engagement'],
-                    ],
-                );
+            foreach ($metrics as $row) {
+                $event->metrics()->create([
+                    'category' => EventMetricCategory::from($row['category']),
+                    'link' => $row['link'],
+                    'reach' => (int) $row['reach'],
+                    'engagement' => (int) $row['engagement'],
+                ]);
             }
         });
 

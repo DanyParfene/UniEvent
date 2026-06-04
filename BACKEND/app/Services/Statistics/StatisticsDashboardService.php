@@ -63,12 +63,14 @@ final class StatisticsDashboardService
 
     private function countPressAppearances(AuthenticatedUser $user, ?string $department): int
     {
-        $yearStart = now()->subYear()->toDateString();
+        $monthStart = now()->subMonth()->startOfMonth()->toDateString();
+        $monthEnd = now()->subMonth()->endOfMonth()->toDateString();
 
         return EventMetric::query()
             ->where('category', EventMetricCategory::AparitiiPresa)
             ->whereIn('event_id', $this->scopedEventQuery->forUser($user, $department)
-                ->whereDate('start_event_date', '>=', $yearStart)
+                ->whereDate('finish_event_date', '>=', $monthStart)
+                ->whereDate('finish_event_date', '<=', $monthEnd)
                 ->select('id'))
             ->count();
     }

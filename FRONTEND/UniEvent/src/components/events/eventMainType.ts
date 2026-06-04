@@ -158,21 +158,20 @@ export const categoryLabelToKey: Record<string, MetricCategory> = Object.fromEnt
 );
 
 export function eventDtoToSections(dto: EventDto): Section[] {
-  const socialMediaFields: Field[] = dto.metrics.map((m) => ({
-    label: categoryKeyToLabel[m.category] ?? m.category,
-    value: [{ link: m.link, reach: m.reach, engagement: m.engagement }],
-  }));
-
   const allSocialLabels = Object.values(categoryKeyToLabel);
-  const presentLabels = new Set(socialMediaFields.map((f) => f.label));
-  for (const label of allSocialLabels) {
-    if (!presentLabels.has(label)) {
-      socialMediaFields.push({ label, value: [] });
-    }
+
+  const grouped = new Map<string, SocialMediaLink[]>();
+  for (const m of dto.metrics) {
+    const label = categoryKeyToLabel[m.category] ?? m.category;
+    const links = grouped.get(label) ?? [];
+    links.push({ link: m.link, reach: m.reach, engagement: m.engagement });
+    grouped.set(label, links);
   }
-  socialMediaFields.sort(
-    (a, b) => allSocialLabels.indexOf(a.label) - allSocialLabels.indexOf(b.label),
-  );
+
+  const socialMediaFields: Field[] = allSocialLabels.map((label) => ({
+    label,
+    value: grouped.get(label) ?? [],
+  }));
 
   const partnerNames = dto.partners.map((p) => p.name).join(', ');
 
