@@ -22,7 +22,7 @@ function EventContent() {
   const { data: dto } = useEvent(id);
   const sections = eventDtoToSections(dto);
 
-  return <EventCardMain initialSections={sections} eventId={id} isArchived={false} />;
+  return <EventCardMain key={dto.updatedAt} initialSections={sections} eventId={id} isArchived={false} />;
 }
 
 function RouteComponent() {

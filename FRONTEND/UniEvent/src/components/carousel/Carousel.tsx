@@ -39,14 +39,69 @@ const Carousel = ({ department }: CarouselProps) => {
 
   if (partners.length === 0) return null;
 
+  const partnerCard = (partner: (typeof partners)[number]) => (
+    <div className="relative flex flex-col items-center justify-center p-6 bg-white border border-gray-200 shadow-sm rounded-2xl">
+      {partner.logo_path ? (
+        <div className="h-16 w-full flex items-center justify-center mb-4">
+          <img
+            src={getGoogleDriveDirectLink(partner.logo_path)}
+            alt={`${partner.name} logo`}
+            className="max-h-full max-w-35 object-contain"
+          />
+        </div>
+      ) : (
+        <div className="h-16 w-full flex items-center justify-center mb-4">
+          <span className="text-2xl font-black text-primary">
+            {partner.name.charAt(0)}
+          </span>
+        </div>
+      )}
+      <p className="text-sm font-semibold text-gray-500">{partner.name}</p>
+    </div>
+  );
+
+  const sectionHeader = (
+    <div className="mb-14 text-center">
+      <h2 className="text-3xl md:text-4xl font-bold text-text-secondary">
+        Parteneri
+      </h2>
+      <div className="mt-2 h-1 w-20 bg-primary mx-auto rounded-full"></div>
+    </div>
+  );
+
+  const seeMoreLink = (
+    <div className="mt-12 md:mt-16 flex justify-center w-full">
+      <Link
+        to="/parteneri"
+        className="inline-block px-10 py-4 bg-white border border-gray-200 
+                         rounded-2xl shadow-sm text-sm font-black text-primary 
+                         transition-all duration-300 hover:bg-primary hover:text-text-primary 
+                         hover:shadow-lg active:scale-95"
+      >
+        Vezi mai mulți parteneri
+      </Link>
+    </div>
+  );
+
+  if (partners.length < 4) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-12 py-10">
+        {sectionHeader}
+        <div className="flex justify-center gap-6 flex-wrap">
+          {partners.map((partner) => (
+            <div key={partner.id} className="w-56">
+              {partnerCard(partner)}
+            </div>
+          ))}
+        </div>
+        {seeMoreLink}
+      </div>
+    );
+  }
+
   return (
     <div className="relative w-full max-w-7xl mx-auto px-4 md:px-12 py-10">
-      <div className="mb-14 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-text-secondary">
-          Parteneri
-        </h2>
-        <div className="mt-2 h-1 w-20 bg-primary mx-auto rounded-full"></div>
-      </div>
+      {sectionHeader}
 
       <div className="relative">
         <div className="overflow-hidden p-2">
@@ -62,24 +117,7 @@ const Carousel = ({ department }: CarouselProps) => {
                 className="shrink-0 px-2"
                 style={{ flex: `0 0 ${100 / visibleItems}%` }}
               >
-                <div className="relative flex flex-col items-center justify-center p-6 bg-white border border-gray-200 shadow-sm rounded-2xl">
-                  {partner.logo_path ? (
-                    <div className="h-16 w-full flex items-center justify-center mb-4">
-                      <img
-                        src={getGoogleDriveDirectLink(partner.logo_path)}
-                        alt={`${partner.name} logo`}
-                        className="max-h-full max-w-35 object-contain"
-                      />
-                    </div>
-                  ) : (
-                    <div className="h-16 w-full flex items-center justify-center mb-4">
-                      <span className="text-2xl font-black text-primary">
-                        {partner.name.charAt(0)}
-                      </span>
-                    </div>
-                  )}
-                  <p className="text-sm font-semibold text-gray-500">{partner.name}</p>
-                </div>
+                {partnerCard(partner)}
               </div>
             ))}
           </div>
@@ -102,17 +140,7 @@ const Carousel = ({ department }: CarouselProps) => {
         </button>
       </div>
 
-      <div className="mt-12 md:mt-16 flex justify-center w-full">
-        <Link
-          to="/parteneri"
-          className="inline-block px-10 py-4 bg-white border border-gray-200 
-                           rounded-2xl shadow-sm text-sm font-black text-primary 
-                           transition-all duration-300 hover:bg-primary hover:text-text-primary 
-                           hover:shadow-lg active:scale-95"
-        >
-          Vezi mai mulți parteneri
-        </Link>
-      </div>
+      {seeMoreLink}
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { requireAuth } from "../lib/require-auth";
 import ReportCard from "../components/reports/ReportCard";
 import ReportSection from "../components/reports/ReportSection";
 import QueryBoundary from "../components/common/QueryBoundary";
-import { usePartners, useTopPartners } from "../api/partners";
+import { useTopPartners } from "../api/partners";
 import { useEventsQuery } from "../api/events";
 import { useGenerateReport } from "../api/reports";
 import { useScopedDepartmentParam } from "../api/helpers";
@@ -15,19 +15,13 @@ export const Route = createFileRoute("/rapoarte")({
 
 function ReportsContent() {
   const department = useScopedDepartmentParam();
-  const { data: partnersList } = usePartners();
   const { data: topPartnersList } = useTopPartners();
-  const { data: eventsPage, isLoading: eventsLoading } = useEventsQuery(
-    { department, sort_by: "name", sort_direction: "asc" },
-    true,
-  );
   const { data: recentEventsPage } = useEventsQuery(
     { department, sort_by: "date", sort_direction: "desc" },
     true,
   );
   const generateReport = useGenerateReport();
 
-  const events = eventsPage?.data ?? [];
   const lastThreeEvents = (recentEventsPage?.data ?? []).slice(0, 3);
   const topThreePartners = topPartnersList?.slice(0, 3) ?? [];
 
@@ -81,6 +75,18 @@ function ReportsContent() {
       </div>
 
       <div className="flex flex-col gap-12">
+        <ReportSection title="Interval de Timp">
+          {timeRanges.map(({ label, months }) => (
+            <ReportCard
+              key={label}
+              id={label}
+              title={`Raport ${label}`}
+              onGenerate={() => handleTimeRangeReport(months)}
+              isLoading={generateReport.isPending}
+            />
+          ))}
+        </ReportSection>
+
         <ReportSection title="Top 3 Parteneri Activi">
           {topThreePartners.map((partner, index) => (
             <ReportCard
@@ -109,49 +115,6 @@ function ReportsContent() {
           ))}
           {lastThreeEvents.length === 0 && (
             <p className="text-gray-400">Nu există evenimente recente.</p>
-          )}
-        </ReportSection>
-
-        <ReportSection title="Interval de Timp">
-          {timeRanges.map(({ label, months }) => (
-            <ReportCard
-              key={label}
-              id={label}
-              title={`Raport ${label}`}
-              onGenerate={() => handleTimeRangeReport(months)}
-              isLoading={generateReport.isPending}
-            />
-          ))}
-        </ReportSection>
-
-        <ReportSection title="Sponsori">
-          {partnersList.map((partner) => (
-            <ReportCard
-              key={partner.id}
-              id={partner.id}
-              title={partner.name}
-              imageUrl={partner.logo_path ?? undefined}
-              onGenerate={() => handlePartnerReport(partner.id)}
-              isLoading={generateReport.isPending}
-            />
-          ))}
-          {partnersList.length === 0 && (
-            <p className="text-gray-400">Nu există parteneri disponibili.</p>
-          )}
-        </ReportSection>
-
-        <ReportSection title="Evenimente Specifice">
-          {events.map((event) => (
-            <ReportCard
-              key={event.id}
-              id={event.id}
-              title={event.eventName}
-              onGenerate={() => handleEventReport(event.id)}
-              isLoading={generateReport.isPending}
-            />
-          ))}
-          {!eventsLoading && events.length === 0 && (
-            <p className="text-gray-400">Nu există evenimente disponibile.</p>
           )}
         </ReportSection>
       </div>

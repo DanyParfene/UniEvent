@@ -9,6 +9,7 @@ use App\Models\Event;
 use App\Services\Event\EventVisibilityScope;
 use App\Support\Contracts\AuthenticatedUser;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 
 /**
  * Scoped event query for reports (reuses listing filters without pagination).
@@ -69,6 +70,15 @@ final class ReportEventScopeQuery
 
         if (isset($filterParams['end_date'])) {
             $query->whereDate('start_event_date', '<=', $filterParams['end_date']);
+        }
+
+        $partnerIds = Arr::wrap($filterParams['partners'] ?? []);
+        $partnerIds = array_values(array_filter($partnerIds, fn ($id) => is_string($id) && $id !== ''));
+
+        if ($partnerIds !== []) {
+            $query->whereHas('partners', function (Builder $partnerQuery) use ($partnerIds): void {
+                $partnerQuery->whereIn('partners.id', $partnerIds);
+            });
         }
     }
 

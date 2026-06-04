@@ -22,7 +22,7 @@ function EventArchivedContent() {
   const { data: dto } = useEvent(id);
   const sections = eventDtoToSections(dto);
 
-  return <EventCardMain initialSections={sections} eventId={id} isArchived={true} />;
+  return <EventCardMain key={dto.updatedAt} initialSections={sections} eventId={id} isArchived={true} />;
 }
 
 function RouteComponent() {

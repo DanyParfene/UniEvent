@@ -26,11 +26,11 @@ const FilterCard = ({ title, partners, onSearch }: FilterCardProps) => {
   const [sortBy, setSortBy] = useState<"date" | "name">("date");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  const togglePartner = (partnerName: string) => {
+  const togglePartner = (partnerId: string) => {
     setSelectedPartners((prev) =>
-      prev.includes(partnerName)
-        ? prev.filter((p) => p !== partnerName)
-        : [...prev, partnerName],
+      prev.includes(partnerId)
+        ? prev.filter((p) => p !== partnerId)
+        : [...prev, partnerId],
     );
   };
 
@@ -87,8 +87,8 @@ const FilterCard = ({ title, partners, onSearch }: FilterCardProps) => {
                 <input
                   type="checkbox"
                   className="w-4 h-4 shrink-0 rounded border-gray-300 text-primary accent-primary"
-                  checked={selectedPartners.includes(item.name)}
-                  onChange={() => togglePartner(item.name)}
+                  checked={selectedPartners.includes(item.id)}
+                  onChange={() => togglePartner(item.id)}
                 />
                 <span className="text-sm text-gray-700">{item.name}</span>
               </label>

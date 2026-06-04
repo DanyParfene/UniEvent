@@ -39,6 +39,8 @@ class GenerateReportRequest extends FormRequest
                 'date',
                 'after_or_equal:filter_params.start_date',
             ],
+            'filter_params.partners' => ['sometimes', 'array'],
+            'filter_params.partners.*' => ['uuid', PartnerValidation::activePartnerIdExists()],
             'filter_params.sort_by' => ['sometimes', 'string', Rule::in(['date', 'name'])],
             'filter_params.sort_direction' => ['sometimes', 'string', Rule::in(['asc', 'desc'])],
             'report_title' => ['sometimes', 'nullable', 'string', 'max:255'],
