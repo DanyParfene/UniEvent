@@ -214,14 +214,14 @@ const EventCardMain = ({ initialSections, eventId, isArchived = false }: EventCa
                         </div>
                       </div>
                     ) : Array.isArray(f.value) ? (
-                      f.value.length === 0 ? (
+                      f.value.length === 0 && typeof f.value[0] !== "object" && idx !== editSocialMediaButtonIndex ? (
                         <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
                           <span className="min-w-[120px] text-sm font-semibold text-slate-500">
                             {f.label}
                           </span>
                           <span className="text-slate-400 italic">-</span>
                         </div>
-                      ) : typeof f.value[0] === "string" ? (
+                      ) : f.value.length > 0 && typeof f.value[0] === "string" ? (
                         <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
                           <span className="min-w-[120px] text-sm font-semibold text-slate-500">
                             {f.label}

@@ -83,7 +83,7 @@ const Carousel = ({ department }: CarouselProps) => {
     </div>
   );
 
-  if (partners.length < 4) {
+  if (partners.length < 5) {
     return (
       <div className="w-full max-w-7xl mx-auto px-4 md:px-12 py-10">
         {sectionHeader}
