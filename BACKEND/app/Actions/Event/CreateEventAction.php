@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Actions\Event;
 
 use App\Models\Event;
-use App\Services\Cache\ReferenceDataCacheInvalidator;
 use App\Support\Contracts\AuthenticatedUser;
 use App\Services\Event\EventDepartmentResolver;
 use App\Services\Event\SyncEventPartnersService;
@@ -16,7 +15,6 @@ final class CreateEventAction
     public function __construct(
         private readonly EventDepartmentResolver $departmentResolver,
         private readonly SyncEventPartnersService $partnerSync,
-        private readonly ReferenceDataCacheInvalidator $cacheInvalidator,
     ) {}
 
     /**
@@ -35,8 +33,6 @@ final class CreateEventAction
         ]);
 
         $this->partnerSync->sync($event, $data['partner_ids'] ?? null);
-
-        $this->cacheInvalidator->forgetStatisticsDashboards();
 
         return $event->load(['metrics', 'partners']);
     }

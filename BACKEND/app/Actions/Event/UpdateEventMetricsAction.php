@@ -6,15 +6,10 @@ namespace App\Actions\Event;
 
 use App\Enums\EventMetricCategory;
 use App\Models\Event;
-use App\Services\Cache\ReferenceDataCacheInvalidator;
 use Illuminate\Support\Facades\DB;
 
 final class UpdateEventMetricsAction
 {
-    public function __construct(
-        private readonly ReferenceDataCacheInvalidator $cacheInvalidator,
-    ) {}
-
     /**
      * Replaces all metrics for the event with the incoming set.
      * Allows multiple rows per category (e.g. several aparitii_presa links).
@@ -35,8 +30,6 @@ final class UpdateEventMetricsAction
                 ]);
             }
         });
-
-        $this->cacheInvalidator->forgetStatisticsDashboards();
 
         return $event->fresh(['metrics', 'partners']);
     }
