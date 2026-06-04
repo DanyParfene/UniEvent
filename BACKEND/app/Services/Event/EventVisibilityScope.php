@@ -29,20 +29,11 @@ final class EventVisibilityScope
             return;
         }
 
-        if ($user->hasRole(RoleName::DEPARTMENT_ADMINISTRATOR)) {
+        if ($user->hasAnyRole([RoleName::DEPARTMENT_ADMINISTRATOR, RoleName::COORDINATOR])) {
             $query->where(function (Builder $q) use ($user): void {
                 $q->where('department', $user->department)
                   ->orWhereNull('department');
             });
-
-            return;
-        }
-
-        if ($user->hasRole(RoleName::COORDINATOR)) {
-            $query->whereRaw(
-                'LOWER(email) = ?',
-                [strtolower((string) $user->email)],
-            );
         }
     }
 }

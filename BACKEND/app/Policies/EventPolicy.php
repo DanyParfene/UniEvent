@@ -45,12 +45,8 @@ class EventPolicy
             return true;
         }
 
-        if ($user->hasRole(RoleName::DEPARTMENT_ADMINISTRATOR)) {
+        if ($user->hasAnyRole([RoleName::DEPARTMENT_ADMINISTRATOR, RoleName::COORDINATOR])) {
             return $event->department === null || $event->department === $user->department;
-        }
-
-        if ($user->hasRole(RoleName::COORDINATOR)) {
-            return strcasecmp($event->email, (string) $user->email) === 0;
         }
 
         return false;
